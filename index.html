@@ -217,6 +217,14 @@ div.set-row{cursor:default}
 .btn-del{background:var(--red-bg);color:var(--red-fg)}
 .btn-wa{background:var(--green);color:#fff}
 .btn-copy{background:var(--blue-bg);color:var(--blue)}
+.mod-card{display:block;width:100%;text-align:left;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:16px;margin-bottom:8px;cursor:pointer;color:var(--text)}
+.mod-card.on{border-color:var(--purple)}
+.mod-card:active{background:var(--surface2)}
+.mod-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mod-head .t{font-size:16px;font-weight:700}
+.mod-prev{display:block;font-size:13px;color:var(--text2);line-height:1.5;white-space:pre-wrap;margin-top:8px;max-height:80px;overflow:hidden;word-break:break-word}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.chip-row .f-chip{min-height:32px;padding:0 16px;font-size:13px}
 
 /* ── STATISTICHE ── */
 .kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
@@ -297,7 +305,7 @@ div.set-row{cursor:default}
   <header class="topbar">
     <div class="topbar-logo" id="topLogo"><svg class="ic ic-lg"><use href="#i-alert"/></svg>Guasti<span>Metro</span></div>
     <button class="back" id="topBack" style="display:none" onclick="tornaHome()" aria-label="Torna alla Home"><span class="btn"><svg class="ic"><use href="#i-back"/></svg></span><span id="topTitle"></span></button>
-    <div class="firma" onclick="tapVersione()">v4.3.0</div>
+    <div class="firma" onclick="tapVersione()">v4.4.0</div>
   </header>
 
   <main class="scroll-area">
@@ -361,6 +369,11 @@ div.set-row{cursor:default}
           <span class="set-main"><span class="t" style="display:block">Descrizioni predefinite</span><span class="s" id="setDescrSub">—</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
+        <button class="set-row" onclick="apriGestioneModelli()">
+          <span class="bubble b-blue"><svg class="ic"><use href="#i-copy"/></svg></span>
+          <span class="set-main"><span class="t" style="display:block">Modelli di messaggio</span><span class="s" id="setModelliSub">—</span></span>
+          <svg class="ic"><use href="#i-chevron"/></svg>
+        </button>
         <button class="set-row" onclick="apriWhatsApp()">
           <span class="bubble b-green"><svg class="ic"><use href="#i-message"/></svg></span>
           <span class="set-main"><span class="t" style="display:block">Destinatario WhatsApp</span><span class="s" id="setWaSub">—</span></span>
@@ -419,7 +432,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 4.3.0</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 4.4.0</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -440,7 +453,7 @@ div.set-row{cursor:default}
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Metro v4.3.0</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Metro v4.4.0</div>
     </section>
 
     <!-- ── PAGINA: NUOVO GUASTO ── -->
@@ -889,6 +902,50 @@ div.set-row{cursor:default}
 </div>
 
 <!-- ── SHEET STATISTICHE (elenco guasti di un treno / gruppo) ── -->
+<!-- ── SHEET SCELTA MODELLO (Copia) ── -->
+<div class="overlay" id="sceltaModelloOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Scegli il modello</h2>
+    <div class="sec-sub" style="margin-bottom:16px">Tocca un modello per copiare il testo</div>
+    <div id="sceltaModelloList"></div>
+    <div class="sheet-btns">
+      <button class="btn-cancel" onclick="chiudiSceltaModello()"><svg class="ic"><use href="#i-x"/></svg>Chiudi</button>
+      <button class="btn-edit" onclick="apriGestioneModelli()"><svg class="ic"><use href="#i-pencil"/></svg>Gestisci modelli</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SHEET GESTIONE MODELLI ── -->
+<div class="overlay" id="modelliOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2 id="modelliTitle">Modelli di messaggio</h2>
+    <div class="sec-sub" style="margin-bottom:16px">Crea il testo da copiare con i dati dell'intervento. Tocca un dato per inserirlo nel punto in cui scrivi.</div>
+    <div class="field">
+      <label for="mod-nome">Nome <span class="req">*</span></label>
+      <input type="text" id="mod-nome" placeholder="Es. Rapportino turno" maxlength="40">
+    </div>
+    <div class="field">
+      <label for="mod-testo">Testo <span class="req">*</span></label>
+      <div class="chip-row" id="segnapostiChips"></div>
+      <textarea id="mod-testo" rows="8" placeholder="Es. Guasto {linea} del {data} ore {ora}" oninput="anteprimaModello()"></textarea>
+    </div>
+    <div class="lbl">Anteprima</div>
+    <div class="detail-text" id="modAnteprima" style="margin-top:0"></div>
+    <button class="btn-primary" id="btnSalvaModello" onclick="salvaModello()" style="margin-top:16px">Aggiungi modello</button>
+    <button class="btn-secondary" id="btnAnnullaModello" style="display:none" onclick="resetFormModello()">Annulla</button>
+    <div class="error-msg" id="modelliError"></div>
+    <div class="sheet-section">
+      <div class="lbl">Tutti i modelli</div>
+      <div id="modelliList"></div>
+    </div>
+    <div class="sheet-btns">
+      <button class="btn-cancel" onclick="chiudiGestioneModelli()"><svg class="ic"><use href="#i-x"/></svg>Chiudi</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="devOverlay">
   <div class="sheet">
     <div class="sheet-handle"></div>
@@ -931,7 +988,7 @@ div.set-row{cursor:default}
    Stessa interfaccia di firebase.database() usata dal resto dell'app
    (ref().on / set / push / remove), ma i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '4.3.0';
+const APP_VERSIONE = '4.4.0';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
@@ -1895,35 +1952,176 @@ function inviaWhatsApp(){
   const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(testo)}`;
   window.open(url, '_blank');
 }
-/* Testo semplice dell'intervento, da incollare in mail, Teams o rapportini */
-function testoIntervento(){
+/* ════════ MODELLI DI MESSAGGIO ════════
+   Testi con segnaposti {linea}, {data}... da copiare e incollare in mail, Teams o rapportini.
+   Una riga i cui segnaposti sono tutti vuoti viene tolta. */
+const MODELLI_BASE = {
+  _completo: {nome:'Completo', testo:'{Tipo} linea {linea}\nData: {data} ore {ora}\nMateriale: {materiale}\nVettura: {vettura}\nNumero treno: {treno}\nStazione: {stazione}\nDescrizione: {descrizione}\nDettagli: {dettagli}\nEsito: {esito}\nRientro: {rientro}'},
+  _riga: {nome:'Una riga', testo:'{Tipo} {linea} {data} {ora} · materiale {materiale} · {stazione} · {descrizione} · {esito}'},
+  _mail: {nome:'Mail', testo:'Oggetto: {Tipo} linea {linea} del {data}\n\nBuongiorno,\ndi seguito i dati dell\'intervento.\n\nLinea: {linea}\nData e ora: {data} {ora}\nMateriale: {materiale}, vettura {vettura}\nStazione: {stazione}\nDescrizione: {descrizione}\n{dettagli}\nEsito: {esito}\n\nCordiali saluti'}
+};
+const SEGNAPOSTI = [
+  ['Tipo','Guasto o Segnalazione'], ['linea','Linea'], ['data','Data'], ['ora','Ora'], ['materiale','Materiale'], ['vettura','Vettura'],
+  ['treno','Numero treno'], ['stazione','Stazione'], ['descrizione','Descrizione breve'], ['dettagli','Descrizione estesa'],
+  ['esito','Riparato o no'], ['rientro','Dove è rientrato']
+];
+const ESEMPIO_MODELLO = {Tipo:'Guasto', tipo:'guasto', linea:'M2', data:'10/11/2026', ora:'10:09', materiale:'571', vettura:'1571', treno:'204', stazione:'Lambrate', descrizione:'Porte bloccate', dettagli:'Porta 3 lato destro non chiude', esito:'non riparato', rientro:'Deposito Gorgonzola'};
+let MODELLI_UTENTE = {};   // {id: {nome, testo}}
+let editModelloId = null;
+
+function tuttiModelli(){
+  const utente = Object.entries(MODELLI_UTENTE).filter(([id,m])=> m && m.testo).sort((a,b)=> (a[1].nome||'').localeCompare(b[1].nome||''));
+  return [...Object.entries(MODELLI_BASE), ...utente];
+}
+function valoriIntervento(){
   const tipo = selectedGuastoId ? 'guasto' : (selectedSegId ? 'segnalazione' : '');
   const g = tipo==='guasto' ? allGuasti[selectedGuastoId] : (tipo ? allSegnalazioni[selectedSegId] : null);
-  if(!g) return '';
-  const r = [];
-  r.push((tipo==='guasto' ? 'Guasto' : 'Segnalazione') + ' linea ' + (g.linea||'-'));
-  r.push('Data: ' + (g.data ? g.data.split('-').reverse().join('/') : '-') + (g.ora ? ' ore ' + g.ora : ''));
-  r.push('Materiale: ' + (g.materiale||'-') + (g.vettura ? ' - vettura ' + g.vettura : ''));
-  if(g.numeroTreno) r.push('Numero treno: ' + g.numeroTreno);
-  if(tipo==='guasto') r.push('Stazione: ' + (g.stazione||'-'));
-  r.push('Descrizione: ' + (g.breve||'-'));
-  if(g.estesa) r.push('Dettagli: ' + g.estesa);
-  if(tipo==='guasto') r.push('Esito: ' + (g.riparato==='si' ? 'riparato' : 'non riparato' + (g.rientro ? ', rientro ' + g.rientro : '')));
-  return r.join('\n');
+  if(!g) return null;
+  const guasto = tipo==='guasto';
+  return {
+    Tipo: guasto ? 'Guasto' : 'Segnalazione', tipo,
+    linea: g.linea||'', data: g.data ? g.data.split('-').reverse().join('/') : '', ora: g.ora||'',
+    materiale: g.materiale||'', vettura: g.vettura||'', treno: g.numeroTreno||'', stazione: g.stazione||'',
+    descrizione: g.breve||'', dettagli: g.estesa||'',
+    esito: guasto ? (g.riparato==='si' ? 'riparato' : 'non riparato') : '',
+    rientro: guasto && g.riparato==='no' ? (g.rientro||'') : ''
+  };
 }
-function copiaTesto(){
-  const testo = testoIntervento();
-  if(!testo) return;
+function compilaModello(testo, v){
+  return String(testo).split('\n').map(riga=>{
+    const segn = riga.match(/\{(\w+)\}/g) || [];
+    if(segn.length && segn.every(s=> (s.slice(1,-1) in v) && !v[s.slice(1,-1)])) return null;
+    return riga.replace(/\{(\w+)\}/g, (m,k)=> (k in v) ? (v[k] || '-') : m);
+  }).filter(r=> r!==null).join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+function copiaNegliAppunti(testo, msg){
   const fallback = ()=>{
     const ta = document.createElement('textarea');
     ta.value = testo; ta.setAttribute('readonly',''); ta.style.position = 'fixed'; ta.style.opacity = '0';
     document.body.appendChild(ta); ta.select();
     let ok = false; try { ok = document.execCommand('copy'); } catch(e){}
     ta.remove();
-    showToast(ok ? 'Testo copiato' : 'Copia non riuscita');
+    showToast(ok ? msg : 'Copia non riuscita');
   };
-  if(navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(testo).then(()=>showToast('Testo copiato'), fallback);
+  if(navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(testo).then(()=>showToast(msg), fallback);
   else fallback();
+}
+
+/* Scelta del modello quando premi Copia */
+function copiaTesto(){
+  const v = valoriIntervento();
+  if(!v) return;
+  const ultimo = prefs.modello;
+  document.getElementById('sceltaModelloList').innerHTML = tuttiModelli().map(([id,m])=>`
+    <button class="mod-card${id===ultimo ? ' on' : ''}" onclick="copiaConModello('${id}')">
+      <span class="mod-head"><span class="t">${escapeHtml(m.nome||'Senza nome')}</span>${id===ultimo ? '<span class="status-pill neutro">Ultimo usato</span>' : ''}</span>
+      <span class="mod-prev">${escapeHtml(compilaModello(m.testo, v))}</span>
+    </button>`).join('');
+  document.getElementById('sceltaModelloOverlay').classList.add('open');
+}
+function copiaConModello(id){
+  const m = MODELLI_BASE[id] || MODELLI_UTENTE[id];
+  const v = valoriIntervento();
+  if(!m || !v) return;
+  document.getElementById('sceltaModelloOverlay').classList.remove('open');
+  copiaNegliAppunti(compilaModello(m.testo, v), 'Testo copiato · modello ' + (m.nome||''));
+  if(prefs.modello!==id) setPref('modello', id);
+}
+function chiudiSceltaModello(){ document.getElementById('sceltaModelloOverlay').classList.remove('open'); }
+
+/* Gestione modelli (Impostazioni) */
+function listenModelli(){
+  db.ref('modelli_messaggio').on('value', snap=>{
+    MODELLI_UTENTE = snap.val() || {};
+    renderModelliList();
+    if(paginaCorrente==='impostazioni') renderImpostazioni();
+  });
+}
+function apriGestioneModelli(){
+  chiudiSceltaModello();
+  resetFormModello();
+  document.getElementById('segnapostiChips').innerHTML = SEGNAPOSTI.map(([k,l])=>
+    `<button class="f-chip" type="button" title="${escapeHtml(l)}" onclick="inserisciSegnaposto('${k}')">${escapeHtml(l)}</button>`).join('');
+  renderModelliList();
+  document.getElementById('modelliOverlay').classList.add('open');
+}
+function chiudiGestioneModelli(){ document.getElementById('modelliOverlay').classList.remove('open'); }
+function inserisciSegnaposto(k){
+  const ta = document.getElementById('mod-testo');
+  const s = ta.selectionStart ?? ta.value.length, e = ta.selectionEnd ?? ta.value.length;
+  const ins = '{' + k + '}';
+  ta.value = ta.value.slice(0, s) + ins + ta.value.slice(e);
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = s + ins.length;
+  anteprimaModello();
+}
+function anteprimaModello(){
+  const t = document.getElementById('mod-testo').value;
+  document.getElementById('modAnteprima').textContent = t.trim() ? compilaModello(t, ESEMPIO_MODELLO) : 'L\'anteprima compare qui mentre scrivi';
+}
+function resetFormModello(){
+  editModelloId = null;
+  document.getElementById('mod-nome').value = '';
+  document.getElementById('mod-testo').value = '';
+  document.getElementById('modelliError').textContent = '';
+  document.getElementById('btnSalvaModello').textContent = 'Aggiungi modello';
+  document.getElementById('btnAnnullaModello').style.display = 'none';
+  document.getElementById('modelliTitle').textContent = 'Modelli di messaggio';
+  anteprimaModello();
+}
+function compilaFormModello(nome, testo, id){
+  editModelloId = id || null;
+  document.getElementById('mod-nome').value = nome;
+  document.getElementById('mod-testo').value = testo;
+  document.getElementById('modelliError').textContent = '';
+  document.getElementById('btnSalvaModello').textContent = id ? 'Salva modifiche' : 'Aggiungi modello';
+  document.getElementById('btnAnnullaModello').style.display = 'flex';
+  document.getElementById('modelliTitle').textContent = id ? 'Modifica modello' : 'Nuovo modello';
+  anteprimaModello();
+  document.querySelector('#modelliOverlay .sheet').scrollTop = 0;
+}
+function modificaModello(id){ const m = MODELLI_UTENTE[id]; if(m) compilaFormModello(m.nome||'', m.testo||'', id); }
+function duplicaModello(id){ const m = MODELLI_BASE[id] || MODELLI_UTENTE[id]; if(m) compilaFormModello('Copia di ' + (m.nome||''), m.testo||'', null); }
+function salvaModello(){
+  const err = document.getElementById('modelliError');
+  err.textContent = '';
+  const nome = document.getElementById('mod-nome').value.trim();
+  const testo = document.getElementById('mod-testo').value.replace(/\s+$/,'');
+  if(!nome){ err.textContent = 'Dai un nome al modello.'; return; }
+  if(!testo.trim()){ err.textContent = 'Scrivi il testo del modello.'; return; }
+  const isEdit = !!editModelloId;
+  const id = isEdit ? editModelloId : db.ref('modelli_messaggio').push().key;
+  const btn = document.getElementById('btnSalvaModello');
+  btn.disabled = true;
+  db.ref('modelli_messaggio/' + id).set({nome, testo}).then(()=>{
+    btn.disabled = false;
+    resetFormModello();
+    showToast(isEdit ? 'Modello aggiornato' : 'Modello aggiunto');
+  }).catch(e=>{ btn.disabled = false; err.textContent = 'Errore salvataggio: ' + e.message; });
+}
+function eliminaModello(id){
+  if(!confirm('Eliminare questo modello?')) return;
+  db.ref('modelli_messaggio/' + id).remove().then(()=> showToast('Modello eliminato'));
+  if(editModelloId===id) resetFormModello();
+  if(prefs.modello===id) setPref('modello', '');
+}
+function renderModelliList(){
+  const c = document.getElementById('modelliList');
+  if(!c) return;
+  c.innerHTML = tuttiModelli().map(([id,m])=>{
+    const base = id in MODELLI_BASE;
+    return `<div class="guasto-card" style="cursor:default">
+      <div class="guasto-top">
+        <div class="guasto-title">${escapeHtml(m.nome||'Senza nome')}</div>
+        ${base ? '<span class="status-pill neutro">Predefinito</span>' : ''}
+      </div>
+      <div class="mod-prev">${escapeHtml(compilaModello(m.testo, ESEMPIO_MODELLO))}</div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+        <button class="link-btn" onclick="duplicaModello('${id}')">Duplica</button>
+        ${base ? '' : `<button class="link-btn" onclick="modificaModello('${id}')">Modifica</button><button class="link-btn danger" onclick="eliminaModello('${id}')">Elimina</button>`}
+      </div>
+    </div>`;
+  }).join('');
 }
 function eliminaItem(){
   if(selectedGuastoId){
@@ -2358,7 +2556,7 @@ function homeVaiRecidivi(){
 
 /* ════════ IMPOSTAZIONI ════════ */
 const PREFS_KEY = 'guastiMetro.prefs';
-const PREFS_DEFAULT = {lineaDef:'', dataAuto:true, dopoSalva:'home', dev:false};
+const PREFS_DEFAULT = {lineaDef:'', dataAuto:true, dopoSalva:'home', dev:false, modello:''};
 let prefs = caricaPrefs();
 let waNumeroCondiviso = '';
 const WA_DEFAULT = '';
@@ -2409,6 +2607,8 @@ function renderImpostazioni(){
   sw.classList.toggle('on', !!prefs.dataAuto);
   sw.setAttribute('aria-checked', prefs.dataAuto ? 'true' : 'false');
   document.getElementById('setDev').style.display = prefs.dev ? 'block' : 'none';
+  const nm = tuttiModelli().length;
+  document.getElementById('setModelliSub').textContent = nm + ' modelli · si scelgono con Copia';
 }
 function listenImpostazioni(){
   db.ref('impostazioni/whatsapp').on('value', snap=>{
@@ -2830,6 +3030,7 @@ listenGuasti();
 listenSegnalazioni();
 listenMaterialiExtra();
 listenDescrizioniPreset();
+listenModelli();
 listenImpostazioni();
 history.replaceState(null, '');
 mostraPagina('home', {noHistory:true});
