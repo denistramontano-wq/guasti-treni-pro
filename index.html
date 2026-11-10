@@ -1,0 +1,2574 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Guasti">
+<meta name="theme-color" content="#3B2FB0">
+<meta name="description" content="Registrazione guasti metro">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<title>Guasti Metro</title>
+<style>
+:root{
+  --bg:#F3F2FC; --surface:#fff; --surface2:#F7F6FF;
+  --border:#E1DEFA; --border2:#C9C3F2;
+  --purple:#5145CD; --purple-dk:#3B2FB0; --purple-lt:#ECEAFE;
+  --text:#1A1735; --text2:#5E5A86; --text3:#8A86B0;
+  --green:#1FA352; --green-bg:#D3F2DD; --green-fg:#147A3C;
+  --red:#E03B3B; --red-bg:#FDDCDC; --red-fg:#B42323;
+  --amber:#FFB020; --amber-bg:#FFF1D6; --amber-fg:#8A5A00;
+  --blue:#1E6FE0; --blue-bg:#DCE9FC;
+  --gray-bg:#ECEBF3; --gray-fg:#4A4766;
+  --m1:#E03B3B; --m2:#1FA352; --m3:#F2C200; --m4:#1E6FE0; --m5:#8B4DE0;
+  --top-h:56px;
+  --safe-t:env(safe-area-inset-top, 0px);
+  --safe-b:env(safe-area-inset-bottom, 0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-weight:400;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+button{font-family:inherit}
+
+/* ── ICONE (Lucide, a linea) ── */
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.ic-sm{width:16px;height:16px}
+.ic-lg{width:24px;height:24px}
+
+/* ── TOPBAR ── */
+.topbar{min-height:calc(var(--top-h) + var(--safe-t));padding:var(--safe-t) 16px 0;background:var(--purple-dk);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-shrink:0;position:relative;z-index:50}
+.topbar-logo{font-size:20px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.topbar-logo .ic{color:var(--amber)}
+.topbar-logo span{color:#C9C3F2}
+.firma{font-size:11px;line-height:1.4;color:rgba(255,255,255,.8);text-align:right}
+
+/* ── SCROLL ── */
+.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:24px}
+
+/* ── BOTTOM NAV ── */
+.back{display:flex;align-items:center;gap:8px;color:#fff;font-size:18px;font-weight:700;background:none;border:none;cursor:pointer;padding:0;min-width:0}
+.back .btn{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.back:active .btn{background:rgba(255,255,255,.28)}
+
+/* ── HOME ── */
+.hello{margin-bottom:16px}
+.hello h1{font-size:24px;font-weight:700;line-height:1.2}
+.hello p{font-size:14px;color:var(--text2);margin-top:8px}
+.h-status{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:24px}
+.h-st{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 8px;text-align:center;cursor:pointer;color:var(--text)}
+.h-st b{display:block;font-size:24px;font-weight:700;line-height:1.2}
+.h-st span{font-size:12px;color:var(--text2);line-height:1.3;display:block;margin-top:8px}
+.h-st.ko b{color:var(--red-fg)}
+.h-st.warn b{color:var(--amber-fg)}
+.h-hero{width:100%;display:flex;align-items:center;gap:16px;padding:16px;border:none;border-radius:16px;background:var(--purple);color:#fff;text-align:left;margin-bottom:8px;cursor:pointer}
+.h-hero:active{background:var(--purple-dk)}
+.h-hero .bubble{width:48px;height:48px;border-radius:16px;background:rgba(255,255,255,.16);color:#fff}
+.h-hero .t{font-size:18px;font-weight:700}
+.h-hero .s{font-size:13px;color:rgba(255,255,255,.8)}
+.h-hero .go{margin-left:auto}
+.h-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.h-tile{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;color:var(--text);min-height:128px}
+.h-tile:active,.h-st:active{background:var(--surface2)}
+.h-tile .t{font-size:16px;font-weight:700}
+.h-tile .s{font-size:13px;color:var(--text2);line-height:1.4}
+.bubble{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.b-amber{background:var(--amber-bg);color:var(--amber-fg)}
+.b-blue{background:var(--blue-bg);color:var(--blue)}
+.b-green{background:var(--green-bg);color:var(--green-fg)}
+.b-purple{background:var(--purple-lt);color:var(--purple)}
+.b-gray{background:var(--gray-bg);color:var(--gray-fg)}
+.b-red{background:var(--red-bg);color:var(--red-fg)}
+
+/* ── IMPOSTAZIONI ── */
+.set-lbl{font-size:14px;font-weight:700;color:var(--text2);margin:0 0 8px 8px}
+.set-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:0 16px;margin-bottom:24px}
+.set-row{display:flex;align-items:center;gap:16px;min-height:64px;padding:8px 0;border-bottom:1px solid var(--border);width:100%;background:none;border-left:none;border-right:none;border-top:none;text-align:left;color:var(--text);cursor:pointer}
+.set-row:last-child{border-bottom:none}
+div.set-row{cursor:default}
+.set-main{flex:1;min-width:0}
+.set-main .t{font-size:15px;font-weight:700}
+.set-main .s{font-size:13px;color:var(--text2);line-height:1.4}
+.set-row > .ic{color:var(--text3)}
+.set-row.danger .t{color:var(--red-fg)}
+.set-sub{padding:0 0 16px;border-bottom:1px solid var(--border)}
+.set-chips{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.set-chips.two{grid-template-columns:1fr 1fr}
+.set-chips button{min-height:40px;border-radius:12px;font-size:14px;font-weight:700;background:var(--surface2);border:1.5px solid var(--border);color:var(--text2);cursor:pointer}
+.set-chips button.on{background:var(--purple);border-color:var(--purple);color:#fff}
+.switch{width:48px;height:32px;border-radius:16px;background:var(--border2);position:relative;flex-shrink:0;border:none;cursor:pointer}
+.switch::after{content:"";position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .15s}
+.switch.on{background:var(--green)}
+.switch.on::after{left:20px}
+.conn{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0}
+.conn.ok{background:var(--green)} .conn.ko{background:var(--red)}
+.h-cloud{width:100%;display:flex;align-items:center;gap:16px;padding:16px;margin-bottom:8px;border:none;border-radius:16px;background:var(--amber-bg);color:var(--amber-fg);text-align:left;font-size:14px;font-weight:700;line-height:1.4;cursor:pointer}
+.h-cloud .ic{flex-shrink:0}
+.cloud-note{font-size:14px;color:var(--text2);line-height:1.5;margin-bottom:16px}
+.set-info{text-align:center;font-size:13px;color:var(--text3);line-height:1.6}
+
+/* ── PAGINE ── */
+.page{display:none;padding:16px}
+.page.active{display:block}
+.sec-header{margin-bottom:16px}
+.sec-title{font-size:24px;font-weight:700;line-height:1.2}
+.sec-sub{font-size:14px;color:var(--text2);line-height:1.5}
+
+/* ── FORM ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:16px}
+.field{margin-bottom:16px}
+.field:last-child{margin-bottom:0}
+.field > label,.lbl{display:flex;align-items:baseline;gap:8px;font-size:14px;font-weight:700;color:var(--text2);margin-bottom:8px}
+.hint{font-size:12px;font-weight:400;color:var(--text3)}
+.field input,.field select,.field textarea{width:100%;min-height:48px;padding:8px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:16px;background:var(--surface2);color:var(--text);outline:none;-webkit-appearance:none;appearance:none;font-family:inherit}
+.field textarea{resize:vertical;min-height:96px;padding:16px;line-height:1.5}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--purple);background:#fff}
+.field select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235E5A86' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 16px center;background-size:16px;padding-right:40px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.req{color:var(--red)}
+
+.line-select{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.line-opt{position:relative;margin:0}
+.line-opt input{position:absolute;opacity:0;width:100%;height:100%;cursor:pointer;margin:0;top:0;left:0}
+.line-opt-box{min-height:48px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--border);border-radius:12px;font-size:16px;font-weight:700;color:var(--text2);background:var(--surface2)}
+.line-opt input:checked + .line-opt-box{border-color:transparent;color:#fff}
+.line-opt[data-line="M1"] input:checked + .line-opt-box{background:var(--m1)}
+.line-opt[data-line="M2"] input:checked + .line-opt-box{background:var(--m2)}
+.line-opt[data-line="M3"] input:checked + .line-opt-box{background:var(--m3);color:var(--text)}
+.line-opt[data-line="M4"] input:checked + .line-opt-box{background:var(--m4)}
+.line-opt[data-line="M5"] input:checked + .line-opt-box{background:var(--m5)}
+.line-opt input:focus-visible + .line-opt-box,.toggle-opt input:focus-visible + .toggle-opt-box{outline:2px solid var(--purple);outline-offset:2px}
+
+.toggle-group{display:flex;gap:8px}
+.toggle-opt{flex:1;position:relative;margin:0}
+.toggle-opt input{position:absolute;opacity:0;width:100%;height:100%;cursor:pointer;margin:0;top:0;left:0}
+.toggle-opt-box{min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid var(--border);border-radius:12px;font-size:16px;font-weight:700;color:var(--text2);background:var(--surface2)}
+.toggle-opt input[value="si"]:checked + .toggle-opt-box{background:var(--green);border-color:var(--green);color:#fff}
+.toggle-opt input[value="no"]:checked + .toggle-opt-box{background:var(--red);border-color:var(--red);color:#fff}
+
+.btn-primary{width:100%;min-height:56px;padding:16px;border-radius:16px;font-size:16px;font-weight:700;cursor:pointer;border:none;background:var(--purple);color:#fff;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary:active{background:var(--purple-dk)}
+.btn-primary:disabled{opacity:.5}
+.btn-secondary{width:100%;min-height:48px;padding:8px 16px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;border:none;background:var(--purple-lt);color:var(--purple-dk);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+.link-btn{background:none;border:none;color:var(--purple);font-size:14px;font-weight:700;cursor:pointer;padding:8px;display:inline-flex;align-items:center;gap:8px;border-radius:8px}
+.link-btn.danger{color:var(--red-fg)}
+.links-row{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+
+.error-msg{color:var(--red-fg);font-size:14px;font-weight:700;margin-top:16px;text-align:center}
+.error-msg:empty{display:none}
+.success-banner{background:var(--green-bg);color:var(--green-fg);border-radius:12px;padding:16px;font-size:14px;font-weight:700;margin-bottom:16px;display:none;align-items:center;gap:8px}
+.success-banner.show{display:flex}
+
+/* ── ELENCHI ── */
+.search-bar{position:relative;margin-bottom:16px}
+.search-bar .ic{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+.search-bar input{width:100%;min-height:48px;padding:8px 16px 8px 48px;border:1.5px solid var(--border);border-radius:12px;font-size:16px;background:var(--surface);color:var(--text);outline:none;font-family:inherit}
+.search-bar input:focus{border-color:var(--purple)}
+.filter-chips{display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.filter-chips::-webkit-scrollbar{display:none}
+.f-chip{flex-shrink:0;min-height:40px;padding:8px 16px;border-radius:24px;font-size:14px;font-weight:700;background:var(--surface);border:1.5px solid var(--border);color:var(--text2);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:8px}
+.f-chip.active{background:var(--purple);border-color:var(--purple);color:#fff}
+.f-chip[data-f="M1"].active{background:var(--m1);border-color:var(--m1)}
+.f-chip[data-f="M2"].active{background:var(--m2);border-color:var(--m2)}
+.f-chip[data-f="M3"].active{background:var(--m3);border-color:var(--m3);color:var(--text)}
+.f-chip[data-f="M4"].active{background:var(--m4);border-color:var(--m4)}
+.f-chip[data-f="M5"].active{background:var(--m5);border-color:var(--m5)}
+.tabs .f-chip{flex:1;justify-content:center}
+
+.guasto-card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--border2);border-radius:16px;padding:16px;margin-bottom:8px;cursor:pointer}
+.guasto-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.guasto-line-badge{font-size:12px;font-weight:700;color:#fff;border-radius:8px;padding:0 8px;line-height:24px}
+.guasto-date{font-size:13px;color:var(--text3)}
+.guasto-title{font-size:16px;font-weight:700;line-height:1.4}
+.guasto-meta{font-size:14px;color:var(--text2);display:flex;flex-wrap:wrap;gap:16px;margin-top:8px}
+.guasto-meta span{display:inline-flex;align-items:center;gap:8px}
+.status-pill{font-size:12px;font-weight:700;padding:0 8px;line-height:24px;border-radius:24px;display:inline-flex;align-items:center;gap:8px}
+.status-pill.riparato{background:var(--green-bg);color:var(--green-fg)}
+.status-pill.non-riparato{background:var(--red-bg);color:var(--red-fg)}
+.status-pill.neutro{background:var(--purple-lt);color:var(--purple-dk)}
+
+.empty-state{text-align:center;padding:64px 24px;color:var(--text3)}
+.empty-state .ic{width:48px;height:48px;stroke-width:1.5;margin-bottom:8px}
+.empty-title{font-size:16px;font-weight:700;color:var(--text2);margin-bottom:8px}
+.empty-sub{font-size:14px;color:var(--text3)}
+
+/* ── OVERLAY / SHEET ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(26,23,53,.5);z-index:200;align-items:flex-end;justify-content:center}
+.overlay.open{display:flex}
+.sheet{background:var(--surface);border-radius:24px 24px 0 0;padding:16px 16px calc(24px + var(--safe-b));width:100%;max-width:520px;max-height:88vh;overflow-y:auto}
+.sheet-handle{width:40px;height:4px;background:var(--border2);border-radius:4px;margin:0 auto 16px}
+.sheet h2{font-size:20px;font-weight:700;margin-bottom:16px}
+.detail-row{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:48px;padding:8px 0;border-bottom:1px solid var(--border)}
+.detail-row:last-child{border-bottom:none}
+.detail-lbl{font-size:14px;color:var(--text2)}
+.detail-val{font-size:15px;font-weight:700;text-align:right;max-width:60%;display:inline-flex;align-items:center;gap:8px}
+.detail-block{margin-top:16px}
+.detail-text{background:var(--surface2);border-radius:12px;padding:16px;font-size:15px;line-height:1.5;margin-top:8px;white-space:pre-wrap}
+.sheet-section{margin-top:24px}
+.sheet-btns{display:flex;gap:8px;margin-top:16px}
+.sheet-btns button{flex:1;min-height:48px;padding:8px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-cancel{background:var(--surface2);color:var(--text2)}
+.btn-edit{background:var(--purple-lt);color:var(--purple-dk)}
+.btn-del{background:var(--red-bg);color:var(--red-fg)}
+.btn-wa{background:var(--green);color:#fff}
+
+/* ── STATISTICHE ── */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;flex-direction:column}
+.kpi-lbl{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:8px}
+.kpi-val{font-size:32px;font-weight:700;line-height:1.2;margin-top:8px}
+.kpi-sub{font-size:12px;color:var(--text3)}
+.kpi-delta{font-size:12px;line-height:1.4;margin-top:8px;color:var(--text3)}
+.kpi-delta b{font-weight:700}
+.kpi-delta.bene b{color:var(--green-fg)}
+.kpi-delta.male b{color:var(--red-fg)}
+.kpi.ko .kpi-val{color:var(--red-fg)}
+.kpi.ok .kpi-val{color:var(--green-fg)}
+.card-title{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+.card-hint{font-size:13px;color:var(--text3);margin-top:8px;margin-bottom:16px;line-height:1.4}
+.bar-item{margin-bottom:16px}
+.bar-item:last-child{margin-bottom:0}
+.bar-head{display:flex;justify-content:space-between;gap:8px;font-size:14px}
+.bar-head span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-head b{font-weight:700;flex-shrink:0}
+.bar-track{height:8px;border-radius:8px;background:var(--surface2);margin-top:8px;display:flex;overflow:hidden}
+.bar-track.big{height:16px}
+.bar-fill{height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--text2);margin-top:8px}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend i{display:inline-block;width:16px;height:3px;border-radius:2px}
+.rank-row{display:flex;align-items:center;gap:8px;min-height:56px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.rank-row:last-child{border-bottom:none}
+.rank-main{flex:1;min-width:0}
+.rank-title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+.rank-sub{font-size:13px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rank-count{text-align:right;font-size:20px;font-weight:700;color:var(--purple);line-height:1.1}
+.rank-count small{display:block;font-size:11px;font-weight:400;color:var(--text3)}
+.rank-row > .ic{color:var(--text3)}
+.chart svg{display:block;width:100%;height:auto}
+
+.toast{position:fixed;bottom:calc(var(--safe-b) + 24px);left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:8px 24px;line-height:24px;border-radius:24px;font-size:14px;font-weight:700;z-index:500;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- ══════════ ICONE (Lucide) ══════════ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-megaphone" viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-train" viewBox="0 0 24 24"><path d="M8 3.1V7a4 4 0 0 0 8 0V3.1"/><path d="m9 15-1-1"/><path d="m15 15 1-1"/><path d="M9 19c-2.8 0-5-2.2-5-5v-4a8 8 0 0 1 16 0v4c0 2.8-2.2 5-5 5Z"/><path d="m8 19-2 3"/><path d="m16 19 2 3"/></symbol>
+  <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></symbol>
+  <symbol id="i-message" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></symbol>
+  <symbol id="i-wifi" viewBox="0 0 24 24"><path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.859a10 10 0 0 1 14 0"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+</svg>
+
+<!-- ══════════ APP ══════════ -->
+<div id="appRoot" style="height:100%;display:flex;flex-direction:column">
+
+  <header class="topbar">
+    <div class="topbar-logo" id="topLogo"><svg class="ic ic-lg"><use href="#i-alert"/></svg>Guasti<span>Metro</span></div>
+    <button class="back" id="topBack" style="display:none" onclick="tornaHome()" aria-label="Torna alla Home"><span class="btn"><svg class="ic"><use href="#i-back"/></svg></span><span id="topTitle"></span></button>
+    <div class="firma">v4.1.0 · Creato da<br>Denis Tramontano</div>
+  </header>
+
+  <main class="scroll-area">
+
+    <!-- ── PAGINA: HOME ── -->
+    <section class="page active" id="page-home">
+      <div class="hello">
+        <h1 id="homeSaluto">Buongiorno</h1>
+        <p id="homeData">—</p>
+      </div>
+
+      <div class="h-status">
+        <button class="h-st" onclick="homeVaiOggi()"><b id="homeOggi">–</b><span>guasti oggi</span></button>
+        <button class="h-st ko" onclick="homeVaiNonRiparati()"><b id="homeNonRip">–</b><span>non riparati</span></button>
+        <button class="h-st warn" onclick="homeVaiRecidivi()"><b id="homeRecid">–</b><span>treni recidivi</span></button>
+      </div>
+
+      <button class="h-cloud" id="homeCloud" style="display:none" onclick="homeCloudTocca()"><svg class="ic"><use href="#i-cloud"/></svg><span id="homeCloudTxt"></span></button>
+
+      <button class="h-hero" onclick="apri('guasto')">
+        <span class="bubble"><svg class="ic ic-lg"><use href="#i-plus"/></svg></span>
+        <span><span class="t" style="display:block">Nuovo guasto</span><span class="s">Registra un guasto in linea</span></span>
+        <svg class="ic go"><use href="#i-chevron"/></svg>
+      </button>
+
+      <div class="h-grid">
+        <button class="h-tile" onclick="apri('segnalazione')">
+          <span class="bubble b-amber"><svg class="ic"><use href="#i-megaphone"/></svg></span>
+          <span class="t">Segnalazione</span>
+          <span class="s">Problema da inviare ai depositi</span>
+        </button>
+        <button class="h-tile" onclick="apri('elenco')">
+          <span class="bubble b-blue"><svg class="ic"><use href="#i-list"/></svg></span>
+          <span class="t">Elenchi</span>
+          <span class="s" id="homeElenchiSub">Guasti e segnalazioni</span>
+        </button>
+        <button class="h-tile" onclick="apri('stat')">
+          <span class="bubble b-green"><svg class="ic"><use href="#i-chart"/></svg></span>
+          <span class="t">Statistiche</span>
+          <span class="s">Guasti, treni e recidivi</span>
+        </button>
+        <button class="h-tile" onclick="apri('impostazioni')">
+          <span class="bubble b-gray"><svg class="ic"><use href="#i-settings"/></svg></span>
+          <span class="t">Impostazioni</span>
+          <span class="s">Copia nel cloud, materiali, app</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ── PAGINA: IMPOSTAZIONI ── -->
+    <section class="page" id="page-impostazioni">
+      <div class="set-lbl">Personalizza</div>
+      <div class="set-box">
+        <button class="set-row" onclick="apriGestioneMateriali()">
+          <span class="bubble b-purple"><svg class="ic"><use href="#i-train"/></svg></span>
+          <span class="set-main"><span class="t" style="display:block">Materiali</span><span class="s">Treni e vetture per linea</span></span>
+          <svg class="ic"><use href="#i-chevron"/></svg>
+        </button>
+        <button class="set-row" onclick="apriGestioneDescrizioni()">
+          <span class="bubble b-amber"><svg class="ic"><use href="#i-file"/></svg></span>
+          <span class="set-main"><span class="t" style="display:block">Descrizioni predefinite</span><span class="s" id="setDescrSub">—</span></span>
+          <svg class="ic"><use href="#i-chevron"/></svg>
+        </button>
+        <button class="set-row" onclick="apriWhatsApp()">
+          <span class="bubble b-green"><svg class="ic"><use href="#i-message"/></svg></span>
+          <span class="set-main"><span class="t" style="display:block">Destinatario WhatsApp</span><span class="s" id="setWaSub">—</span></span>
+          <svg class="ic"><use href="#i-chevron"/></svg>
+        </button>
+      </div>
+
+      <div class="set-lbl">Su questo telefono</div>
+      <div class="set-box">
+        <div class="set-row" style="border-bottom:none">
+          <span class="bubble b-blue"><svg class="ic"><use href="#i-pin"/></svg></span>
+          <span class="set-main"><span class="t" style="display:block">Linea predefinita</span><span class="s">Già selezionata nei moduli</span></span>
+        </div>
+        <div class="set-sub">
+          <div class="set-chips" id="setLinea">
+            <button data-v="" onclick="setPref('lineaDef','')">No</button>
+            <button data-v="M1" onclick="setPref('lineaDef','M1')">M1</button>
+            <button data-v="M2" onclick="setPref('lineaDef','M2')">M2</button>
+            <button data-v="M3" onclick="setPref('lineaDef','M3')">M3</button>
+            <button data-v="M4" onclick="setPref('lineaDef','M4')">M4</button>
+            <button data-v="M5" onclick="setPref('lineaDef','M5')">M5</button>
+          </div>
+        </div>
+        <div class="set-row">
+          <span class="bubble b-gray"><svg class="ic"><use href="#i-clock"/></svg></span>
+          <span class="set-main"><span class="t" style="display:block">Data e ora automatiche</span><span class="s">Compila con il momento attuale</span></span>
+          <button class="switch" id="setDataAuto" role="switch" aria-label="Data e ora automatiche" onclick="setPref('dataAuto', !prefs.dataAuto)"></button>
+        </div>
+        <div class="set-row" style="border-bottom:none">
+          <span class="bubble b-gray"><svg class="ic"><use href="#i-save"/></svg></span>
+          <span class="set-main"><span class="t" style="display:block">Dopo il salvataggio</span><span class="s">Cosa fare dopo "Registra"</span></span>
+        </div>
+        <div class="set-sub" style="border-bottom:none">
+          <div class="set-chips two" id="setDopo">
+            <button data-v="home" onclick="setPref('dopoSalva','home')">Torna alla Home</button>
+            <button data-v="modulo" onclick="setPref('dopoSalva','modulo')">Resta nel modulo</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="set-lbl">Dati</div>
+      <div class="set-box">
+        <button class="set-row" onclick="esportaTutto()">
+          <span class="bubble b-blue"><svg class="ic"><use href="#i-download"/></svg></span>
+          <span class="set-main"><span class="t" style="display:block">Esporta tutto (CSV)</span><span class="s">Guasti e segnalazioni in un unico file</span></span>
+          <svg class="ic"><use href="#i-chevron"/></svg>
+        </button>
+        <button class="set-row" onclick="apriCloud()">
+          <span class="bubble b-green"><svg class="ic"><use href="#i-cloud"/></svg></span>
+          <span class="set-main"><span class="t" style="display:block">Copia nel cloud</span><span class="s" id="setCloudSub">—</span></span>
+          <span class="conn" id="setCloudDot"></span>
+        </button>
+      </div>
+
+      <div class="set-lbl">App</div>
+      <div class="set-box">
+        <button class="set-row" onclick="cercaAggiornamenti()">
+          <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 4.1.0</span></span>
+          <svg class="ic"><use href="#i-chevron"/></svg>
+        </button>
+        <button class="set-row danger" onclick="svuotaDatiLocali()">
+          <span class="bubble b-red"><svg class="ic"><use href="#i-trash"/></svg></span>
+          <span class="set-main"><span class="t" style="display:block">Svuota dati locali</span><span class="s">Reimposta le preferenze di questo telefono</span></span>
+          <svg class="ic"><use href="#i-chevron"/></svg>
+        </button>
+      </div>
+
+      <div class="set-info">Guasti Metro v4.1.0<br>Creato da Denis Tramontano</div>
+    </section>
+
+    <!-- ── PAGINA: NUOVO GUASTO ── -->
+    <section class="page" id="page-guasto">
+      <div class="sec-header">
+        <h1 class="sec-title">Nuovo guasto</h1>
+        <div class="sec-sub">Compila i campi per registrare la segnalazione</div>
+      </div>
+
+      <div class="success-banner" id="successBanner"><svg class="ic"><use href="#i-check-circle"/></svg>Guasto registrato con successo</div>
+
+      <div class="card">
+        <div class="field">
+          <div class="lbl">Linea <span class="req">*</span></div>
+          <div class="line-select" id="lineSelect">
+            <label class="line-opt" data-line="M1"><input type="radio" name="linea" value="M1"><div class="line-opt-box">M1</div></label>
+            <label class="line-opt" data-line="M2"><input type="radio" name="linea" value="M2"><div class="line-opt-box">M2</div></label>
+            <label class="line-opt" data-line="M3"><input type="radio" name="linea" value="M3"><div class="line-opt-box">M3</div></label>
+            <label class="line-opt" data-line="M4"><input type="radio" name="linea" value="M4"><div class="line-opt-box">M4</div></label>
+            <label class="line-opt" data-line="M5"><input type="radio" name="linea" value="M5"><div class="line-opt-box">M5</div></label>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="f-data">Data <span class="req">*</span></label>
+            <input type="date" id="f-data">
+          </div>
+          <div class="field">
+            <label for="f-ora">Ora <span class="req">*</span></label>
+            <input type="time" id="f-ora">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="f-materiale">Materiale</label>
+            <select id="f-materiale"><option value="">Prima la linea</option></select>
+          </div>
+          <div class="field">
+            <label for="f-vettura">Vettura <span class="hint">matricola</span></label>
+            <select id="f-vettura"><option value="">—</option></select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="f-numerotreno">Numero treno</label>
+          <input type="text" id="f-numerotreno" placeholder="Es. 123" inputmode="numeric">
+        </div>
+
+        <div class="field">
+          <label for="f-stazione">Stazione evento <span class="req">*</span></label>
+          <select id="f-stazione"><option value="">Prima la linea</option></select>
+        </div>
+
+        <div class="field">
+          <label for="f-breve-preset">Descrizione predefinita <span class="hint">opzionale</span></label>
+          <select id="f-breve-preset" onchange="applicaDescrizionePreset('f-breve', this.value)">
+            <option value="">Seleziona...</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="f-breve">Descrizione breve <span class="req">*</span></label>
+          <input type="text" id="f-breve" placeholder="Sintesi del guasto" maxlength="120">
+        </div>
+
+        <div class="field">
+          <label for="f-estesa">Descrizione estesa</label>
+          <textarea id="f-estesa" placeholder="Dettagli, circostanze, intervento effettuato..."></textarea>
+        </div>
+
+        <div class="field">
+          <div class="lbl">Riparato <span class="req">*</span></div>
+          <div class="toggle-group">
+            <label class="toggle-opt"><input type="radio" name="riparato" value="si" onchange="toggleRientro()"><div class="toggle-opt-box"><svg class="ic"><use href="#i-check-circle"/></svg>Sì</div></label>
+            <label class="toggle-opt"><input type="radio" name="riparato" value="no" onchange="toggleRientro()"><div class="toggle-opt-box"><svg class="ic"><use href="#i-x-circle"/></svg>No</div></label>
+          </div>
+        </div>
+
+        <div class="field" id="rientroField" style="display:none">
+          <label for="f-rientro">Rientrato dove</label>
+          <input type="text" id="f-rientro" placeholder="Es. deposito, capolinea...">
+        </div>
+
+        <button class="btn-primary" id="btnSalva" onclick="salvaGuasto()">Registra guasto</button>
+        <div class="error-msg" id="formError"></div>
+      </div>
+
+
+    </section>
+
+    <!-- ── PAGINA: NUOVA SEGNALAZIONE ── -->
+    <section class="page" id="page-segnalazione">
+      <div class="sec-header">
+        <h1 class="sec-title">Nuova segnalazione</h1>
+        <div class="sec-sub">Segnala un problema da inviare ai depositi</div>
+      </div>
+
+      <div class="success-banner" id="successBannerSeg"><svg class="ic"><use href="#i-check-circle"/></svg>Segnalazione registrata con successo</div>
+
+      <div class="card">
+        <div class="field">
+          <div class="lbl">Linea <span class="req">*</span></div>
+          <div class="line-select" id="lineSelectSeg">
+            <label class="line-opt" data-line="M1"><input type="radio" name="lineaSeg" value="M1"><div class="line-opt-box">M1</div></label>
+            <label class="line-opt" data-line="M2"><input type="radio" name="lineaSeg" value="M2"><div class="line-opt-box">M2</div></label>
+            <label class="line-opt" data-line="M3"><input type="radio" name="lineaSeg" value="M3"><div class="line-opt-box">M3</div></label>
+            <label class="line-opt" data-line="M4"><input type="radio" name="lineaSeg" value="M4"><div class="line-opt-box">M4</div></label>
+            <label class="line-opt" data-line="M5"><input type="radio" name="lineaSeg" value="M5"><div class="line-opt-box">M5</div></label>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="s-data">Data <span class="req">*</span></label>
+            <input type="date" id="s-data">
+          </div>
+          <div class="field">
+            <label for="s-ora">Ora <span class="req">*</span></label>
+            <input type="time" id="s-ora">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="s-materiale">Materiale</label>
+            <select id="s-materiale"><option value="">Prima la linea</option></select>
+          </div>
+          <div class="field">
+            <label for="s-vettura">Vettura <span class="hint">matricola</span></label>
+            <select id="s-vettura"><option value="">—</option></select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="s-breve-preset">Descrizione predefinita <span class="hint">opzionale</span></label>
+          <select id="s-breve-preset" onchange="applicaDescrizionePreset('s-breve', this.value)">
+            <option value="">Seleziona...</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="s-breve">Descrizione breve <span class="req">*</span></label>
+          <input type="text" id="s-breve" placeholder="Sintesi della segnalazione" maxlength="120">
+        </div>
+
+        <div class="field">
+          <label for="s-estesa">Descrizione estesa</label>
+          <textarea id="s-estesa" placeholder="Dettagli, circostanze..."></textarea>
+        </div>
+
+        <button class="btn-primary" id="btnSalvaSeg" onclick="salvaSegnalazione()">Registra segnalazione</button>
+        <div class="error-msg" id="formErrorSeg"></div>
+      </div>
+
+
+    </section>
+
+    <!-- ── PAGINA: ELENCHI ── -->
+    <section class="page" id="page-elenco">
+      <div class="sec-header">
+        <h1 class="sec-title">Elenchi</h1>
+        <div class="sec-sub" id="elencoCount">—</div>
+      </div>
+
+      <div class="filter-chips tabs">
+        <button class="f-chip active" data-tab="guasti" onclick="setElencoTab('guasti',this)"><svg class="ic ic-sm"><use href="#i-alert"/></svg>Guasti</button>
+        <button class="f-chip" data-tab="segnalazioni" onclick="setElencoTab('segnalazioni',this)"><svg class="ic ic-sm"><use href="#i-megaphone"/></svg>Segnalazioni</button>
+      </div>
+
+      <!-- ── TAB GUASTI ── -->
+      <div id="tab-guasti">
+        <div class="search-bar">
+          <svg class="ic"><use href="#i-search"/></svg>
+          <input type="search" id="searchInput" placeholder="Cerca testo, materiale, stazione..." oninput="renderElenco()">
+        </div>
+        <div class="filter-chips" id="lineFilters">
+          <button class="f-chip active" data-f="ALL" onclick="setLineFilter('ALL',this)">Tutte</button>
+          <button class="f-chip" data-f="M1" onclick="setLineFilter('M1',this)">M1</button>
+          <button class="f-chip" data-f="M2" onclick="setLineFilter('M2',this)">M2</button>
+          <button class="f-chip" data-f="M3" onclick="setLineFilter('M3',this)">M3</button>
+          <button class="f-chip" data-f="M4" onclick="setLineFilter('M4',this)">M4</button>
+          <button class="f-chip" data-f="M5" onclick="setLineFilter('M5',this)">M5</button>
+        </div>
+        <div class="filter-chips">
+          <button class="f-chip active" data-s="ALL" onclick="setStatusFilter('ALL',this)">Tutti gli stati</button>
+          <button class="f-chip" data-s="no" onclick="setStatusFilter('no',this)">Non riparati</button>
+          <button class="f-chip" data-s="si" onclick="setStatusFilter('si',this)">Riparati</button>
+        </div>
+
+        <div class="field-row" style="margin-bottom:16px">
+          <div class="field" style="margin-bottom:0">
+            <label for="monthFilter">Mese</label>
+            <select id="monthFilter" onchange="renderElenco()">
+              <option value="ALL">Tutti i mesi</option>
+              <option value="01">Gennaio</option>
+              <option value="02">Febbraio</option>
+              <option value="03">Marzo</option>
+              <option value="04">Aprile</option>
+              <option value="05">Maggio</option>
+              <option value="06">Giugno</option>
+              <option value="07">Luglio</option>
+              <option value="08">Agosto</option>
+              <option value="09">Settembre</option>
+              <option value="10">Ottobre</option>
+              <option value="11">Novembre</option>
+              <option value="12">Dicembre</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label for="yearFilter">Anno</label>
+            <select id="yearFilter" onchange="renderElenco()">
+              <option value="ALL">Tutti gli anni</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row" style="margin-bottom:16px">
+          <div class="field" style="margin-bottom:0">
+            <label for="dayFilter">Giorno specifico</label>
+            <input type="date" id="dayFilter" onchange="renderElenco()">
+          </div>
+          <div class="field" style="margin-bottom:0;display:flex;align-items:flex-end">
+            <button class="btn-secondary" style="margin-top:0" onclick="document.getElementById('dayFilter').value='';renderElenco()"><svg class="ic ic-sm"><use href="#i-x"/></svg>Reset giorno</button>
+          </div>
+        </div>
+
+        <button class="btn-secondary" style="margin-top:0;margin-bottom:16px" onclick="scaricaCSV()"><svg class="ic"><use href="#i-download"/></svg>Scarica elenco (CSV)</button>
+
+        <div id="elencoList"></div>
+      </div>
+
+      <!-- ── TAB SEGNALAZIONI ── -->
+      <div id="tab-segnalazioni" style="display:none">
+        <div class="search-bar">
+          <svg class="ic"><use href="#i-search"/></svg>
+          <input type="search" id="searchInputSeg" placeholder="Cerca testo, vettura..." oninput="renderElencoSeg()">
+        </div>
+        <div class="filter-chips" id="lineFiltersSeg">
+          <button class="f-chip active" data-f="ALL" onclick="setLineFilterSeg('ALL',this)">Tutte</button>
+          <button class="f-chip" data-f="M1" onclick="setLineFilterSeg('M1',this)">M1</button>
+          <button class="f-chip" data-f="M2" onclick="setLineFilterSeg('M2',this)">M2</button>
+          <button class="f-chip" data-f="M3" onclick="setLineFilterSeg('M3',this)">M3</button>
+          <button class="f-chip" data-f="M4" onclick="setLineFilterSeg('M4',this)">M4</button>
+          <button class="f-chip" data-f="M5" onclick="setLineFilterSeg('M5',this)">M5</button>
+        </div>
+
+        <div class="field-row" style="margin-bottom:16px">
+          <div class="field" style="margin-bottom:0">
+            <label for="monthFilterSeg">Mese</label>
+            <select id="monthFilterSeg" onchange="renderElencoSeg()">
+              <option value="ALL">Tutti i mesi</option>
+              <option value="01">Gennaio</option>
+              <option value="02">Febbraio</option>
+              <option value="03">Marzo</option>
+              <option value="04">Aprile</option>
+              <option value="05">Maggio</option>
+              <option value="06">Giugno</option>
+              <option value="07">Luglio</option>
+              <option value="08">Agosto</option>
+              <option value="09">Settembre</option>
+              <option value="10">Ottobre</option>
+              <option value="11">Novembre</option>
+              <option value="12">Dicembre</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label for="yearFilterSeg">Anno</label>
+            <select id="yearFilterSeg" onchange="renderElencoSeg()">
+              <option value="ALL">Tutti gli anni</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row" style="margin-bottom:16px">
+          <div class="field" style="margin-bottom:0">
+            <label for="dayFilterSeg">Giorno specifico</label>
+            <input type="date" id="dayFilterSeg" onchange="renderElencoSeg()">
+          </div>
+          <div class="field" style="margin-bottom:0;display:flex;align-items:flex-end">
+            <button class="btn-secondary" style="margin-top:0" onclick="document.getElementById('dayFilterSeg').value='';renderElencoSeg()"><svg class="ic ic-sm"><use href="#i-x"/></svg>Reset giorno</button>
+          </div>
+        </div>
+
+        <button class="btn-secondary" style="margin-top:0;margin-bottom:16px" onclick="scaricaCSVSeg()"><svg class="ic"><use href="#i-download"/></svg>Scarica elenco (CSV)</button>
+
+        <div id="elencoListSeg"></div>
+      </div>
+    </section>
+
+    <!-- ── PAGINA: STATISTICHE ── -->
+    <section class="page" id="page-stat">
+      <div class="sec-header">
+        <h1 class="sec-title">Statistiche</h1>
+        <div class="sec-sub" id="statSub">—</div>
+      </div>
+
+      <div class="filter-chips tabs" id="statModo">
+        <button class="f-chip active" data-v="guasti" onclick="setStat('modo','guasti',this)"><svg class="ic ic-sm"><use href="#i-alert"/></svg>Per guasto</button>
+        <button class="f-chip" data-v="treni" onclick="setStat('modo','treni',this)"><svg class="ic ic-sm"><use href="#i-train"/></svg>Per treno</button>
+      </div>
+      <div class="filter-chips" id="statPeriodo">
+        <button class="f-chip active" onclick="setStat('periodo','anno',this)">Quest'anno</button>
+        <button class="f-chip" onclick="setStat('periodo','mese',this)">Questo mese</button>
+        <button class="f-chip" onclick="setStat('periodo','90',this)">Ultimi 90 giorni</button>
+        <button class="f-chip" onclick="setStat('periodo','tutto',this)">Tutto</button>
+      </div>
+      <div class="filter-chips" id="statLinee">
+        <button class="f-chip active" data-f="ALL" onclick="setStat('linea','ALL',this)">Tutte</button>
+        <button class="f-chip" data-f="M1" onclick="setStat('linea','M1',this)">M1</button>
+        <button class="f-chip" data-f="M2" onclick="setStat('linea','M2',this)">M2</button>
+        <button class="f-chip" data-f="M3" onclick="setStat('linea','M3',this)">M3</button>
+        <button class="f-chip" data-f="M4" onclick="setStat('linea','M4',this)">M4</button>
+        <button class="f-chip" data-f="M5" onclick="setStat('linea','M5',this)">M5</button>
+      </div>
+
+      <div class="kpi-grid" id="statKpi"></div>
+      <div id="statBody"></div>
+    </section>
+
+  </main>
+
+</div>
+
+<!-- ── SHEET DETTAGLIO ── -->
+<div class="overlay" id="detailOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2 id="detailTitle">Dettaglio guasto</h2>
+    <div id="detailContent"></div>
+    <div class="sheet-btns">
+      <button class="btn-cancel" onclick="closeDetail()"><svg class="ic"><use href="#i-x"/></svg>Chiudi</button>
+      <button class="btn-wa" onclick="inviaWhatsApp()"><svg class="ic"><use href="#i-message"/></svg>WhatsApp</button>
+    </div>
+    <div class="sheet-btns" style="margin-top:8px">
+      <button class="btn-edit" onclick="modificaItem()"><svg class="ic"><use href="#i-pencil"/></svg>Modifica</button>
+      <button class="btn-del" id="btnDeleteGuasto" onclick="eliminaItem()"><svg class="ic"><use href="#i-trash"/></svg>Elimina</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SHEET GESTIONE MATERIALI ── -->
+<div class="overlay" id="materialiOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2 id="materialiTitle">Gestisci materiali</h2>
+    <div class="sec-sub" style="margin-bottom:16px" id="materialiSub">Aggiungi un nuovo materiale e le sue vetture</div>
+
+    <div class="field">
+      <div class="lbl">Linea <span class="req">*</span></div>
+      <div class="line-select" id="lineSelectMat">
+        <label class="line-opt" data-line="M1"><input type="radio" name="lineaMat" value="M1"><div class="line-opt-box">M1</div></label>
+        <label class="line-opt" data-line="M2"><input type="radio" name="lineaMat" value="M2"><div class="line-opt-box">M2</div></label>
+        <label class="line-opt" data-line="M3"><input type="radio" name="lineaMat" value="M3"><div class="line-opt-box">M3</div></label>
+        <label class="line-opt" data-line="M4"><input type="radio" name="lineaMat" value="M4"><div class="line-opt-box">M4</div></label>
+        <label class="line-opt" data-line="M5"><input type="radio" name="lineaMat" value="M5"><div class="line-opt-box">M5</div></label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="mat-principale">Matricola materiale (treno) <span class="req">*</span></label>
+      <input type="text" id="mat-principale" placeholder="Es. 999" inputmode="numeric">
+    </div>
+
+    <div class="field">
+      <label for="mat-vetture">Vetture <span class="req">*</span> <span class="hint">separate da virgola</span></label>
+      <input type="text" id="mat-vetture" placeholder="Es. 999,1200,450">
+    </div>
+
+    <button class="btn-primary" id="btnSalvaMateriale" onclick="salvaMateriale()">Aggiungi materiale</button>
+    <button class="btn-secondary" id="btnAnnullaModificaMateriale" style="display:none" onclick="annullaModificaMateriale()">Annulla modifica</button>
+    <div class="error-msg" id="materialiError"></div>
+
+    <div class="sheet-section">
+      <div class="lbl">Tutti i materiali</div>
+      <div class="search-bar">
+        <svg class="ic"><use href="#i-search"/></svg>
+        <input type="search" id="materialiSearch" placeholder="Cerca matricola..." oninput="renderMaterialiList()">
+      </div>
+      <div class="filter-chips" id="materialiLineFilters">
+        <button class="f-chip active" data-f="ALL" onclick="setMaterialiLineFilter('ALL',this)">Tutte</button>
+        <button class="f-chip" data-f="M1" onclick="setMaterialiLineFilter('M1',this)">M1</button>
+        <button class="f-chip" data-f="M2" onclick="setMaterialiLineFilter('M2',this)">M2</button>
+        <button class="f-chip" data-f="M3" onclick="setMaterialiLineFilter('M3',this)">M3</button>
+        <button class="f-chip" data-f="M4" onclick="setMaterialiLineFilter('M4',this)">M4</button>
+        <button class="f-chip" data-f="M5" onclick="setMaterialiLineFilter('M5',this)">M5</button>
+      </div>
+      <div id="materialiFullList"></div>
+    </div>
+
+    <div class="sheet-btns">
+      <button class="btn-cancel" onclick="chiudiGestioneMateriali()"><svg class="ic"><use href="#i-x"/></svg>Chiudi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SHEET GESTIONE DESCRIZIONI ── -->
+<div class="overlay" id="descrizioniOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2 id="descrizioniTitle">Gestisci descrizioni</h2>
+    <div class="sec-sub" style="margin-bottom:16px" id="descrizioniSub">Aggiungi una descrizione breve predefinita, utilizzabile sia per i guasti che per le segnalazioni</div>
+
+    <div class="field">
+      <label for="descr-testo">Testo descrizione <span class="req">*</span></label>
+      <input type="text" id="descr-testo" placeholder="Es. Porta bloccata in chiusura" maxlength="120">
+    </div>
+
+    <button class="btn-primary" id="btnSalvaDescrizione" onclick="salvaDescrizione()">Aggiungi descrizione</button>
+    <button class="btn-secondary" id="btnAnnullaModificaDescrizione" style="display:none" onclick="annullaModificaDescrizione()">Annulla modifica</button>
+    <div class="error-msg" id="descrizioniError"></div>
+
+    <div class="sheet-section">
+      <div class="lbl">Tutte le descrizioni</div>
+      <div class="search-bar">
+        <svg class="ic"><use href="#i-search"/></svg>
+        <input type="search" id="descrizioniSearch" placeholder="Cerca descrizione..." oninput="renderDescrizioniList()">
+      </div>
+      <div id="descrizioniFullList"></div>
+    </div>
+
+    <div class="sheet-btns">
+      <button class="btn-cancel" onclick="chiudiGestioneDescrizioni()"><svg class="ic"><use href="#i-x"/></svg>Chiudi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SHEET NUMERO WHATSAPP ── -->
+<div class="overlay" id="waOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Destinatario WhatsApp</h2>
+    <div class="sec-sub" style="margin-bottom:16px">Numero a cui inviare guasti e segnalazioni. Lascia vuoto per scegliere il contatto ogni volta.</div>
+    <div class="field">
+      <label for="waInput">Numero con prefisso</label>
+      <input type="tel" id="waInput" placeholder="+39 ..." inputmode="tel">
+    </div>
+    <button class="btn-primary" onclick="salvaWhatsApp()">Salva numero</button>
+    <div class="error-msg" id="waError"></div>
+    <div class="sheet-btns">
+      <button class="btn-cancel" onclick="document.getElementById('waOverlay').classList.remove('open')"><svg class="ic"><use href="#i-x"/></svg>Chiudi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SHEET STATISTICHE (elenco guasti di un treno / gruppo) ── -->
+<div class="overlay" id="statOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2 id="statSheetTitle">Guasti</h2>
+    <div class="sec-sub" style="margin-bottom:16px" id="statSheetSub"></div>
+    <div id="statSheetList"></div>
+    <div class="sheet-btns">
+      <button class="btn-cancel" onclick="document.getElementById('statOverlay').classList.remove('open')"><svg class="ic"><use href="#i-x"/></svg>Chiudi</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="cloudOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Copia nel cloud</h2>
+    <p class="cloud-note" id="cloudNote"></p>
+    <div class="set-box" id="cloudAzioni" style="margin-bottom:0"></div>
+    <div class="sheet-btns">
+      <button class="btn-cancel" onclick="chiudiCloud()"><svg class="ic"><use href="#i-x"/></svg>Chiudi</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ════════ DATI SU QUESTO TELEFONO (versione per i colleghi) ════════
+   Stessa interfaccia di firebase.database() usata dal resto dell'app
+   (ref().on / set / push / remove), ma i dati restano nel telefono. */
+const APP_VERSIONE = '4.1.0';
+const LOCALE_KEY = 'guastiMetro.locale.dati';
+const CLOUD_KEY = 'guastiMetro.locale.cloud';
+
+const db = (()=>{
+  let albero = {};
+  try { albero = JSON.parse(localStorage.getItem(LOCALE_KEY) || '{}') || {}; } catch(e){ albero = {}; }
+  const ascoltatori = [];
+  const pezzi = p => String(p).split('/').filter(Boolean);
+  const copia = v => v===undefined ? null : JSON.parse(JSON.stringify(v));
+  function leggi(p){
+    let n = albero;
+    for(const k of pezzi(p)){ if(n===null || typeof n!=='object') return null; n = n[k]; }
+    return n===undefined ? null : copia(n);
+  }
+  function memorizza(){ localStorage.setItem(LOCALE_KEY, JSON.stringify(albero)); }
+  function avvisa(){ ascoltatori.forEach(a=>{ try { a.cb({val:()=>leggi(a.p)}); } catch(e){ console.error(e); } }); }
+  function scrivi(p, v){
+    const prima = JSON.stringify(albero);
+    const ks = pezzi(p);
+    let n = albero;
+    for(let i=0; i<ks.length-1; i++){
+      if(n[ks[i]]===null || typeof n[ks[i]]!=='object') n[ks[i]] = {};
+      n = n[ks[i]];
+    }
+    const ultimo = ks[ks.length-1];
+    if(v===null || v===undefined) delete n[ultimo]; else n[ultimo] = copia(v);
+    try { memorizza(); }
+    catch(e){ albero = JSON.parse(prima); return Promise.reject(new Error('memoria del telefono piena')); }
+    avvisa();
+    cloudModificato();
+    return Promise.resolve();
+  }
+  function nuovoId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,10); }
+  function ref(p){
+    return {
+      key: pezzi(p).pop() || null,
+      on(ev, cb){ ascoltatori.push({p, cb}); setTimeout(()=>cb({val:()=>leggi(p)}), 0); return cb; },
+      set(v){ return scrivi(p, v); },
+      remove(){ return scrivi(p, null); },
+      push(v){
+        const r = ref(p + '/' + nuovoId());
+        if(v!==undefined){ const pr = r.set(v); r.then = pr.then.bind(pr); r.catch = pr.catch.bind(pr); }
+        return r;
+      }
+    };
+  }
+  function tutto(){ return copia(albero); }
+  function sostituisci(nuovo){
+    const prima = albero;
+    albero = (nuovo && typeof nuovo==='object') ? copia(nuovo) : {};
+    try { memorizza(); } catch(e){ albero = prima; throw new Error('Memoria del telefono piena'); }
+    avvisa();
+  }
+  return { ref, tutto, sostituisci };
+})();
+
+/* ════════ COPIA NEL CLOUD ════════
+   Dove il browser lo permette (Chrome su Android e PC) l'app scrive da sola
+   un file .json in una cartella di Drive/OneDrive a ogni modifica.
+   Altrove (iPhone) si salva e si recupera una copia a mano. */
+const FILE_API = 'showSaveFilePicker' in window && 'showOpenFilePicker' in window;
+const TIPI_COPIA = [{description:'Copia Guasti Metro', accept:{'application/json':['.json']}}];
+let cloudFile = null;
+let cloudStato = 'nessuno';   // nessuno | ok | permesso | errore
+let cloudTimer = null;
+
+function cloudInfo(){ try { return JSON.parse(localStorage.getItem(CLOUD_KEY) || '{}') || {}; } catch(e){ return {}; } }
+function cloudSalvaInfo(o){ try { localStorage.setItem(CLOUD_KEY, JSON.stringify(Object.assign(cloudInfo(), o))); } catch(e){} }
+
+/* IndexedDB serve solo a ricordare il file collegato */
+function idb(){ return new Promise((ok,ko)=>{ const r = indexedDB.open('guastiMetro', 1); r.onupgradeneeded = ()=> r.result.createObjectStore('h'); r.onsuccess = ()=> ok(r.result); r.onerror = ()=> ko(r.error); }); }
+function idbGet(k){ return idb().then(d=> new Promise((ok,ko)=>{ const q = d.transaction('h').objectStore('h').get(k); q.onsuccess = ()=> ok(q.result); q.onerror = ()=> ko(q.error); })); }
+function idbSet(k, v){ return idb().then(d=> new Promise((ok,ko)=>{ const t = d.transaction('h','readwrite'); if(v===null) t.objectStore('h').delete(k); else t.objectStore('h').put(v, k); t.oncomplete = ()=> ok(); t.onerror = ()=> ko(t.error); })); }
+
+function contenutoCopia(){
+  return JSON.stringify({app:'guasti-metro', versione:APP_VERSIONE, salvato:new Date().toISOString(), dati:db.tutto()});
+}
+function leggiCopia(testo){
+  const o = JSON.parse(testo);
+  if(!o || o.app!=='guasti-metro' || !o.dati || typeof o.dati!=='object') throw new Error('Il file non è una copia di Guasti Metro');
+  return o;
+}
+function contaDati(d){ d = d || {}; return Object.keys(d.guasti || {}).length + Object.keys(d.segnalazioni || {}).length; }
+function confermaSostituzione(o){
+  const qui = contaDati(db.tutto());
+  if(qui===0) return true;
+  const quando = o.salvato ? new Date(o.salvato).toLocaleString('it-IT', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'}) : 'data sconosciuta';
+  return confirm(`Sostituire le ${qui} registrazioni di questo telefono con le ${contaDati(o.dati)} della copia del ${quando}?`);
+}
+
+async function cloudScrivi(){
+  if(!cloudFile) return;
+  try {
+    if(await cloudFile.queryPermission({mode:'readwrite'}) !== 'granted'){ cloudStato = 'permesso'; renderCloud(); return; }
+    const w = await cloudFile.createWritable();
+    await w.write(contenutoCopia());
+    await w.close();
+    cloudStato = 'ok';
+    cloudSalvaInfo({ultimo:Date.now(), nome:cloudFile.name, sporco:false});
+  } catch(e){ cloudStato = 'errore'; console.error(e); }
+  renderCloud();
+}
+function cloudModificato(){
+  cloudSalvaInfo({sporco:true});
+  clearTimeout(cloudTimer);
+  cloudTimer = setTimeout(()=>{ cloudTimer = null; if(cloudFile) cloudScrivi(); else renderCloud(); }, 1500);
+}
+/* Se l'app va in secondo piano con un salvataggio in attesa, lo fa subito */
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState==='hidden' && cloudTimer){ clearTimeout(cloudTimer); cloudTimer = null; cloudScrivi(); }
+});
+
+async function cloudAvvio(){
+  try { if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}
+  if(FILE_API){
+    try {
+      cloudFile = (await idbGet('file')) || null;
+      if(cloudFile){
+        const p = await cloudFile.queryPermission({mode:'readwrite'});
+        cloudStato = p==='granted' ? 'ok' : 'permesso';
+        if(p==='granted' && cloudInfo().sporco) cloudScrivi();
+      }
+    } catch(e){ cloudFile = null; cloudStato = 'nessuno'; }
+  }
+  renderCloud();
+}
+async function cloudRiattiva(){
+  chiudiCloud();
+  if(!cloudFile) return;
+  try {
+    if(await cloudFile.requestPermission({mode:'readwrite'}) === 'granted'){
+      cloudStato = 'ok';
+      await cloudScrivi();
+      if(cloudStato==='ok') showToast('Salvataggio nel cloud attivo');
+    } else showToast('Permesso non concesso');
+  } catch(e){ showToast('Permesso non concesso'); }
+  renderCloud();
+}
+async function cloudCreaFile(){
+  chiudiCloud();
+  try {
+    const h = await window.showSaveFilePicker({suggestedName:'guasti-metro-dati.json', types:TIPI_COPIA});
+    cloudFile = h;
+    await idbSet('file', h);
+    await cloudScrivi();
+    if(cloudStato==='ok') showToast('File collegato, i dati si salvano da soli');
+  } catch(e){ if(e.name!=='AbortError') showToast('Non riesco a creare il file'); }
+}
+async function cloudApriFile(){
+  chiudiCloud();
+  try {
+    const [h] = await window.showOpenFilePicker({types:TIPI_COPIA, multiple:false});
+    const o = leggiCopia(await (await h.getFile()).text());
+    if(!confermaSostituzione(o)) return;
+    db.sostituisci(o.dati);
+    cloudFile = h;
+    await idbSet('file', h);
+    let p = 'prompt';
+    try { p = await h.requestPermission({mode:'readwrite'}); } catch(e){}
+    if(p==='granted'){ cloudStato = 'ok'; cloudSalvaInfo({ultimo:Date.now(), nome:h.name, sporco:false}); }
+    else cloudStato = 'permesso';
+    renderCloud();
+    showToast('Dati recuperati: ' + contaDati(o.dati) + ' registrazioni');
+  } catch(e){ if(e.name!=='AbortError') showToast(e instanceof SyntaxError ? 'File non valido' : (e.message || 'File non valido')); }
+}
+function cloudScollega(){
+  chiudiCloud();
+  if(!confirm('Scollegare il file? I dati restano su questo telefono e il file nel cloud non viene cancellato.')) return;
+  cloudFile = null; cloudStato = 'nessuno';
+  idbSet('file', null).catch(()=>{});
+  cloudSalvaInfo({nome:''});
+  renderCloud();
+  showToast('File scollegato');
+}
+async function cloudSalvaOra(){ chiudiCloud(); await cloudScrivi(); if(cloudStato==='ok') showToast('Dati salvati nel cloud'); }
+
+/* Copia a mano: funziona su tutti i telefoni */
+async function copiaSalva(){
+  chiudiCloud();
+  const nome = `guasti-metro-copia-${oggiISO()}.json`;
+  const file = new File([contenutoCopia()], nome, {type:'application/json'});
+  try {
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file], title:'Copia Guasti Metro'});
+    } else {
+      const url = URL.createObjectURL(file);
+      const a = document.createElement('a');
+      a.href = url; a.download = nome;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    }
+    cloudSalvaInfo({ultimo:Date.now(), sporco:false});
+    renderCloud();
+    showToast('Copia pronta');
+  } catch(e){ if(e.name!=='AbortError') showToast('Copia non riuscita'); }
+}
+function copiaRipristina(){
+  chiudiCloud();
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = '.json,application/json';
+  inp.onchange = async ()=>{
+    const f = inp.files[0];
+    if(!f) return;
+    try {
+      const o = leggiCopia(await f.text());
+      if(!confermaSostituzione(o)) return;
+      db.sostituisci(o.dati);
+      if(cloudFile) cloudScrivi(); else { cloudSalvaInfo({sporco:false}); renderCloud(); }
+      showToast('Dati recuperati: ' + contaDati(o.dati) + ' registrazioni');
+    } catch(e){ showToast(e instanceof SyntaxError ? 'File non valido' : e.message); }
+  };
+  inp.click();
+}
+
+function testoUltimo(t){
+  if(!t) return 'mai';
+  const d = new Date(t), ora = d.toTimeString().slice(0,5);
+  const ieri = new Date(); ieri.setDate(ieri.getDate()-1);
+  if(oggiISO(d)===oggiISO()) return 'oggi alle ' + ora;
+  if(oggiISO(d)===oggiISO(ieri)) return 'ieri alle ' + ora;
+  return 'il ' + d.toLocaleDateString('it-IT');
+}
+function renderCloud(){
+  const info = cloudInfo();
+  const n = contaDati(db.tutto());
+  let testo, classe = '', avviso = '';
+  if(cloudFile && cloudStato==='ok'){
+    testo = `${cloudFile.name} · salvato ${testoUltimo(info.ultimo)}`; classe = 'ok';
+  } else if(cloudFile && cloudStato==='permesso'){
+    testo = 'In pausa · tocca per riattivare'; classe = 'ko';
+    avviso = 'Il salvataggio nel cloud è in pausa. Tocca per riattivarlo.';
+  } else if(cloudFile && cloudStato==='errore'){
+    testo = 'Ultimo salvataggio non riuscito, riprovo alla prossima modifica'; classe = 'ko';
+  } else {
+    testo = 'Ultima copia: ' + testoUltimo(info.ultimo);
+    classe = info.ultimo ? (info.sporco ? 'ko' : 'ok') : '';
+    const giorni = info.ultimo ? Math.floor((Date.now() - info.ultimo) / 86400000) : null;
+    if(n===0 && !info.ultimo) avviso = 'Primo avvio? Se hai già una copia dei dati nel cloud, tocca per recuperarla.';
+    else if(n>0 && info.sporco && giorni===null) avviso = 'I dati sono solo su questo telefono. Tocca per salvarne una copia nel cloud.';
+    else if(n>0 && info.sporco && giorni>=7) avviso = `Ultima copia dei dati ${giorni} giorni fa. Tocca per salvarne una.`;
+  }
+  const sub = document.getElementById('setCloudSub');
+  if(sub){ sub.textContent = testo; document.getElementById('setCloudDot').className = 'conn ' + classe; }
+  const b = document.getElementById('homeCloud');
+  if(b){ b.style.display = avviso ? 'flex' : 'none'; document.getElementById('homeCloudTxt').textContent = avviso; }
+}
+function homeCloudTocca(){ if(cloudFile && cloudStato==='permesso') cloudRiattiva(); else apriCloud(); }
+
+function rigaCloud(icona, colore, titolo, sotto, azione, pericolo){
+  return `<button class="set-row${pericolo ? ' danger' : ''}" onclick="${azione}"><span class="bubble ${colore}">${ic(icona,'')}</span>`
+       + `<span class="set-main"><span class="t" style="display:block">${titolo}</span><span class="s">${sotto}</span></span>${ic('chevron','')}</button>`;
+}
+function apriCloud(){
+  let note, righe = '';
+  if(FILE_API && cloudFile){
+    note = cloudStato==='permesso'
+      ? 'Il telefono chiede di nuovo il permesso di scrivere nel file. Finché non lo riattivi, le modifiche restano solo qui.'
+      : `Ogni modifica viene salvata da sola nel file ${cloudFile.name}. Se cambi telefono, installa l'app e scegli "Usa un file esistente".`;
+    if(cloudStato==='permesso') righe += rigaCloud('refresh','b-green','Riattiva il salvataggio','Concedi di nuovo il permesso al file','cloudRiattiva()');
+    else righe += rigaCloud('cloud','b-green','Salva adesso','Aggiorna subito il file nel cloud','cloudSalvaOra()');
+    righe += rigaCloud('x','b-red','Scollega il file','I dati restano su questo telefono','cloudScollega()', true);
+  } else if(FILE_API){
+    note = 'Scegli una cartella di Google Drive, OneDrive o simili: l\'app ci salva un file e lo aggiorna da sola a ogni modifica. Se cambi telefono, installa l\'app e scegli "Usa un file esistente".';
+    righe += rigaCloud('cloud','b-green','Crea il file nel cloud','I dati si salvano da soli','cloudCreaFile()');
+    righe += rigaCloud('refresh','b-blue','Usa un file esistente','Cambio telefono: recupera i dati e continua lì','cloudApriFile()');
+  } else {
+    note = 'Su questo telefono l\'app non può salvare da sola nel cloud. Ogni tanto salva una copia in una cartella di iCloud, Google Drive o OneDrive: se cambi telefono la recuperi da lì.';
+  }
+  righe += rigaCloud('upload','b-purple','Salva una copia','Scegli dove salvarla, anche nel cloud','copiaSalva()');
+  righe += rigaCloud('download','b-gray','Recupera da una copia','Sostituisce i dati di questo telefono','copiaRipristina()');
+  document.getElementById('cloudNote').textContent = note;
+  document.getElementById('cloudAzioni').innerHTML = righe;
+  document.getElementById('cloudOverlay').classList.add('open');
+}
+function chiudiCloud(){ document.getElementById('cloudOverlay').classList.remove('open'); }
+
+
+/* ════════ DATI STATICI ════════ */
+const STAZIONI = {
+  M1: ["Amendola","Bande Nere","Bisceglie","Bonola","Buonarroti","Cairoli","Conciliazione","Cordusio","De Angeli","Duomo","Gambara","Gorla","Inganni","Lampugnano","Lima","Loreto","Lotto","Molino Dorino","Pagano","Palestro","Pasteur","Pero","Porta Venezia","Precotto","Primaticcio","Rho Fiera","San Babila","San Leonardo","Sesto FS","Sesto Marelli","Sesto Rondò","Turro","Uruguay","Villa San Giovanni"],
+  M2: ["Abbiategrasso","Assago Forum","Bussero","Cadorna","Caiazzo","Casa Verde","Cascina Gobba","Centrale FS","Cernusco","Chiesa Rossa","Cimiano","Cologno Centro","Cologno Nord","Crescenzago","Crocetta","De Amicis","Famagosta","Garibaldi","Genova","Gessate","Gorgonzola","Lambrate","Lanza","Loreto","Moscova","Piola","Porta Genova","Porto di Mare","Romolo","S.Ambrogio","Sant'Agostino","Sondrio","Udine","Vignate","Villa Fiorita","Vimodrone"],
+  M3: ["Affori Centro","Affori FN","Brenta","Centrale FS","Comasina","Corvetto","Crocetta","Dergano","Duomo","Lodi TIBB","Maciachini","Missori","Montenapoleone","Porta Romana","Repubblica","Rogoredo","San Donato","Sesto FS","Sondrio","Turati","Zara"],
+  M4: ["Argonne","Bolivar","Dateo","De Amicis","Forlanini FS","Frattini","Gelsomini","Inganni","Linate Aeroporto","S.Ambrogio","San Babila","San Cristoforo","Segneri","Sforza Policlinico","Susa","Tolstoj","Tricolore","Vetra"],
+  M5: ["Bicocca","Bignami","Ca' Granda","Cenisio","Comasina","Domodossola","Garibaldi","Gerusalemme","Istria","Lotto","Marche","Monumentale","Ponale","Portello","San Siro Ippodromo","San Siro Stadio","Tre Torri","Zara"]
+};
+const MATERIALI_BASE = {
+  M1: {"156":["156","282","1132"],"159":["158","159","1138"],"161":["160","161","1150"],"163":["162","163","1141"],"165":["164","165","1143"],"167":["166","167","1144"],"169":["168","169","1153"],"171":["170","171","1134"],"173":["172","173","1149"],"175":["174","175","1146"],"257":["256","257","1136"],"259":["258","259","1152"],"261":["260","261","1140"],"263":["262","263","1148"],"265":["264","265","1133"],"267":["266","267","1131"],"269":["268","269","1147"],"271":["270","271","1137"],"273":["272","273","1156"],"275":["274","275","1139"],"277":["276","277","1142"],"279":["278","279","1157"],"281":["280","281","1158"],"701":["701","702","1301"],"703":["703","704","1302"],"705":["705","706","1303"],"707":["707","708","1304"],"709":["709","710","1305"],"711":["711","712","1306"],"713":["713","714","1307"],"601":["601","602","1308"],"603":["603","604","1309"],"605":["605","606","1310"],"607":["607","608","1311"],"609":["609","610","1312"],"611":["611","612","1313"],"613":["613","614","1314"],"715":["715","716","1315"],"717":["717","718","1316"],"719":["719","720","1317"],"721":["721","722","1318"],"723":["723","724","1319"],"725":["725","726","1320"],"615":["615","616","1321"],"617":["617","618","1322"],"619":["619","620","1323"],"621":["621","622","1324"],"623":["623","624","1325"],"625":["625","626","1326"],"727":["727","728","1327"],"729":["729","730","1328"],"731":["731","732","1329"],"733":["733","734","1330"],"627":["627","628","1331"],"905":["805","806","905","906","3105","3106"],"907":["807","808","907","908","3107","3108"],"909":["809","810","909","910","3109","3110"],"911":["811","812","911","912","3111","3112"],"913":["813","814","913","914","3113","3114"],"915":["815","816","915","916","3115","3116"],"917":["817","818","917","918","3117","3118"],"961":["861","862","961","962","3161","3162"],"963":["863","864","963","964","3163","3164"],"965":["865","866","965","966","3165","3166"],"967":["867","868","967","968","3167","3168"],"969":["869","870","969","970","3169","3170"],"971":["871","872","971","972","3171","3172"],"973":["873","874","973","974","3173","3174"],"975":["875","876","975","976","3175","3176"],"977":["877","878","977","978","3177","3178"],"979":["879","880","979","980","3179","3180"],"981":["881","882","981","982","3181","3182"],"983":["883","884","983","984","3183","3184"],"985":["885","886","985","986","3185","3186"],"751":["651","652","751","752","3351","3352"],"753":["653","654","753","754","3353","3354"],"755":["655","656","755","756","3355","3356"],"757":["657","658","757","758","3357","3358"],"759":["659","660","759","760","3359","3360"],"761":["661","662","761","762","3361","3362"],"763":["663","664","763","764","3363","3364"],"765":["665","666","765","766","3365","3366"],"767":["667","668","767","768","3367","3368"],"769":["669","670","769","770","3369","3370"],"771":["671","672","771","772","3371","3372"],"773":["673","674","773","774","3373","3374"],"775":["675","676","775","776","3375","3376"],"777":["677","678","777","778","3377","3378"],"779":["679","680","779","780","3379","3380"],"781":["681","682","781","782","3381","3382"],"783":["683","684","783","784","3383","3384"],"785":["685","686","785","786","3385","3386"],"787":["687","688","787","788","3387","3388"],"789":["689","690","789","790","3389","3390"]},
+  M2: {"901":["801","802","901","902","3101","3102"],"903":["803","804","903","904","3103","3104"],"921":["821","822","921","922","3121","3122"],"923":["823","824","923","924","3123","3124"],"925":["825","826","925","926","3125","3126"],"927":["827","828","927","928","3127","3128"],"929":["829","830","929","930","3129","3130"],"931":["831","832","931","932","3131","3132"],"933":["833","834","933","934","3133","3134"],"935":["835","836","935","936","3135","3136"],"937":["837","838","937","938","3137","3138"],"987":["887","888","987","988","3187","3188"],"989":["889","890","989","990","3189","3190"],"991":["891","892","991","992","3191","3192"],"993":["893","894","993","994","3193","3194"],"995":["895","896","995","996","3195","3196"],"997":["897","898","997","998","3197","3198"],"571":["471","472","571","572","3471","3472"],"573":["473","474","573","574","3473","3474"],"575":["475","476","575","576","3475","3476"],"577":["477","478","577","578","3477","3478"],"579":["479","480","579","580","3479","3480"],"581":["481","482","581","582","3481","3482"],"583":["483","484","583","584","3483","3484"],"585":["485","486","585","586","3485","3486"],"587":["487","488","587","588","3487","3488"],"589":["489","490","589","590","3489","3490"],"5001":["3401","3402","4001","4002","5001","5002"],"5003":["3403","3404","4003","4004","5003","5004"],"5005":["3405","3406","4005","4006","5005","5006"],"5007":["3407","3408","4007","4008","5007","5008"],"5009":["3409","3410","4009","4010","5009","5010"],"5011":["3411","3412","4011","4012","5011","5012"],"5013":["3413","3414","4013","4014","5013","5014"],"5015":["3415","3416","4015","4016","5015","5016"],"5017":["3417","3418","4017","4018","5017","5018"],"5019":["3419","3420","4019","4020","5019","5020"],"5021":["3421","3422","4021","4022","5021","5022"],"5023":["3423","3424","4023","4024","5023","5024"],"5025":["3425","3426","4025","4026","5025","5026"],"5027":["3427","3428","4027","4028","5027","5028"],"5029":["3429","3430","4029","4030","5029","5030"]},
+  M3: {"941":["841","842","941","942","3141","3142"],"943":["843","844","943","944","3143","3144"],"945":["845","846","945","946","3145","3146"],"947":["847","848","947","948","3147","3148"],"949":["849","850","949","950","3149","3150"],"951":["851","852","951","952","3151","3152"],"953":["853","854","953","954","3153","3154"],"955":["855","856","955","956","3155","3156"],"957":["857","858","957","958","3157","3158"],"8001":["8001","8002","9001"],"8003":["8003","8004","9002"],"8005":["8005","8006","9003"],"8007":["8007","8008","9004"],"8009":["8009","8010","9005"],"8011":["8011","8012","9006"],"8013":["8013","8014","9007"],"8015":["8015","8016","9008"],"8017":["8017","8018","9009"],"8019":["8019","8020","9010"],"8021":["8021","8022","9011"],"8023":["8023","8024","9012"],"8025":["8025","8026","9013"],"8027":["8027","8028","9014"],"8029":["8029","8030","9015"],"8031":["8031","8032","9016"],"8033":["8033","8034","9017"],"8035":["8035","8036","9018"],"8037":["8037","8038","9019"],"8039":["8039","8040","9020"],"8045":["8045","8046","9023"],"8047":["8047","8048","9024"],"8049":["8049","8050","9025"],"8051":["8051","8052","9026"],"8053":["8053","8054","9027"],"8055":["8055","8056","9028"],"8057":["8057","8058","9029"],"8059":["8059","8060","9030"],"8061":["8061","8062","9031"],"8063":["8063","8064","9032"],"8065":["8065","8066","9033"],"8067":["8067","8068","9034"],"8069":["8069","8070","9035"],"8071":["8071","8072","9036"],"8073":["8073","8074","9037"],"8075":["8075","8076","9038"],"8077":["8077","8078","9039"],"8079":["8079","8080","9040"],"8101":["8101","8102","9101"],"8103":["8103","8104","9102"],"8105":["8105","8106","9103"],"8107":["8107","8108","9104"],"8109":["8109","8110","9105"]},
+  M4: {"4401":["4401"],"4402":["4402"],"4403":["4403"],"4404":["4404"],"4405":["4405"],"4406":["4406"],"4407":["4407"],"4408":["4408"],"4409":["4409"],"4410":["4410"],"4411":["4411"],"4412":["4412"],"4413":["4413"],"4414":["4414"],"4415":["4415"],"4416":["4416"],"4417":["4417"],"4418":["4418"],"4419":["4419"],"4420":["4420"],"4421":["4421"],"4422":["4422"],"4423":["4423"],"4424":["4424"],"4425":["4425"],"4426":["4426"],"4427":["4427"],"4428":["4428"],"4429":["4429"],"4430":["4430"],"4431":["4431"],"4432":["4432"],"4433":["4433"],"4434":["4434"],"4435":["4435"],"4436":["4436"],"4437":["4437"],"4438":["4438"],"4439":["4439"],"4440":["4440"],"4441":["4441"],"4442":["4442"]},
+  M5: {"5501":["5501"],"5502":["5502"],"5503":["5503"],"5504":["5504"],"5505":["5505"],"5506":["5506"],"5507":["5507"],"5508":["5508"],"5509":["5509"],"5510":["5510"],"5511":["5511"],"5512":["5512"],"5513":["5513"],"5514":["5514"],"5515":["5515"],"5516":["5516"],"5517":["5517"],"5518":["5518"],"5519":["5519"],"5520":["5520"],"5521":["5521"]}
+};
+let MATERIALI_EXTRA = { M1:{}, M2:{}, M3:{}, M4:{}, M5:{} };
+let MATERIALI_DELETED = { M1:{}, M2:{}, M3:{}, M4:{}, M5:{} };
+let MATERIALI = JSON.parse(JSON.stringify(MATERIALI_BASE));
+function ricalcolaMateriali(){
+  const merged = {};
+  ['M1','M2','M3','M4','M5'].forEach(linea=>{
+    const base = {};
+    Object.keys(MATERIALI_BASE[linea]).forEach(k=>{
+      if(!(MATERIALI_DELETED[linea] && MATERIALI_DELETED[linea][k])){
+        base[k] = MATERIALI_BASE[linea][k];
+      }
+    });
+    merged[linea] = Object.assign({}, base, MATERIALI_EXTRA[linea] || {});
+  });
+  MATERIALI = merged;
+}
+let DESCRIZIONI_PRESET = {}; // {id: testo}
+const LINE_COLORS = {M1:"#E03B3B",M2:"#1FA352",M3:"#F2C200",M4:"#1E6FE0",M5:"#8B4DE0"};
+const LINE_TEXT = {M3:"#1A1735"};
+function ic(nome, cls){ return `<svg class="ic ${cls===undefined?'ic-sm':cls}"><use href="#i-${nome}"/></svg>`; }
+function badgeLinea(l){ return `<span class="guasto-line-badge" style="background:${LINE_COLORS[l]||'#888'};color:${LINE_TEXT[l]||'#fff'}">${escapeHtml(l||'-')}</span>`; }
+/* Data locale YYYY-MM-DD (toISOString usa UTC e dopo mezzanotte dava il giorno prima) */
+function oggiISO(d){ d = d || new Date(); const p = n=>String(n).padStart(2,'0'); return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
+
+let allGuasti = {};
+let allSegnalazioni = {};
+let lineFilter = "ALL", statusFilter = "ALL";
+let lineFilterSeg = "ALL";
+let selectedGuastoId = null;
+let selectedSegId = null;
+let elencoTab = "guasti";
+let editGuastoId = null;
+let editSegId = null;
+
+/* ════════ INIT FORM ════════ */
+function initForm(){
+  const today = new Date();
+  document.getElementById('f-data').value = oggiISO(today);
+  document.getElementById('f-ora').value = today.toTimeString().slice(0,5);
+  document.getElementById('s-data').value = oggiISO(today);
+  document.getElementById('s-ora').value = today.toTimeString().slice(0,5);
+
+
+  document.querySelectorAll('input[name="linea"]').forEach(r=>{
+    r.addEventListener('change', ()=>{
+      populateStazioni(r.value);
+      populateMateriali('f-materiale','f-vettura', r.value);
+    });
+  });
+  document.querySelectorAll('input[name="lineaSeg"]').forEach(r=>{
+    r.addEventListener('change', ()=> populateMateriali('s-materiale','s-vettura', r.value));
+  });
+  document.getElementById('f-materiale').addEventListener('change', (e)=>{
+    const linea = document.querySelector('input[name="linea"]:checked')?.value;
+    populateVettura('f-vettura', linea, e.target.value);
+  });
+  document.getElementById('s-materiale').addEventListener('change', (e)=>{
+    const linea = document.querySelector('input[name="lineaSeg"]:checked')?.value;
+    populateVettura('s-vettura', linea, e.target.value);
+  });
+  compilaModulo('f');
+  compilaModulo('s');
+}
+function populateStazioni(linea){
+  const sel = document.getElementById('f-stazione');
+  sel.innerHTML = '<option value="">Seleziona...</option>';
+  (STAZIONI[linea]||[]).forEach(s=>{
+    const o = document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o);
+  });
+}
+function populateMateriali(materialeSelId, vetturaSelId, linea){
+  const sel = document.getElementById(materialeSelId);
+  sel.innerHTML = '<option value="">Seleziona...</option>';
+  const treni = MATERIALI[linea] || {};
+  Object.keys(treni).forEach(t=>{
+    const o = document.createElement('option'); o.value=t; o.textContent=t; sel.appendChild(o);
+  });
+  document.getElementById(vetturaSelId).innerHTML = '<option value="">—</option>';
+}
+function populateVettura(vetturaSelId, linea, materiale){
+  const sel = document.getElementById(vetturaSelId);
+  sel.innerHTML = '<option value="">Seleziona...</option>';
+  const units = (MATERIALI[linea] && MATERIALI[linea][materiale]) || [];
+  units.forEach(u=>{
+    const o = document.createElement('option'); o.value=u; o.textContent=u; sel.appendChild(o);
+  });
+}
+function toggleRientro(){
+  const no = document.querySelector('input[name="riparato"][value="no"]').checked;
+  document.getElementById('rientroField').style.display = no ? 'block' : 'none';
+}
+
+/* ════════ SALVATAGGIO ════════ */
+function salvaGuasto(){
+  const err = document.getElementById('formError');
+  err.textContent='';
+  const linea = document.querySelector('input[name="linea"]:checked')?.value;
+  const data = document.getElementById('f-data').value;
+  const ora = document.getElementById('f-ora').value;
+  const materiale = document.getElementById('f-materiale').value.trim();
+  const vettura = document.getElementById('f-vettura').value.trim();
+  const numeroTreno = document.getElementById('f-numerotreno').value.trim();
+  const stazione = document.getElementById('f-stazione').value;
+  const breve = document.getElementById('f-breve').value.trim();
+  const estesa = document.getElementById('f-estesa').value.trim();
+  const riparatoEl = document.querySelector('input[name="riparato"]:checked');
+  const riparato = riparatoEl ? riparatoEl.value : '';
+  const rientro = document.getElementById('f-rientro').value.trim();
+
+  if(!linea){ err.textContent='Seleziona la linea.'; return; }
+  if(!data || !ora){ err.textContent='Inserisci data e ora.'; return; }
+  if(!stazione){ err.textContent='Seleziona la stazione evento.'; return; }
+  if(!breve){ err.textContent='Inserisci la descrizione breve.'; return; }
+  if(!riparato){ err.textContent='Indica se il guasto è stato riparato.'; return; }
+
+  const isEdit = !!editGuastoId;
+  const record = {
+    linea, data, ora, materiale, vettura, numeroTreno, stazione, breve, estesa,
+    riparato, rientro: riparato==='no' ? rientro : '',
+    creato: isEdit ? (allGuasti[editGuastoId]?.creato || Date.now()) : Date.now()
+  };
+
+  document.getElementById('btnSalva').disabled = true;
+  const ref = isEdit ? db.ref('guasti/'+editGuastoId).set(record) : db.ref('guasti').push(record);
+  ref.then(()=>{
+    document.getElementById('btnSalva').disabled = false;
+    resetForm();
+    const banner = document.getElementById('successBanner');
+    banner.classList.add('show');
+    setTimeout(()=>banner.classList.remove('show'), 3000);
+    showToast(isEdit ? 'Guasto aggiornato' : 'Guasto registrato');
+    dopoSalvataggio();
+  }).catch(e=>{
+    document.getElementById('btnSalva').disabled = false;
+    err.textContent = 'Errore salvataggio: '+e.message;
+  });
+}
+function resetForm(){
+  document.querySelectorAll('input[name="linea"]').forEach(r=>r.checked=false);
+  document.querySelectorAll('input[name="riparato"]').forEach(r=>r.checked=false);
+  document.getElementById('f-materiale').innerHTML='<option value="">Prima la linea</option>';
+  document.getElementById('f-vettura').innerHTML='<option value="">—</option>';
+  document.getElementById('f-numerotreno').value='';
+  document.getElementById('f-stazione').innerHTML='<option value="">Prima la linea</option>';
+  document.getElementById('f-breve').value='';
+  document.getElementById('f-estesa').value='';
+  document.getElementById('f-rientro').value='';
+  document.getElementById('rientroField').style.display='none';
+  const today = new Date();
+  document.getElementById('f-data').value = oggiISO(today);
+  document.getElementById('f-ora').value = today.toTimeString().slice(0,5);
+  editGuastoId = null;
+  document.getElementById('btnSalva').textContent = 'Registra guasto';
+  document.querySelector('#page-guasto .sec-title').textContent = 'Nuovo guasto';
+  compilaModulo('f');
+}
+
+function salvaSegnalazione(){
+  const err = document.getElementById('formErrorSeg');
+  err.textContent='';
+  const linea = document.querySelector('input[name="lineaSeg"]:checked')?.value;
+  const data = document.getElementById('s-data').value;
+  const ora = document.getElementById('s-ora').value;
+  const materiale = document.getElementById('s-materiale').value.trim();
+  const vettura = document.getElementById('s-vettura').value.trim();
+  const breve = document.getElementById('s-breve').value.trim();
+  const estesa = document.getElementById('s-estesa').value.trim();
+
+  if(!linea){ err.textContent='Seleziona la linea.'; return; }
+  if(!data || !ora){ err.textContent='Inserisci data e ora.'; return; }
+  if(!breve){ err.textContent='Inserisci la descrizione breve.'; return; }
+
+  const isEdit = !!editSegId;
+  const record = {
+    linea, data, ora, materiale, vettura, breve, estesa,
+    creato: isEdit ? (allSegnalazioni[editSegId]?.creato || Date.now()) : Date.now()
+  };
+
+  document.getElementById('btnSalvaSeg').disabled = true;
+  const ref = isEdit ? db.ref('segnalazioni/'+editSegId).set(record) : db.ref('segnalazioni').push(record);
+  ref.then(()=>{
+    document.getElementById('btnSalvaSeg').disabled = false;
+    resetFormSeg();
+    const banner = document.getElementById('successBannerSeg');
+    banner.classList.add('show');
+    setTimeout(()=>banner.classList.remove('show'), 3000);
+    showToast(isEdit ? 'Segnalazione aggiornata' : 'Segnalazione registrata');
+    dopoSalvataggio();
+  }).catch(e=>{
+    document.getElementById('btnSalvaSeg').disabled = false;
+    err.textContent = 'Errore salvataggio: '+e.message;
+  });
+}
+function resetFormSeg(){
+  document.querySelectorAll('input[name="lineaSeg"]').forEach(r=>r.checked=false);
+  document.getElementById('s-materiale').innerHTML='<option value="">Prima la linea</option>';
+  document.getElementById('s-vettura').innerHTML='<option value="">—</option>';
+  document.getElementById('s-breve').value='';
+  document.getElementById('s-estesa').value='';
+  const today = new Date();
+  document.getElementById('s-data').value = oggiISO(today);
+  document.getElementById('s-ora').value = today.toTimeString().slice(0,5);
+  editSegId = null;
+  document.getElementById('btnSalvaSeg').textContent = 'Registra segnalazione';
+  document.querySelector('#page-segnalazione .sec-title').textContent = 'Nuova segnalazione';
+  compilaModulo('s');
+}
+
+/* ════════ ELENCO ════════ */
+function listenGuasti(){
+  db.ref('guasti').on('value', snap=>{
+    allGuasti = snap.val() || {};
+    aggiornaAnniDisponibili();
+    renderElenco();
+    if(paginaCorrente==='stat') renderStat();
+    if(paginaCorrente==='home') renderHome();
+  });
+}
+function listenSegnalazioni(){
+  db.ref('segnalazioni').on('value', snap=>{
+    allSegnalazioni = snap.val() || {};
+    aggiornaAnniDisponibiliSeg();
+    renderElencoSeg();
+    if(paginaCorrente==='home') renderHome();
+  });
+}
+function listenMaterialiExtra(){
+  db.ref('materiali_extra').on('value', snap=>{
+    const val = snap.val() || {};
+    MATERIALI_EXTRA = { M1:{}, M2:{}, M3:{}, M4:{}, M5:{} };
+    Object.assign(MATERIALI_EXTRA, val);
+    ['M1','M2','M3','M4','M5'].forEach(l=>{ if(!MATERIALI_EXTRA[l]) MATERIALI_EXTRA[l] = {}; });
+    ricalcolaMateriali();
+    renderMaterialiList();
+  });
+  db.ref('materiali_deleted').on('value', snap=>{
+    const val = snap.val() || {};
+    MATERIALI_DELETED = { M1:{}, M2:{}, M3:{}, M4:{}, M5:{} };
+    Object.assign(MATERIALI_DELETED, val);
+    ['M1','M2','M3','M4','M5'].forEach(l=>{ if(!MATERIALI_DELETED[l]) MATERIALI_DELETED[l] = {}; });
+    ricalcolaMateriali();
+    renderMaterialiList();
+  });
+}
+function listenDescrizioniPreset(){
+  db.ref('descrizioni_preset').on('value', snap=>{
+    DESCRIZIONI_PRESET = snap.val() || {};
+    popolaSelectDescrizioniPreset();
+    renderDescrizioniList();
+    if(paginaCorrente==='impostazioni') renderImpostazioni();
+  });
+}
+function aggiornaAnniDisponibili(){
+  const sel = document.getElementById('yearFilter');
+  const current = sel.value;
+  const anni = new Set();
+  Object.values(allGuasti).forEach(g=>{
+    if(g.data) anni.add(g.data.slice(0,4));
+  });
+  const anniSorted = Array.from(anni).sort((a,b)=>b-a);
+  sel.innerHTML = '<option value="ALL">Tutti gli anni</option>' +
+    anniSorted.map(a=>`<option value="${a}">${a}</option>`).join('');
+  if(anniSorted.includes(current)) sel.value = current;
+}
+function aggiornaAnniDisponibiliSeg(){
+  const sel = document.getElementById('yearFilterSeg');
+  const current = sel.value;
+  const anni = new Set();
+  Object.values(allSegnalazioni).forEach(g=>{
+    if(g.data) anni.add(g.data.slice(0,4));
+  });
+  const anniSorted = Array.from(anni).sort((a,b)=>b-a);
+  sel.innerHTML = '<option value="ALL">Tutti gli anni</option>' +
+    anniSorted.map(a=>`<option value="${a}">${a}</option>`).join('');
+  if(anniSorted.includes(current)) sel.value = current;
+}
+function setLineFilter(f, el){
+  lineFilter = f;
+  document.querySelectorAll('#lineFilters .f-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderElenco();
+}
+function setLineFilterSeg(f, el){
+  lineFilterSeg = f;
+  document.querySelectorAll('#lineFiltersSeg .f-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderElencoSeg();
+}
+function setStatusFilter(f, el){
+  statusFilter = f;
+  el.parentElement.querySelectorAll('.f-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderElenco();
+}
+function setElencoTab(tab, el){
+  elencoTab = tab;
+  el.parentElement.querySelectorAll('.f-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-guasti').style.display = tab==='guasti' ? 'block' : 'none';
+  document.getElementById('tab-segnalazioni').style.display = tab==='segnalazioni' ? 'block' : 'none';
+  if(tab==='guasti') renderElenco(); else renderElencoSeg();
+}
+function getFilteredEntries(){
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const mese = document.getElementById('monthFilter').value;
+  const anno = document.getElementById('yearFilter').value;
+  const giorno = document.getElementById('dayFilter').value; // YYYY-MM-DD o ''
+  let entries = Object.entries(allGuasti);
+
+  entries = entries.filter(([id,g])=>{
+    if(lineFilter!=='ALL' && g.linea!==lineFilter) return false;
+    if(statusFilter!=='ALL' && g.riparato!==statusFilter) return false;
+    if(giorno){
+      if(g.data !== giorno) return false;
+    } else {
+      if(mese!=='ALL' && (!g.data || g.data.slice(5,7)!==mese)) return false;
+      if(anno!=='ALL' && (!g.data || g.data.slice(0,4)!==anno)) return false;
+    }
+    if(q){
+      const hay = [g.breve,g.estesa,g.materiale,g.vettura,g.numeroTreno,g.stazione].join(' ').toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  entries.sort((a,b)=> (b[1].creato||0) - (a[1].creato||0));
+  return entries;
+}
+function renderElenco(){
+  const list = document.getElementById('elencoList');
+  const entries = getFilteredEntries();
+
+  if(elencoTab==='guasti'){
+    document.getElementById('elencoCount').textContent = entries.length + (entries.length===1?' guasto trovato':' guasti trovati');
+  }
+
+  if(entries.length===0){
+    list.innerHTML = `<div class="empty-state">${ic('search','')}<div class="empty-title">Nessun guasto trovato</div><div class="empty-sub">Modifica i filtri o la ricerca</div></div>`;
+    return;
+  }
+
+  list.innerHTML = entries.map(([id,g])=> htmlCardGuasto(id, g, `openDetail('guasto','${id}')`)).join('');
+}
+function htmlCardGuasto(id, g, onclick){
+    const color = LINE_COLORS[g.linea] || '#888';
+    const dataFmt = g.data ? g.data.split('-').reverse().join('/') : '';
+    const statusClass = g.riparato==='si' ? 'riparato' : 'non-riparato';
+    const statusLabel = g.riparato==='si' ? ic('check-circle')+'Riparato' : ic('x-circle')+'Non riparato';
+    return `<div class="guasto-card" style="border-left-color:${color}" onclick="${onclick}">
+      <div class="guasto-top">
+        ${badgeLinea(g.linea)}
+        <span class="guasto-date">${dataFmt} ${g.ora||''}</span>
+      </div>
+      <div class="guasto-title">${escapeHtml(g.breve||'')}</div>
+      <div class="guasto-meta">
+        <span>${ic('pin')}${escapeHtml(g.stazione||'-')}</span>
+        ${(g.materiale||g.vettura)?`<span>${ic('train')}${escapeHtml(g.materiale||'-')}-${escapeHtml(g.vettura||'-')}</span>`:''}
+      </div>
+      <div style="margin-top:8px"><span class="status-pill ${statusClass}">${statusLabel}</span></div>
+    </div>`;
+}
+function getFilteredEntriesSeg(){
+  const q = document.getElementById('searchInputSeg').value.trim().toLowerCase();
+  const mese = document.getElementById('monthFilterSeg').value;
+  const anno = document.getElementById('yearFilterSeg').value;
+  const giorno = document.getElementById('dayFilterSeg').value;
+  let entries = Object.entries(allSegnalazioni);
+
+  entries = entries.filter(([id,g])=>{
+    if(lineFilterSeg!=='ALL' && g.linea!==lineFilterSeg) return false;
+    if(giorno){
+      if(g.data !== giorno) return false;
+    } else {
+      if(mese!=='ALL' && (!g.data || g.data.slice(5,7)!==mese)) return false;
+      if(anno!=='ALL' && (!g.data || g.data.slice(0,4)!==anno)) return false;
+    }
+    if(q){
+      const hay = [g.breve,g.estesa,g.materiale,g.vettura].join(' ').toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  entries.sort((a,b)=> (b[1].creato||0) - (a[1].creato||0));
+  return entries;
+}
+function renderElencoSeg(){
+  const list = document.getElementById('elencoListSeg');
+  const entries = getFilteredEntriesSeg();
+
+  if(elencoTab==='segnalazioni'){
+    document.getElementById('elencoCount').textContent = entries.length + (entries.length===1?' segnalazione trovata':' segnalazioni trovate');
+  }
+
+  if(entries.length===0){
+    list.innerHTML = `<div class="empty-state">${ic('search','')}<div class="empty-title">Nessuna segnalazione trovata</div><div class="empty-sub">Modifica i filtri o la ricerca</div></div>`;
+    return;
+  }
+
+  list.innerHTML = entries.map(([id,g])=>{
+    const color = LINE_COLORS[g.linea] || '#888';
+    const dataFmt = g.data ? g.data.split('-').reverse().join('/') : '';
+    return `<div class="guasto-card" style="border-left-color:${color}" onclick="openDetail('segnalazione','${id}')">
+      <div class="guasto-top">
+        ${badgeLinea(g.linea)}
+        <span class="guasto-date">${dataFmt} ${g.ora||''}</span>
+      </div>
+      <div class="guasto-title">${escapeHtml(g.breve||'')}</div>
+      <div class="guasto-meta">
+        ${g.materiale?`<span>${ic('train')}${escapeHtml(g.materiale)}</span>`:''}
+        ${g.vettura?`<span>${ic('wrench')}${escapeHtml(g.vettura)}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+function csvEscape(v){
+  const s = (v===undefined||v===null) ? '' : String(v);
+  if(/[",\n;]/.test(s)) return '"' + s.replace(/"/g,'""') + '"';
+  return s;
+}
+function scaricaCSV(){
+  const entries = getFilteredEntries();
+  if(entries.length===0){ showToast('Nessun guasto da esportare'); return; }
+
+  const headers = ['Linea','Data','Ora','Materiale','Vettura','Numero treno','Stazione','Descrizione breve','Descrizione estesa','Riparato','Rientrato dove'];
+  const rows = entries.map(([id,g])=>{
+    const dataFmt = g.data ? g.data.split('-').reverse().join('/') : '';
+    return [
+      g.linea||'', dataFmt, g.ora||'', g.materiale||'', g.vettura||'', g.numeroTreno||'', g.stazione||'',
+      g.breve||'', g.estesa||'',
+      g.riparato==='si' ? 'Sì' : 'No',
+      g.riparato==='no' ? (g.rientro||'') : ''
+    ].map(csvEscape).join(';');
+  });
+  const csv = '\uFEFF' + headers.join(';') + '\n' + rows.join('\n');
+
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const now = new Date();
+  const stamp = oggiISO(now);
+  a.href = url;
+  a.download = `guasti_${stamp}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Elenco scaricato');
+}
+function scaricaCSVSeg(){
+  const entries = getFilteredEntriesSeg();
+  if(entries.length===0){ showToast('Nessuna segnalazione da esportare'); return; }
+
+  const headers = ['Linea','Data','Ora','Materiale','Vettura','Descrizione breve','Descrizione estesa'];
+  const rows = entries.map(([id,g])=>{
+    const dataFmt = g.data ? g.data.split('-').reverse().join('/') : '';
+    return [
+      g.linea||'', dataFmt, g.ora||'', g.materiale||'', g.vettura||'', g.breve||'', g.estesa||''
+    ].map(csvEscape).join(';');
+  });
+  const csv = '\uFEFF' + headers.join(';') + '\n' + rows.join('\n');
+
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const now = new Date();
+  const stamp = oggiISO(now);
+  a.href = url;
+  a.download = `segnalazioni_${stamp}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Elenco scaricato');
+}
+function escapeHtml(s){
+  return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ════════ DETTAGLIO ════════ */
+function openDetail(tipo, id){
+  selectedGuastoId = null;
+  selectedSegId = null;
+  let html, title;
+
+  if(tipo==='guasto'){
+    const g = allGuasti[id];
+    if(!g) return;
+    selectedGuastoId = id;
+    title = 'Dettaglio guasto';
+    const dataFmt = g.data ? g.data.split('-').reverse().join('/') : '';
+    html = `
+      <div class="detail-row"><span class="detail-lbl">Linea</span><span class="detail-val">${g.linea||'-'}</span></div>
+      <div class="detail-row"><span class="detail-lbl">Data / Ora</span><span class="detail-val">${dataFmt} ${g.ora||''}</span></div>
+      <div class="detail-row"><span class="detail-lbl">Materiale</span><span class="detail-val">${escapeHtml(g.materiale)||'-'}</span></div>
+      <div class="detail-row"><span class="detail-lbl">Vettura</span><span class="detail-val">${escapeHtml(g.vettura)||'-'}</span></div>
+      <div class="detail-row"><span class="detail-lbl">Numero treno</span><span class="detail-val">${escapeHtml(g.numeroTreno)||'-'}</span></div>
+      <div class="detail-row"><span class="detail-lbl">Stazione</span><span class="detail-val">${escapeHtml(g.stazione)||'-'}</span></div>
+      <div class="detail-row"><span class="detail-lbl">Riparato</span><span class="detail-val">${g.riparato==='si'?ic('check-circle')+'Sì':ic('x-circle')+'No'}</span></div>
+      ${g.riparato==='no' && g.rientro ? `<div class="detail-row"><span class="detail-lbl">Rientrato dove</span><span class="detail-val">${escapeHtml(g.rientro)}</span></div>` : ''}
+      <div class="detail-block">
+        <div class="detail-lbl">Descrizione breve</div>
+        <div class="detail-text">${escapeHtml(g.breve)||'-'}</div>
+      </div>
+      ${g.estesa ? `<div class="detail-block"><div class="detail-lbl">Descrizione estesa</div><div class="detail-text">${escapeHtml(g.estesa)}</div></div>` : ''}
+    `;
+  } else {
+    const g = allSegnalazioni[id];
+    if(!g) return;
+    selectedSegId = id;
+    title = 'Dettaglio segnalazione';
+    const dataFmt = g.data ? g.data.split('-').reverse().join('/') : '';
+    html = `
+      <div class="detail-row"><span class="detail-lbl">Linea</span><span class="detail-val">${g.linea||'-'}</span></div>
+      <div class="detail-row"><span class="detail-lbl">Data / Ora</span><span class="detail-val">${dataFmt} ${g.ora||''}</span></div>
+      <div class="detail-row"><span class="detail-lbl">Materiale</span><span class="detail-val">${escapeHtml(g.materiale)||'-'}</span></div>
+      <div class="detail-row"><span class="detail-lbl">Vettura</span><span class="detail-val">${escapeHtml(g.vettura)||'-'}</span></div>
+      <div class="detail-block">
+        <div class="detail-lbl">Descrizione breve</div>
+        <div class="detail-text">${escapeHtml(g.breve)||'-'}</div>
+      </div>
+      ${g.estesa ? `<div class="detail-block"><div class="detail-lbl">Descrizione estesa</div><div class="detail-text">${escapeHtml(g.estesa)}</div></div>` : ''}
+    `;
+  }
+
+  document.getElementById('detailTitle').textContent = title;
+  document.getElementById('detailContent').innerHTML = html;
+  document.getElementById('detailOverlay').classList.add('open');
+}
+function closeDetail(){
+  document.getElementById('detailOverlay').classList.remove('open');
+  selectedGuastoId = null;
+  selectedSegId = null;
+}
+function inviaWhatsApp(){
+  const WA_NUMBER = waNumero();
+  let testo = '';
+
+  if(selectedGuastoId){
+    const g = allGuasti[selectedGuastoId];
+    if(!g) return;
+    const dataFmt = g.data ? g.data.split('-').reverse().join('/') : '-';
+    testo = `🚧 *GUASTO* — ${g.linea}\n`
+          + `📅 ${dataFmt} ${g.ora||''}\n`
+          + `🚆 Materiale: ${g.materiale||'-'} | Vettura: ${g.vettura||'-'}\n`
+          + (g.numeroTreno ? `🔢 N° treno: ${g.numeroTreno}\n` : '')
+          + `📍 Stazione: ${g.stazione||'-'}\n`
+          + `📝 ${g.breve||'-'}\n`
+          + (g.estesa ? `\n${g.estesa}\n` : '')
+          + `\n${g.riparato==='si' ? '✅ Riparato' : '❌ Non riparato'}`
+          + (g.riparato==='no' && g.rientro ? ` — ${g.rientro}` : '');
+  } else if(selectedSegId){
+    const g = allSegnalazioni[selectedSegId];
+    if(!g) return;
+    const dataFmt = g.data ? g.data.split('-').reverse().join('/') : '-';
+    testo = `📣 *SEGNALAZIONE* — ${g.linea}\n`
+          + `📅 ${dataFmt} ${g.ora||''}\n`
+          + `🚆 Materiale: ${g.materiale||'-'} | Vettura: ${g.vettura||'-'}\n`
+          + `📝 ${g.breve||'-'}\n`
+          + (g.estesa ? `\n${g.estesa}` : '');
+  } else return;
+
+  const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(testo)}`;
+  window.open(url, '_blank');
+}
+function eliminaItem(){
+  if(selectedGuastoId){
+    if(!confirm('Eliminare definitivamente questo guasto?')) return;
+    db.ref('guasti/'+selectedGuastoId).remove().then(()=>{
+      closeDetail();
+      showToast('Guasto eliminato');
+    });
+  } else if(selectedSegId){
+    if(!confirm('Eliminare definitivamente questa segnalazione?')) return;
+    db.ref('segnalazioni/'+selectedSegId).remove().then(()=>{
+      closeDetail();
+      showToast('Segnalazione eliminata');
+    });
+  }
+}
+function modificaItem(){
+  if(selectedGuastoId){
+    const id = selectedGuastoId;
+    const g = allGuasti[id];
+    if(!g) return;
+    closeDetail();
+    caricaGuastoNelForm(id, g);
+  } else if(selectedSegId){
+    const id = selectedSegId;
+    const g = allSegnalazioni[id];
+    if(!g) return;
+    closeDetail();
+    caricaSegnalazioneNelForm(id, g);
+  }
+}
+function caricaGuastoNelForm(id, g){
+  editGuastoId = id;
+  const radio = document.querySelector(`input[name="linea"][value="${g.linea}"]`);
+  if(radio){ radio.checked = true; populateStazioni(g.linea); populateMateriali('f-materiale','f-vettura', g.linea); }
+  document.getElementById('f-data').value = g.data || '';
+  document.getElementById('f-ora').value = g.ora || '';
+  document.getElementById('f-materiale').value = g.materiale || '';
+  if(g.materiale) populateVettura('f-vettura', g.linea, g.materiale);
+  document.getElementById('f-vettura').value = g.vettura || '';
+  document.getElementById('f-numerotreno').value = g.numeroTreno || '';
+  setTimeout(()=>{ document.getElementById('f-stazione').value = g.stazione || ''; }, 0);
+  document.getElementById('f-breve').value = g.breve || '';
+  document.getElementById('f-estesa').value = g.estesa || '';
+  const riparatoRadio = document.querySelector(`input[name="riparato"][value="${g.riparato}"]`);
+  if(riparatoRadio) riparatoRadio.checked = true;
+  document.getElementById('f-rientro').value = g.rientro || '';
+  document.getElementById('rientroField').style.display = g.riparato==='no' ? 'block' : 'none';
+
+  document.getElementById('btnSalva').textContent = 'Salva modifiche';
+  document.querySelector('#page-guasto .sec-title').textContent = 'Modifica guasto';
+
+  mostraPagina('guasto');
+}
+function caricaSegnalazioneNelForm(id, g){
+  editSegId = id;
+  const radio = document.querySelector(`input[name="lineaSeg"][value="${g.linea}"]`);
+  if(radio){ radio.checked = true; populateMateriali('s-materiale','s-vettura', g.linea); }
+  document.getElementById('s-data').value = g.data || '';
+  document.getElementById('s-ora').value = g.ora || '';
+  document.getElementById('s-materiale').value = g.materiale || '';
+  if(g.materiale) populateVettura('s-vettura', g.linea, g.materiale);
+  document.getElementById('s-vettura').value = g.vettura || '';
+  document.getElementById('s-breve').value = g.breve || '';
+  document.getElementById('s-estesa').value = g.estesa || '';
+
+  document.getElementById('btnSalvaSeg').textContent = 'Salva modifiche';
+  document.querySelector('#page-segnalazione .sec-title').textContent = 'Modifica segnalazione';
+
+  mostraPagina('segnalazione');
+}
+
+/* ════════ GESTIONE MATERIALI ════════ */
+let materialiLineFilter = "ALL";
+let editMaterialeKey = null; // {linea, principale} se in modifica
+
+function apriGestioneMateriali(){
+  resetFormMateriale();
+  materialiLineFilter = "ALL";
+  document.querySelectorAll('#materialiLineFilters .f-chip').forEach(c=>c.classList.remove('active'));
+  document.querySelector('#materialiLineFilters .f-chip[data-f="ALL"]').classList.add('active');
+  document.getElementById('materialiSearch').value = '';
+  renderMaterialiList();
+  document.getElementById('materialiOverlay').classList.add('open');
+}
+function chiudiGestioneMateriali(){
+  document.getElementById('materialiOverlay').classList.remove('open');
+}
+function resetFormMateriale(){
+  document.getElementById('mat-principale').value = '';
+  document.getElementById('mat-vetture').value = '';
+  document.getElementById('materialiError').textContent = '';
+  document.querySelectorAll('input[name="lineaMat"]').forEach(r=>r.checked=false);
+  editMaterialeKey = null;
+  document.getElementById('btnSalvaMateriale').textContent = 'Aggiungi materiale';
+  document.getElementById('btnAnnullaModificaMateriale').style.display = 'none';
+  document.getElementById('materialiTitle').textContent = 'Gestisci materiali';
+  document.getElementById('materialiSub').textContent = 'Aggiungi un nuovo materiale e le sue vetture';
+}
+function annullaModificaMateriale(){
+  resetFormMateriale();
+}
+function salvaMateriale(){
+  const err = document.getElementById('materialiError');
+  err.textContent = '';
+  const linea = document.querySelector('input[name="lineaMat"]:checked')?.value;
+  const principale = document.getElementById('mat-principale').value.trim();
+  const vettureRaw = document.getElementById('mat-vetture').value.trim();
+
+  if(!linea){ err.textContent='Seleziona la linea.'; return; }
+  if(!principale){ err.textContent='Inserisci la matricola del materiale.'; return; }
+  if(!vettureRaw){ err.textContent='Inserisci almeno una vettura.'; return; }
+
+  const vetture = vettureRaw.split(',').map(v=>v.trim()).filter(v=>v);
+  if(vetture.length===0){ err.textContent='Inserisci almeno una vettura valida.'; return; }
+
+  const isEdit = !!editMaterialeKey;
+  // Se è una nuova matricola (non in edit) e collide con uno esistente su qualunque linea/extra, avvisa
+  if(!isEdit && MATERIALI[linea] && MATERIALI[linea][principale]){
+    if(!confirm(`Il materiale ${principale} esiste già su ${linea}. Vuoi sovrascriverlo?`)) return;
+  }
+  // Se in modifica e la matricola/linea è cambiata rispetto all'originale, rimuoviamo prima la versione precedente
+  const keyChanged = isEdit && (editMaterialeKey.linea !== linea || editMaterialeKey.principale !== principale);
+
+  document.getElementById('btnSalvaMateriale').disabled = true;
+
+  const doSave = ()=> db.ref(`materiali_extra/${linea}/${principale}`).set(vetture);
+
+  let chain = Promise.resolve();
+  if(keyChanged){
+    // rimuove riferimento precedente: se era un materiale base, lo segna come eliminato; se era extra, lo elimina
+    const wasBase = !!(MATERIALI_BASE[editMaterialeKey.linea] && MATERIALI_BASE[editMaterialeKey.linea][editMaterialeKey.principale]);
+    if(wasBase){
+      chain = chain.then(()=> db.ref(`materiali_deleted/${editMaterialeKey.linea}/${editMaterialeKey.principale}`).set(true));
+    } else {
+      chain = chain.then(()=> db.ref(`materiali_extra/${editMaterialeKey.linea}/${editMaterialeKey.principale}`).remove());
+    }
+  }
+
+  chain.then(doSave).then(()=>{
+    document.getElementById('btnSalvaMateriale').disabled = false;
+    resetFormMateriale();
+    showToast(isEdit ? 'Materiale aggiornato' : 'Materiale aggiunto');
+  }).catch(e=>{
+    document.getElementById('btnSalvaMateriale').disabled = false;
+    err.textContent = 'Errore salvataggio: '+e.message;
+  });
+}
+function modificaMateriale(linea, principale){
+  const vetture = (MATERIALI[linea] && MATERIALI[linea][principale]) || [];
+  editMaterialeKey = {linea, principale};
+  const radio = document.querySelector(`input[name="lineaMat"][value="${linea}"]`);
+  if(radio) radio.checked = true;
+  document.getElementById('mat-principale').value = principale;
+  document.getElementById('mat-vetture').value = vetture.join(',');
+  document.getElementById('materialiError').textContent = '';
+  document.getElementById('btnSalvaMateriale').textContent = 'Salva modifiche';
+  document.getElementById('btnAnnullaModificaMateriale').style.display = 'block';
+  document.getElementById('materialiTitle').textContent = 'Modifica materiale';
+  document.getElementById('materialiSub').textContent = `Stai modificando il materiale ${principale} (${linea})`;
+  document.querySelector('#materialiOverlay .sheet').scrollTop = 0;
+}
+function eliminaMateriale(linea, principale){
+  const wasBase = !!(MATERIALI_BASE[linea] && MATERIALI_BASE[linea][principale]);
+  const msg = wasBase
+    ? `Eliminare il materiale ${principale} (${linea})? È un materiale della lista originale: verrà nascosto ma potrai ripristinarlo dal codice se necessario.`
+    : `Eliminare il materiale ${principale} (${linea}) aggiunto manualmente?`;
+  if(!confirm(msg)) return;
+
+  if(wasBase){
+    db.ref(`materiali_deleted/${linea}/${principale}`).set(true).then(()=>{
+      showToast('Materiale eliminato');
+    });
+  } else {
+    db.ref(`materiali_extra/${linea}/${principale}`).remove().then(()=>{
+      showToast('Materiale eliminato');
+    });
+  }
+  if(editMaterialeKey && editMaterialeKey.linea===linea && editMaterialeKey.principale===principale){
+    resetFormMateriale();
+  }
+}
+function setMaterialiLineFilter(f, el){
+  materialiLineFilter = f;
+  el.parentElement.querySelectorAll('.f-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderMaterialiList();
+}
+function renderMaterialiList(){
+  const container = document.getElementById('materialiFullList');
+  if(!container) return;
+  const q = (document.getElementById('materialiSearch').value || '').trim().toLowerCase();
+
+  const linee = materialiLineFilter==='ALL' ? ['M1','M2','M3','M4','M5'] : [materialiLineFilter];
+  const rows = [];
+  linee.forEach(linea=>{
+    const mat = MATERIALI[linea] || {};
+    Object.keys(mat).forEach(principale=>{
+      if(q && !principale.toLowerCase().includes(q) && !mat[principale].some(v=>v.toLowerCase().includes(q))) return;
+      const isExtra = !!(MATERIALI_EXTRA[linea] && MATERIALI_EXTRA[linea][principale]);
+      const isBase = !!(MATERIALI_BASE[linea] && MATERIALI_BASE[linea][principale]);
+      rows.push({linea, principale, vetture: mat[principale], origine: isExtra ? (isBase ? 'modificato' : 'manuale') : 'base'});
+    });
+  });
+  rows.sort((a,b)=> a.linea===b.linea ? (parseInt(a.principale)-parseInt(b.principale)) : a.linea.localeCompare(b.linea));
+
+  if(rows.length===0){
+    container.innerHTML = `<div class="empty-state" style="padding:24px 16px">${ic('search','')}<div class="empty-sub">Nessun materiale trovato</div></div>`;
+    return;
+  }
+
+  const badgeLabel = {base:'', manuale:'Manuale', modificato:'Modificato'};
+  container.innerHTML = rows.map(r=>{
+    const color = LINE_COLORS[r.linea] || '#888';
+    const tag = badgeLabel[r.origine] ? `<span class="status-pill neutro">${badgeLabel[r.origine]}</span>` : '';
+    return `<div class="guasto-card" style="cursor:default;border-left-color:${color}">
+      <div class="guasto-top">
+        ${badgeLinea(r.linea)}
+        <div style="display:flex;gap:8px;align-items:center">
+          ${tag}
+          <button class="link-btn" onclick="modificaMateriale('${r.linea}','${r.principale}')">Modifica</button>
+          <button class="link-btn danger" onclick="eliminaMateriale('${r.linea}','${r.principale}')">Elimina</button>
+        </div>
+      </div>
+      <div class="guasto-title">Materiale ${escapeHtml(r.principale)}</div>
+      <div class="guasto-meta"><span>${ic('train')}${r.vetture.map(escapeHtml).join(', ')}</span></div>
+    </div>`;
+  }).join('');
+}
+
+/* ════════ GESTIONE DESCRIZIONI PREDEFINITE ════════ */
+let editDescrizioneId = null;
+
+function popolaSelectDescrizioniPreset(){
+  ['f-breve-preset','s-breve-preset'].forEach(selId=>{
+    const sel = document.getElementById(selId);
+    if(!sel) return;
+    const current = sel.value;
+    sel.innerHTML = '<option value="">Seleziona...</option>';
+    Object.entries(DESCRIZIONI_PRESET).forEach(([id, testo])=>{
+      const o = document.createElement('option');
+      o.value = id; o.textContent = testo;
+      sel.appendChild(o);
+    });
+    if(Array.from(sel.options).some(o=>o.value===current)) sel.value = current;
+  });
+}
+function applicaDescrizionePreset(targetFieldId, presetId){
+  if(!presetId) return;
+  const testo = DESCRIZIONI_PRESET[presetId];
+  if(testo) document.getElementById(targetFieldId).value = testo;
+}
+function apriGestioneDescrizioni(){
+  resetFormDescrizione();
+  document.getElementById('descrizioniSearch').value = '';
+  renderDescrizioniList();
+  document.getElementById('descrizioniOverlay').classList.add('open');
+}
+function chiudiGestioneDescrizioni(){
+  document.getElementById('descrizioniOverlay').classList.remove('open');
+}
+function resetFormDescrizione(){
+  document.getElementById('descr-testo').value = '';
+  document.getElementById('descrizioniError').textContent = '';
+  editDescrizioneId = null;
+  document.getElementById('btnSalvaDescrizione').textContent = 'Aggiungi descrizione';
+  document.getElementById('btnAnnullaModificaDescrizione').style.display = 'none';
+  document.getElementById('descrizioniTitle').textContent = 'Gestisci descrizioni';
+  document.getElementById('descrizioniSub').textContent = 'Aggiungi una descrizione breve predefinita, utilizzabile sia per i guasti che per le segnalazioni';
+}
+function annullaModificaDescrizione(){
+  resetFormDescrizione();
+}
+function salvaDescrizione(){
+  const err = document.getElementById('descrizioniError');
+  err.textContent = '';
+  const testo = document.getElementById('descr-testo').value.trim();
+  if(!testo){ err.textContent='Inserisci il testo della descrizione.'; return; }
+
+  const isEdit = !!editDescrizioneId;
+  const id = isEdit ? editDescrizioneId : db.ref('descrizioni_preset').push().key;
+
+  document.getElementById('btnSalvaDescrizione').disabled = true;
+  db.ref(`descrizioni_preset/${id}`).set(testo).then(()=>{
+    document.getElementById('btnSalvaDescrizione').disabled = false;
+    resetFormDescrizione();
+    showToast(isEdit ? 'Descrizione aggiornata' : 'Descrizione aggiunta');
+  }).catch(e=>{
+    document.getElementById('btnSalvaDescrizione').disabled = false;
+    err.textContent = 'Errore salvataggio: '+e.message;
+  });
+}
+function modificaDescrizione(id){
+  const testo = DESCRIZIONI_PRESET[id];
+  if(testo===undefined) return;
+  editDescrizioneId = id;
+  document.getElementById('descr-testo').value = testo;
+  document.getElementById('descrizioniError').textContent = '';
+  document.getElementById('btnSalvaDescrizione').textContent = 'Salva modifiche';
+  document.getElementById('btnAnnullaModificaDescrizione').style.display = 'block';
+  document.getElementById('descrizioniTitle').textContent = 'Modifica descrizione';
+  document.getElementById('descrizioniSub').textContent = 'Stai modificando una descrizione predefinita';
+  document.querySelector('#descrizioniOverlay .sheet').scrollTop = 0;
+}
+function eliminaDescrizione(id){
+  if(!confirm('Eliminare questa descrizione predefinita?')) return;
+  db.ref(`descrizioni_preset/${id}`).remove().then(()=>{
+    showToast('Descrizione eliminata');
+  });
+  if(editDescrizioneId===id) resetFormDescrizione();
+}
+function renderDescrizioniList(){
+  const container = document.getElementById('descrizioniFullList');
+  if(!container) return;
+  const q = (document.getElementById('descrizioniSearch').value || '').trim().toLowerCase();
+
+  let entries = Object.entries(DESCRIZIONI_PRESET);
+  if(q) entries = entries.filter(([id,testo])=> testo.toLowerCase().includes(q));
+  entries.sort((a,b)=> a[1].localeCompare(b[1]));
+
+  if(entries.length===0){
+    container.innerHTML = `<div class="empty-state" style="padding:24px 16px">${ic('search','')}<div class="empty-sub">Nessuna descrizione trovata</div></div>`;
+    return;
+  }
+
+  container.innerHTML = entries.map(([id,testo])=>{
+    return `<div class="guasto-card" style="cursor:default">
+      <div class="guasto-top">
+        <div class="guasto-title" style="margin-bottom:0">${escapeHtml(testo)}</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+          <button class="link-btn" onclick="modificaDescrizione('${id}')">Modifica</button>
+          <button class="link-btn danger" onclick="eliminaDescrizione('${id}')">Elimina</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ════════ NAVIGAZIONE ════════ */
+/* Si parte sempre dalla Home; le altre pagine hanno la freccia per tornare.
+   Il tasto "indietro" del telefono riporta alla Home invece di chiudere l'app. */
+const TITOLI = {guasto:'Guasto', segnalazione:'Segnalazione', elenco:'Elenchi', stat:'Statistiche', impostazioni:'Impostazioni'};
+let paginaCorrente = 'home';
+
+function mostraPagina(name, opts){
+  opts = opts || {};
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  const home = name==='home';
+  document.getElementById('topLogo').style.display = home ? 'flex' : 'none';
+  document.getElementById('topBack').style.display = home ? 'none' : 'flex';
+  document.getElementById('topTitle').textContent = TITOLI[name] || '';
+  if(name==='home') renderHome();
+  if(name==='stat') renderStat();
+  if(name==='impostazioni') renderImpostazioni();
+  if(!home && !opts.noHistory){
+    if(paginaCorrente==='home') history.pushState({p:name}, '');
+    else history.replaceState({p:name}, '');
+  }
+  paginaCorrente = name;
+  document.querySelector('.scroll-area').scrollTop = 0;
+}
+function apri(name){
+  if(name==='guasto' && editGuastoId) resetForm();
+  if(name==='segnalazione' && editSegId) resetFormSeg();
+  mostraPagina(name);
+}
+function switchPage(name){ apri(name); }
+function tornaHome(){
+  if(history.state && history.state.p) history.back();
+  else mostraPagina('home');
+}
+window.addEventListener('popstate', ()=>{
+  document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));
+  if(editGuastoId) resetForm();
+  if(editSegId) resetFormSeg();
+  mostraPagina('home', {noHistory:true});
+});
+
+/* ════════ HOME ════════ */
+function renderHome(){
+  renderCloud();
+  const ora = new Date().getHours();
+  document.getElementById('homeSaluto').textContent = ora<13 ? 'Buongiorno' : (ora<18 ? 'Buon pomeriggio' : 'Buonasera');
+  const d = new Date().toLocaleDateString('it-IT', {weekday:'long', day:'numeric', month:'long'});
+  document.getElementById('homeData').textContent = d.charAt(0).toUpperCase() + d.slice(1) + ' · cosa devi fare?';
+  const oggi = oggiISO();
+  const guasti = Object.values(allGuasti);
+  document.getElementById('homeOggi').textContent = guasti.filter(g=>g.data===oggi).length;
+  document.getElementById('homeNonRip').textContent = guasti.filter(g=>g.riparato!=='si').length;
+  const anno = String(new Date().getFullYear());
+  const annoEntries = Object.entries(allGuasti).filter(([id,g])=> (g.data||'').slice(0,4)===anno);
+  document.getElementById('homeRecid').textContent = calcolaStat(annoEntries).treniRecidivi.length;
+  const ng = guasti.length, ns = Object.keys(allSegnalazioni).length;
+  document.getElementById('homeElenchiSub').textContent = `${ng} ${ng===1?'guasto':'guasti'} · ${ns} ${ns===1?'segnalazione':'segnalazioni'}`;
+}
+function attivaChip(sel){
+  const el = document.querySelector(sel); if(!el) return;
+  el.parentElement.querySelectorAll('.f-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+function filtriElencoPuliti(){
+  lineFilter = 'ALL'; statusFilter = 'ALL';
+  attivaChip('#lineFilters .f-chip[data-f="ALL"]');
+  attivaChip('#tab-guasti .f-chip[data-s="ALL"]');
+  document.getElementById('searchInput').value = '';
+  document.getElementById('monthFilter').value = 'ALL';
+  document.getElementById('yearFilter').value = 'ALL';
+  document.getElementById('dayFilter').value = '';
+  setElencoTab('guasti', document.querySelector('.tabs .f-chip[data-tab="guasti"]'));
+}
+function homeVaiOggi(){
+  filtriElencoPuliti();
+  document.getElementById('dayFilter').value = oggiISO();
+  renderElenco();
+  mostraPagina('elenco');
+}
+function homeVaiNonRiparati(){
+  filtriElencoPuliti();
+  statusFilter = 'no';
+  attivaChip('#tab-guasti .f-chip[data-s="no"]');
+  renderElenco();
+  mostraPagina('elenco');
+}
+function homeVaiRecidivi(){
+  statModo = 'treni'; statPeriodo = 'anno'; statLinea = 'ALL'; statTuttiTreni = false;
+  attivaChip('#statModo .f-chip[data-v="treni"]');
+  attivaChip(`#statPeriodo .f-chip[onclick*="'anno'"]`);
+  attivaChip('#statLinee .f-chip[data-f="ALL"]');
+  mostraPagina('stat');
+}
+
+/* ════════ IMPOSTAZIONI ════════ */
+const PREFS_KEY = 'guastiMetro.prefs';
+const PREFS_DEFAULT = {lineaDef:'', dataAuto:true, dopoSalva:'home'};
+let prefs = caricaPrefs();
+let waNumeroCondiviso = '';
+const WA_DEFAULT = '';
+
+function caricaPrefs(){
+  try { return Object.assign({}, PREFS_DEFAULT, JSON.parse(localStorage.getItem(PREFS_KEY) || '{}')); }
+  catch(e){ return Object.assign({}, PREFS_DEFAULT); }
+}
+function setPref(k, v){
+  prefs[k] = v;
+  try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch(e){}
+  renderImpostazioni();
+  if(k==='lineaDef' || k==='dataAuto'){
+    if(!editGuastoId) compilaModulo('f');
+    if(!editSegId) compilaModulo('s');
+  }
+}
+/* Data/ora e linea predefinita nei moduli nuovi */
+function compilaModulo(p){
+  const now = new Date();
+  document.getElementById(p+'-data').value = prefs.dataAuto ? oggiISO(now) : '';
+  document.getElementById(p+'-ora').value = prefs.dataAuto ? now.toTimeString().slice(0,5) : '';
+  const nome = p==='f' ? 'linea' : 'lineaSeg';
+  const giaScelta = document.querySelector(`input[name="${nome}"]:checked`);
+  if(prefs.lineaDef && !giaScelta){
+    const r = document.querySelector(`input[name="${nome}"][value="${prefs.lineaDef}"]`);
+    if(r){
+      r.checked = true;
+      if(p==='f'){ populateStazioni(prefs.lineaDef); populateMateriali('f-materiale','f-vettura', prefs.lineaDef); }
+      else populateMateriali('s-materiale','s-vettura', prefs.lineaDef);
+    }
+  }
+}
+function dopoSalvataggio(){
+  if(prefs.dopoSalva==='home') tornaHome();
+}
+function waNumero(){ return (waNumeroCondiviso || WA_DEFAULT).replace(/\D/g,''); }
+function fmtTelefono(n){ return '+' + n.replace(/^(\d{2})(\d{3})(\d{3})(\d+)$/, '$1 $2 $3 $4'); }
+
+function renderImpostazioni(){
+  renderCloud();
+  const nd = Object.keys(DESCRIZIONI_PRESET).length;
+  document.getElementById('setDescrSub').textContent = nd===1 ? '1 descrizione' : nd+' descrizioni';
+  document.getElementById('setWaSub').textContent = (waNumero() ? fmtTelefono(waNumero()) : 'Scegli il contatto ogni volta');
+  document.querySelectorAll('#setLinea button').forEach(b=>b.classList.toggle('on', b.dataset.v===prefs.lineaDef));
+  document.querySelectorAll('#setDopo button').forEach(b=>b.classList.toggle('on', b.dataset.v===prefs.dopoSalva));
+  const sw = document.getElementById('setDataAuto');
+  sw.classList.toggle('on', !!prefs.dataAuto);
+  sw.setAttribute('aria-checked', prefs.dataAuto ? 'true' : 'false');
+}
+function listenImpostazioni(){
+  db.ref('impostazioni/whatsapp').on('value', snap=>{
+    waNumeroCondiviso = String(snap.val() || '');
+    if(paginaCorrente==='impostazioni') renderImpostazioni();
+  });
+  cloudAvvio();
+}
+function apriWhatsApp(){
+  document.getElementById('waInput').value = waNumero() ? '+' + waNumero() : '';
+  document.getElementById('waError').textContent = '';
+  document.getElementById('waOverlay').classList.add('open');
+}
+function salvaWhatsApp(){
+  const n = document.getElementById('waInput').value.replace(/\D/g,'');
+  const err = document.getElementById('waError');
+  if(n.length && n.length < 10){ err.textContent = 'Inserisci il numero completo di prefisso (es. +39...)'; return; }
+  db.ref('impostazioni/whatsapp').set(n).then(()=>{
+    document.getElementById('waOverlay').classList.remove('open');
+    showToast('Numero WhatsApp salvato');
+  }).catch(e=>{ err.textContent = 'Errore salvataggio: '+e.message; });
+}
+function esportaTutto(){
+  const righe = [];
+  Object.values(allGuasti).forEach(g=> righe.push(['Guasto', g]));
+  Object.values(allSegnalazioni).forEach(g=> righe.push(['Segnalazione', g]));
+  if(righe.length===0){ showToast('Nessun dato da esportare'); return; }
+  righe.sort((a,b)=> chiaveCron(b[1]).localeCompare(chiaveCron(a[1])));
+  const headers = ['Tipo','Linea','Data','Ora','Materiale','Vettura','Numero treno','Stazione','Descrizione breve','Descrizione estesa','Riparato','Rientrato dove'];
+  const rows = righe.map(([tipo,g])=>[
+    tipo, g.linea||'', fmtData(g.data).replace(/^-$/,''), g.ora||'', g.materiale||'', g.vettura||'', g.numeroTreno||'', g.stazione||'',
+    g.breve||'', g.estesa||'',
+    tipo==='Guasto' ? (g.riparato==='si' ? 'Sì' : 'No') : '',
+    tipo==='Guasto' && g.riparato==='no' ? (g.rientro||'') : ''
+  ].map(csvEscape).join(';'));
+  const csv = '﻿' + headers.join(';') + '\n' + rows.join('\n');
+  const url = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'}));
+  const a = document.createElement('a');
+  a.href = url; a.download = `guasti_metro_completo_${oggiISO()}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('File scaricato');
+}
+function cercaAggiornamenti(){
+  if(!('serviceWorker' in navigator)){ location.reload(); return; }
+  navigator.serviceWorker.getRegistration().then(reg=>{
+    if(!reg){ showToast('Ricarico l\'app...'); setTimeout(()=>location.reload(), 800); return; }
+    return reg.update().then(()=>{
+      if(reg.installing || reg.waiting){
+        showToast('Aggiornamento trovato, riavvio...');
+        setTimeout(()=>location.reload(), 1500);
+      } else showToast('L\'app è già aggiornata');
+    });
+  }).catch(()=> showToast('Impossibile verificare ora, riprova con la rete'));
+}
+function svuotaDatiLocali(){
+  if(!confirm('Reimpostare le preferenze di questo telefono? Guasti e segnalazioni non vengono toccati.')) return;
+  try { localStorage.removeItem(PREFS_KEY); } catch(e){}
+  prefs = caricaPrefs();
+  renderImpostazioni();
+  showToast('Preferenze reimpostate');
+}
+
+/* ════════ STATISTICHE ════════ */
+let statModo = 'guasti', statPeriodo = 'anno', statLinea = 'ALL', statTuttiTreni = false;
+let STAT_GRUPPI = {};
+const MESI = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+const MESI_BREVI = ['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+const C_TOT = '#8F87E8', C_OK = '#7BCB98', C_KO = '#F08C8C';
+
+function setStat(tipo, val, el){
+  if(tipo==='modo') statModo = val;
+  if(tipo==='periodo') statPeriodo = val;
+  if(tipo==='linea') statLinea = val;
+  statTuttiTreni = false;
+  el.parentElement.querySelectorAll('.f-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderStat();
+}
+function addGiorni(d, n){ const x = new Date(d); x.setDate(x.getDate()+n); return x; }
+function fmtData(iso){ return iso ? iso.split('-').reverse().join('/') : '-'; }
+
+/* Periodo scelto + periodo di confronto della stessa lunghezza */
+function periodoStat(){
+  const oggi = new Date(); oggi.setHours(0,0,0,0);
+  const fine = addGiorni(oggi, 1); // escluso
+  if(statPeriodo==='mese'){
+    const ini = new Date(oggi.getFullYear(), oggi.getMonth(), 1);
+    const pIni = new Date(oggi.getFullYear(), oggi.getMonth()-1, 1);
+    const giorniPrec = new Date(oggi.getFullYear(), oggi.getMonth(), 0).getDate();
+    const pFine = new Date(oggi.getFullYear(), oggi.getMonth()-1, Math.min(oggi.getDate(), giorniPrec)+1);
+    return {ini, fine, pIni, pFine, nome:'Questo mese', cfr:'rispetto allo stesso periodo di '+MESI[pIni.getMonth()]};
+  }
+  if(statPeriodo==='90'){
+    const ini = addGiorni(fine, -90);
+    return {ini, fine, pIni:addGiorni(ini,-90), pFine:ini, nome:'Ultimi 90 giorni', cfr:'rispetto ai 90 giorni prima'};
+  }
+  if(statPeriodo==='anno'){
+    const ini = new Date(oggi.getFullYear(), 0, 1);
+    const pIni = new Date(oggi.getFullYear()-1, 0, 1);
+    const pFine = new Date(oggi.getFullYear()-1, oggi.getMonth(), oggi.getDate()+1);
+    return {ini, fine, pIni, pFine, nome:"Quest'anno", cfr:'rispetto allo stesso periodo del '+(oggi.getFullYear()-1)};
+  }
+  return {ini:null, fine:null, nome:'Tutto lo storico', cfr:null};
+}
+function guastiNelPeriodo(ini, fine){
+  const a = ini ? oggiISO(ini) : null, b = fine ? oggiISO(fine) : null;
+  return Object.entries(allGuasti).filter(([id,g])=>{
+    if(statLinea!=='ALL' && g.linea!==statLinea) return false;
+    if(!g.data) return !a;
+    if(a && g.data < a) return false;
+    if(b && g.data >= b) return false;
+    return true;
+  });
+}
+function chiaveCron(g){ return (g.data||'') + ' ' + (g.ora||'') + ' ' + String(g.creato||0).padStart(15,'0'); }
+function chiaveDescr(s){ return (s||'').trim().toLowerCase().replace(/\s+/g,' '); }
+
+/* Calcolo: guasti, treni (materiale), recidive */
+function calcolaStat(entries){
+  const ord = entries.slice().sort((x,y)=> chiaveCron(x[1]).localeCompare(chiaveCron(y[1])));
+  const treni = {}, gruppi = {}, descr = {}, perLinea = {M1:0,M2:0,M3:0,M4:0,M5:0};
+  let rip = 0, nonRip = 0, senzaMat = 0;
+  ord.forEach(([id,g])=>{
+    if(g.riparato==='si') rip++; else nonRip++;
+    if(perLinea[g.linea]!==undefined) perLinea[g.linea]++;
+    const kd = chiaveDescr(g.breve);
+    if(kd){
+      if(!descr[kd]) descr[kd] = {testo:(g.breve||'').trim(), n:0, rip:0, ids:[]};
+      descr[kd].n++; if(g.riparato==='si') descr[kd].rip++; descr[kd].ids.push(id);
+    }
+    const mat = (g.materiale||'').trim();
+    if(!mat){ senzaMat++; return; }
+    const kt = g.linea+'|'+mat;
+    if(!treni[kt]) treni[kt] = {linea:g.linea, materiale:mat, ids:[], rip:0, ultimo:null};
+    treni[kt].ids.push(id); if(g.riparato==='si') treni[kt].rip++; treni[kt].ultimo = g;
+    if(kd){
+      const kr = kt+'|'+kd;
+      if(!gruppi[kr]) gruppi[kr] = {linea:g.linea, materiale:mat, testo:(g.breve||'').trim(), ids:[], ultimo:null};
+      gruppi[kr].ids.push(id); gruppi[kr].ultimo = g;
+    }
+  });
+  const listaTreni = Object.values(treni).sort((a,b)=> b.ids.length-a.ids.length || chiaveCron(b.ultimo).localeCompare(chiaveCron(a.ultimo)));
+  const recidivi = Object.values(gruppi).filter(x=>x.ids.length>=2).sort((a,b)=> b.ids.length-a.ids.length || chiaveCron(b.ultimo).localeCompare(chiaveCron(a.ultimo)));
+  return {
+    totale: entries.length, rip, nonRip, senzaMat, perLinea,
+    descr: Object.values(descr).sort((a,b)=> b.n-a.n),
+    treni: listaTreni,
+    treniRip: listaTreni.filter(t=>t.ultimo.riparato==='si').length,
+    treniNonRip: listaTreni.filter(t=>t.ultimo.riparato!=='si').length,
+    treniRecidivi: listaTreni.filter(t=>t.ids.length>=2),
+    gruppiRecidivi: recidivi,
+    episodiRecidivi: recidivi.reduce((s,x)=>s+x.ids.length, 0)
+  };
+}
+
+function htmlKpi(lbl, val, prev, verso, sub, cfr, tono){
+  let delta = '';
+  if(prev!==null && prev!==undefined && cfr){
+    const d = val - prev;
+    const cls = d===0 ? '' : ((d>0) === (verso==='su') ? 'bene' : 'male');
+    delta = `<div class="kpi-delta ${cls}"><b>${d===0 ? 'Uguale' : (d>0?'+':'')+d}</b> ${cfr} (${prev})</div>`;
+  }
+  return `<div class="kpi ${tono||''}"><div class="kpi-lbl">${lbl}</div><div class="kpi-val">${val}</div>${sub?`<div class="kpi-sub">${sub}</div>`:''}${delta}</div>`;
+}
+function registraGruppo(titolo, sub, ids){
+  const k = 'g'+Object.keys(STAT_GRUPPI).length;
+  STAT_GRUPPI[k] = {titolo, sub, ids};
+  return k;
+}
+function htmlRiga(k, linea, titolo, sub, n, nLbl){
+  return `<div class="rank-row" onclick="apriStatSheet('${k}')">
+    ${badgeLinea(linea)}
+    <div class="rank-main"><div class="rank-title">${titolo}</div><div class="rank-sub">${sub}</div></div>
+    <div class="rank-count">${n}<small>${nLbl}</small></div>
+    ${ic('chevron')}
+  </div>`;
+}
+function htmlBarra(lbl, n, max, parti){
+  const fills = parti.map(([v,c])=> v>0 ? `<div class="bar-fill" style="width:${(v/max*100).toFixed(1)}%;background:${c}"></div>` : '').join('');
+  return `<div class="bar-item"><div class="bar-head"><span>${lbl}</span><b>${n}</b></div><div class="bar-track">${fills}</div></div>`;
+}
+function vuoto(testo){ return `<div class="empty-state">${ic('chart','')}<div class="empty-title">Nessun dato</div><div class="empty-sub">${testo}</div></div>`; }
+
+/* Andamento ultimi 6 mesi: linee sottili, colori tenui */
+function svgAndamento(){
+  const oggi = new Date(), mesi = [];
+  for(let i=5;i>=0;i--){
+    const d = new Date(oggi.getFullYear(), oggi.getMonth()-i, 1);
+    mesi.push({k:d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'), lbl:MESI_BREVI[d.getMonth()], tot:0, no:0});
+  }
+  Object.values(allGuasti).forEach(g=>{
+    if(statLinea!=='ALL' && g.linea!==statLinea) return;
+    const m = mesi.find(x=>x.k===(g.data||'').slice(0,7));
+    if(m){ m.tot++; if(g.riparato!=='si') m.no++; }
+  });
+  const W=320, H=160, pl=24, pr=24, pt=24, pb=32;
+  const max = Math.max(1, ...mesi.map(m=>m.tot));
+  const x = i => pl + (W-pl-pr) * i/5;
+  const y = v => pt + (H-pt-pb) * (1 - v/max);
+  const linea = (key,c) => `<polyline fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${mesi.map((m,i)=>x(i)+','+y(m[key])).join(' ')}"/>`
+    + mesi.map((m,i)=>`<circle cx="${x(i)}" cy="${y(m[key])}" r="3" fill="#fff" stroke="${c}" stroke-width="2"/>`).join('');
+  const griglia = [0, .5, 1].map(f=>`<line x1="${pl}" x2="${W-pr}" y1="${y(max*f)}" y2="${y(max*f)}" stroke="#E1DEFA" stroke-width="1"/>`).join('');
+  const valori = mesi.map((m,i)=>`<text x="${x(i)}" y="${y(m.tot)-8}" text-anchor="middle" font-size="11" font-weight="700" fill="#5E5A86">${m.tot}</text>`).join('');
+  const etichette = mesi.map((m,i)=>`<text x="${x(i)}" y="${H-8}" text-anchor="middle" font-size="11" fill="#8A86B0">${m.lbl}</text>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Andamento guasti ultimi 6 mesi">${griglia}${linea('no',C_KO)}${linea('tot',C_TOT)}${valori}${etichette}</svg>`;
+}
+
+function renderStat(){
+  const p = periodoStat();
+  const cur = calcolaStat(guastiNelPeriodo(p.ini, p.fine));
+  let prev = p.ini ? calcolaStat(guastiNelPeriodo(p.pIni, p.pFine)) : null;
+  // Nessun dato nel periodo di confronto: il confronto non ha senso, non lo mostro
+  if(prev && prev.totale===0){ prev = null; p.cfr = null; }
+  const pv = key => prev ? (typeof prev[key]==='number' ? prev[key] : prev[key].length) : null;
+  STAT_GRUPPI = {};
+
+  document.getElementById('statSub').textContent = p.nome + ' · ' + (statLinea==='ALL' ? 'tutte le linee' : 'linea '+statLinea);
+  const perc = (a,b)=> b ? Math.round(a/b*100)+'% del totale' : '';
+  const kpi = document.getElementById('statKpi');
+  const body = document.getElementById('statBody');
+
+  if(statModo==='guasti'){
+    kpi.innerHTML =
+      htmlKpi('Guasti', cur.totale, pv('totale'), 'giu', '', p.cfr) +
+      htmlKpi('Riparati', cur.rip, pv('rip'), 'su', perc(cur.rip,cur.totale), p.cfr, 'ok') +
+      htmlKpi('Non riparati', cur.nonRip, pv('nonRip'), 'giu', perc(cur.nonRip,cur.totale), p.cfr, 'ko') +
+      htmlKpi('Guasti recidivi', cur.gruppiRecidivi.length, pv('gruppiRecidivi'), 'giu', cur.episodiRecidivi ? cur.episodiRecidivi+' episodi' : '', p.cfr);
+
+    let html = `<div class="card"><div class="card-title">${ic('chart','')}Andamento ultimi 6 mesi</div>
+      <div class="chart" style="margin-top:16px">${svgAndamento()}</div>
+      <div class="legend"><span><i style="background:${C_TOT}"></i>Guasti</span><span><i style="background:${C_KO}"></i>Non riparati</span></div></div>`;
+
+    if(cur.totale===0){ body.innerHTML = html + vuoto('Nessun guasto nel periodo scelto'); return; }
+
+    if(statLinea==='ALL'){
+      const maxL = Math.max(1, ...Object.values(cur.perLinea));
+      html += `<div class="card"><div class="card-title">Guasti per linea</div><div style="margin-top:16px">` +
+        ['M1','M2','M3','M4','M5'].map(l=> htmlBarra(l, cur.perLinea[l], maxL, [[cur.perLinea[l], LINE_COLORS[l]+'99']])).join('') + `</div></div>`;
+    }
+
+    const top = cur.descr.slice(0, 8), maxD = top.length ? top[0].n : 1;
+    html += `<div class="card"><div class="card-title">Guasti più frequenti</div>
+      <div class="card-hint">Raggruppati per descrizione breve</div>` +
+      top.map(d=> htmlBarra(escapeHtml(d.testo), d.n, maxD, [[d.rip, C_OK], [d.n-d.rip, C_KO]])).join('') +
+      `<div class="legend" style="margin-top:16px"><span><i style="background:${C_OK}"></i>Riparati</span><span><i style="background:${C_KO}"></i>Non riparati</span></div></div>`;
+
+    html += `<div class="card"><div class="card-title">${ic('repeat','')}Guasti recidivi</div>
+      <div class="card-hint">Stesso guasto sullo stesso treno almeno 2 volte nel periodo</div>` +
+      (cur.gruppiRecidivi.length ? cur.gruppiRecidivi.map(r=>{
+        const k = registraGruppo('Materiale '+r.materiale, r.testo, r.ids);
+        return htmlRiga(k, r.linea, 'Materiale '+escapeHtml(r.materiale), 'ultimo '+fmtData(r.ultimo.data)+' · '+escapeHtml(r.testo), r.ids.length, 'volte');
+      }).join('') : `<div class="empty-sub">Nessun guasto recidivo nel periodo</div>`) + `</div>`;
+    body.innerHTML = html;
+  } else {
+    kpi.innerHTML =
+      htmlKpi('Treni con guasti', cur.treni.length, pv('treni'), 'giu', '', p.cfr) +
+      htmlKpi('Treni riparati', cur.treniRip, pv('treniRip'), 'su', 'ultimo guasto riparato', p.cfr, 'ok') +
+      htmlKpi('Treni non riparati', cur.treniNonRip, pv('treniNonRip'), 'giu', 'ultimo guasto aperto', p.cfr, 'ko') +
+      htmlKpi('Treni recidivi', cur.treniRecidivi.length, pv('treniRecidivi'), 'giu', 'almeno 2 guasti', p.cfr);
+
+    if(cur.treni.length===0){ body.innerHTML = vuoto('Nessun treno con guasti nel periodo scelto'); return; }
+
+    const tot = cur.treni.length;
+    let html = `<div class="card"><div class="card-title">Stato dei treni</div>
+      <div class="card-hint">In base all'ultimo guasto registrato su ciascun treno</div>
+      <div class="bar-track big">
+        <div class="bar-fill" style="width:${(cur.treniRip/tot*100).toFixed(1)}%;background:${C_OK}"></div>
+        <div class="bar-fill" style="width:${(cur.treniNonRip/tot*100).toFixed(1)}%;background:${C_KO}"></div>
+      </div>
+      <div class="legend"><span><i style="background:${C_OK}"></i>Riparati ${cur.treniRip}</span><span><i style="background:${C_KO}"></i>Non riparati ${cur.treniNonRip}</span></div></div>`;
+
+    const riga = t => {
+      const stato = t.ultimo.riparato==='si' ? 'riparato' : 'non riparato';
+      const k = registraGruppo('Materiale '+t.materiale, 'Linea '+t.linea+' · '+t.ids.length+(t.ids.length===1?' guasto':' guasti'), t.ids);
+      return htmlRiga(k, t.linea, 'Materiale '+escapeHtml(t.materiale), 'ultimo '+fmtData(t.ultimo.data)+' · '+stato, t.ids.length, t.ids.length===1?'guasto':'guasti');
+    };
+
+    html += `<div class="card"><div class="card-title">${ic('repeat','')}Treni recidivi</div>
+      <div class="card-hint">Treni con almeno 2 guasti nel periodo</div>` +
+      (cur.treniRecidivi.length ? cur.treniRecidivi.map(riga).join('') : `<div class="empty-sub">Nessun treno recidivo nel periodo</div>`) + `</div>`;
+
+    const lista = statTuttiTreni ? cur.treni : cur.treni.slice(0, 15);
+    html += `<div class="card"><div class="card-title">${ic('train','')}Tutti i treni</div>
+      <div class="card-hint">Ordinati per numero di guasti</div>` + lista.map(riga).join('') +
+      (cur.treni.length > 15 && !statTuttiTreni ? `<button class="btn-secondary" onclick="statTuttiTreni=true;renderStat()">Mostra tutti (${cur.treni.length})</button>` : '') + `</div>`;
+
+    if(cur.senzaMat) html += `<div class="card-hint" style="text-align:center">${cur.senzaMat} ${cur.senzaMat===1?'guasto senza materiale non è contato':'guasti senza materiale non sono contati'}</div>`;
+    body.innerHTML = html;
+  }
+}
+function apriStatSheet(k){
+  const gr = STAT_GRUPPI[k]; if(!gr) return;
+  document.getElementById('statSheetTitle').textContent = gr.titolo;
+  document.getElementById('statSheetSub').textContent = gr.sub;
+  const ids = gr.ids.filter(id=>allGuasti[id]).sort((a,b)=> chiaveCron(allGuasti[b]).localeCompare(chiaveCron(allGuasti[a])));
+  document.getElementById('statSheetList').innerHTML = ids.map(id=> htmlCardGuasto(id, allGuasti[id], `apriDaStat('${id}')`)).join('');
+  document.getElementById('statOverlay').classList.add('open');
+}
+function apriDaStat(id){
+  document.getElementById('statOverlay').classList.remove('open');
+  openDetail('guasto', id);
+}
+
+/* ════════ TOAST ════════ */
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+initForm();
+listenGuasti();
+listenSegnalazioni();
+listenMaterialiExtra();
+listenDescrizioniPreset();
+listenImpostazioni();
+history.replaceState(null, '');
+mostraPagina('home', {noHistory:true});
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+
+/* ════════ OFFLINE (service worker) ════════ */
+if('serviceWorker' in navigator && (location.protocol==='https:' || location.hostname==='localhost')){
+  window.addEventListener('load', ()=> navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>
