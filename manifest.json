@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Guasti Metro",
-  "short_name": "Guasti",
-  "description": "Registrazione guasti linee metro, dati sul telefono",
+  "name": "Guasti Treni Pro",
+  "short_name": "Guasti Pro",
+  "description": "Registrazione guasti dei treni della metropolitana, dati sul telefono",
   "lang": "it",
   "start_url": "./index.html",
   "scope": "./",
