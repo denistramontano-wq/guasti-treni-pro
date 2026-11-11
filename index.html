@@ -318,7 +318,7 @@ div.set-row{cursor:default}
     <button class="back" id="topBack" style="display:none" onclick="tornaHome()" aria-label="Torna alla Home"><span class="btn"><svg class="ic"><use href="#i-back"/></svg></span><span id="topTitle"></span></button>
     <div class="top-right">
       <button class="top-sync" id="topSync" style="display:none" onclick="aggiornaDati()" aria-label="Aggiorna dati" title="Aggiorna dati"><svg class="ic"><use href="#i-refresh"/></svg><i></i></button>
-      <div class="firma" onclick="tapVersione()">v5.1.0</div>
+      <div class="firma" onclick="tapVersione()">v5.1.1</div>
     </div>
   </header>
 
@@ -450,7 +450,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 5.1.0</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 5.1.1</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -471,7 +471,7 @@ div.set-row{cursor:default}
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v5.1.0</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v5.1.1</div>
     </section>
 
     <!-- ── PAGINA: NUOVO GUASTO ── -->
@@ -1006,7 +1006,7 @@ div.set-row{cursor:default}
    Archivio usato dal resto dell'app (ref().on / set / push / remove):
    i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '5.1.0';
+const APP_VERSIONE = '5.1.1';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
@@ -1158,17 +1158,28 @@ function contaDati(d){ d = d || {}; return Object.keys(d.guasti || {}).length + 
    Non è un vero problema: basta rileggere il file da capo poco dopo. */
 const attesa = ms => new Promise(r=> setTimeout(r, ms));
 function erroreTransitorio(e){
-  return !!e && (['InvalidStateError','NotReadableError','NoModificationAllowedError','InvalidModificationError'].includes(e.name)
+  return !!e && (['InvalidStateError','NotReadableError'].includes(e.name)
     || /changed since|state had changed|could not be read|in use/i.test(e.message || ''));
+}
+let cloudFase = '';   // lettura | scrittura: per capire dove si blocca
+function registraErroreFile(e){
+  try {
+    DEV_ERRORI.push(new Date().toTimeString().slice(0,8) + ' file, ' + (cloudFase || '?') + ': ' + (e && e.name) + ' · ' + (e && e.message));
+    if(DEV_ERRORI.length > 50) DEV_ERRORI.splice(0, DEV_ERRORI.length - 50);
+  } catch(x){}
 }
 async function conRiprova(fn){
   for(let i=1; ; i++){
     try { return await fn(); }
-    catch(e){ if(erroreTransitorio(e) && i<4){ await attesa(700*i); continue; } throw e; }
+    catch(e){ registraErroreFile(e); if(erroreTransitorio(e) && i<4){ await attesa(700*i); continue; } throw e; }
   }
 }
 function testoErrore(e){
-  if(erroreTransitorio(e)) return 'OneDrive sta aggiornando il file, riprovo tra poco';
+  if(erroreTransitorio(e)) return cloudFase==='scrittura'
+    ? 'OneDrive non mi lascia salvare il file, riprovo tra poco'
+    : 'OneDrive non mi lascia leggere il file, riprovo tra poco';
+  if(e && (e.name==='NoModificationAllowedError' || e.name==='InvalidModificationError')) return 'Il file si può solo leggere: OneDrive non permette di modificarlo da qui';
+  if(e && e.name==='NotAllowedError') return 'Permesso sul file negato';
   if(e && e.name==='NotFoundError') return 'Il file non si trova più: è stato spostato o cancellato';
   if(e && e.name==='QuotaExceededError') return 'Spazio esaurito';
   return (e && e.message) || 'errore sconosciuto';
@@ -1185,6 +1196,7 @@ async function cloudSincronizza(){
         cloudStato = 'permesso'; return;   // il telefono ha tolto il permesso: serve il tasto "Aggiorna dati"
       }
       const saltato = await conRiprova(async()=>{
+        cloudFase = 'lettura';
         const f = await cloudFile.getFile();
         // file non cambiato e niente da salvare: non serve rileggerlo
         if(cloudStato==='ok' && f.lastModified===cloudUltimaModifica && !cloudInfo().sporco) return true;
@@ -1195,6 +1207,7 @@ async function cloudSincronizza(){
         const su = stabile(unito);
         if(su !== stabile(locale)) db.sostituisci(unito);
         if(su !== stabile(remoto)){
+          cloudFase = 'scrittura';
           const w = await cloudFile.createWritable();
           await w.write(contenutoCopia());
           await w.close();
@@ -1206,6 +1219,7 @@ async function cloudSincronizza(){
       cloudSalvaInfo(saltato ? {ultimo:Date.now()} : {ultimo:Date.now(), nome:cloudFile.name, sporco:false});
     } catch(e){
       console.error(e);
+      if(!erroreTransitorio(e)) registraErroreFile(e);
       cloudUltimaModifica = 0;   // la prossima volta rilegge tutto
       cloudErroriDiFila++;
       // errore passeggero: l'avviso compare solo se continua per più controlli di fila
@@ -1442,10 +1456,38 @@ function devInfoExtra(){
 }
 function devAzioniExtra(){
   let h = '';
+  if(cloudFile) h += rigaDev('search','b-blue','Prova il file','Controlla passo per passo lettura e scrittura','devProvaFile()');
   if(cloudFile) h += rigaDev('refresh','b-green','Sincronizza adesso','Legge e scrive subito il file','devSincronizza()');
   h += rigaDev('trash','b-red','Cancella i dati di ' + QUI,'Il file nel cloud non viene toccato','devCancellaTutto()', true);
   return h;
 }
+/* Prova del file passo per passo: il risultato si copia e si invia a chi segue l'app */
+async function devProvaFile(){
+  if(!cloudFile){ showToast('Nessun file collegato'); return; }
+  const righe = ['Prova file Guasti Treni Pro ' + APP_VERSIONE, 'File: ' + cloudFile.name, 'Browser: ' + navigator.userAgent, ''];
+  const passo = async (nome, fn)=>{
+    try { const v = await fn(); righe.push('OK  ' + nome + (v!==undefined ? ' · ' + v : '')); return true; }
+    catch(e){ righe.push('NO  ' + nome + ' · ' + (e && e.name) + ': ' + (e && e.message)); return false; }
+  };
+  document.getElementById('devBody').innerHTML = '<div class="detail-text">Prova in corso...</div>';
+  let f1, testo;
+  await passo('permesso', ()=> cloudFile.requestPermission({mode:'readwrite'}));
+  await passo('apertura 1', async()=>{ f1 = await cloudFile.getFile(); return f1.size + ' byte, modificato ' + new Date(f1.lastModified).toLocaleString('it-IT'); });
+  await attesa(500);
+  await passo('apertura 2', async()=>{ const f2 = await cloudFile.getFile(); return f2.size + ' byte' + (f1 && (f2.lastModified!==f1.lastModified || f2.size!==f1.size) ? ' · CAMBIATO tra le due aperture' : ' · uguale'); });
+  await passo('lettura subito', async()=>{ const f = await cloudFile.getFile(); testo = await f.text(); return testo.length + ' caratteri'; });
+  await passo('lettura dopo 1 secondo', async()=>{ const f = await cloudFile.getFile(); await attesa(1000); return (await f.text()).length + ' caratteri'; });
+  if(testo!==undefined) await passo('contenuto', async()=>{ if(!testo.trim()) return 'file vuoto'; const o = leggiCopia(testo); return contaDati(o.dati) + ' registrazioni'; });
+  await passo('scrittura senza modifiche', async()=>{ const w = await cloudFile.createWritable({keepExistingData:true}); await w.close(); return 'riuscita'; });
+  await passo('apertura dopo scrittura', async()=>{ const f = await cloudFile.getFile(); return f.size + ' byte'; });
+  if(DEV_ERRORI.length) righe.push('', 'Ultimi errori:', ...DEV_ERRORI.slice(-5));
+  const esito = righe.join('\n');
+  document.getElementById('devBody').innerHTML =
+    `<div class="detail-text" style="font-size:13px">${escapeHtml(esito)}</div>
+     <div class="sheet-btns"><button class="btn-copy" onclick="devCopiaProva()">${ic('copy','')}Copia risultato</button><button class="btn-edit" onclick="apriDev()">${ic('back','')}Indietro</button></div>`;
+  window.devUltimaProva = esito;
+}
+function devCopiaProva(){ copiaNegliAppunti(window.devUltimaProva || '', 'Risultato copiato'); }
 async function devSincronizza(){ cloudUltimaModifica = 0; await cloudSincronizza(); apriDev(); showToast(cloudStato==='ok' ? 'Sincronizzato' : 'Sincronizzazione non riuscita'); }
 async function devCancellaTutto(){
   const n = contaDati(db.tutto());
