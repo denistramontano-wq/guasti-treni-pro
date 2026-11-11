@@ -47,6 +47,13 @@ button{font-family:inherit}
 .topbar-logo span{color:#C9C3F2}
 .firma{font-size:12px;line-height:1.4;color:rgba(255,255,255,.8);text-align:right;padding:8px 0;cursor:default;-webkit-user-select:none;user-select:none}
 .dev-err{font-size:12px;line-height:1.5;color:var(--red-fg);background:var(--red-bg);border-radius:12px;padding:8px 16px;margin-top:8px;word-break:break-word}
+.mem-val{font-size:12px;line-height:1.5;margin-top:8px;max-height:240px;overflow:auto;word-break:break-all}
+.reg-row{padding:16px 0;border-bottom:1px solid var(--border)}
+.reg-row:last-child{border-bottom:none}
+.reg-top{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--text2)}
+.reg-top b{font-weight:700;color:var(--purple)}
+.reg-el{font-size:14px;line-height:1.4;margin-top:8px}
+.reg-diff{font-size:12px;line-height:1.5;color:var(--text2);margin-top:8px;word-break:break-word}
 
 /* ── SCROLL ── */
 .scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:24px}
@@ -318,7 +325,7 @@ div.set-row{cursor:default}
     <button class="back" id="topBack" style="display:none" onclick="tornaHome()" aria-label="Torna alla Home"><span class="btn"><svg class="ic"><use href="#i-back"/></svg></span><span id="topTitle"></span></button>
     <div class="top-right">
       <button class="top-sync" id="topSync" style="display:none" onclick="aggiornaDati()" aria-label="Aggiorna dati" title="Aggiorna dati"><svg class="ic"><use href="#i-refresh"/></svg><i></i></button>
-      <div class="firma" onclick="tapVersione()">v5.1.1</div>
+      <div class="firma" onclick="tapVersione()">v5.2.0</div>
     </div>
   </header>
 
@@ -450,7 +457,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 5.1.1</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 5.2.0</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -465,13 +472,13 @@ div.set-row{cursor:default}
         <div class="set-box">
           <button class="set-row" onclick="apriDev()">
             <span class="bubble b-gray"><svg class="ic"><use href="#i-wrench"/></svg></span>
-            <span class="set-main"><span class="t" style="display:block">Modalità sviluppatore</span><span class="s">Diagnostica, dati grezzi, strumenti</span></span>
+            <span class="set-main"><span class="t" style="display:block">Modalità sviluppo</span><span class="s">Diagnostica, registro modifiche, strumenti</span></span>
             <svg class="ic"><use href="#i-chevron"/></svg>
           </button>
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v5.1.1</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v5.2.0</div>
     </section>
 
     <!-- ── PAGINA: NUOVO GUASTO ── -->
@@ -964,10 +971,23 @@ div.set-row{cursor:default}
   </div>
 </div>
 
+<div class="overlay" id="devPassOverlay" style="z-index:210">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2 id="devPassTitolo">Accesso riservato</h2>
+    <div id="devPassBody"></div>
+    <div class="error-msg" id="devPassErr"></div>
+    <div class="sheet-btns">
+      <button class="btn-cancel" onclick="chiudiPassword()"><svg class="ic"><use href="#i-x"/></svg>Annulla</button>
+      <button class="btn-edit" id="devPassOk">Entra</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="devOverlay">
   <div class="sheet">
     <div class="sheet-handle"></div>
-    <h2>Modalità sviluppatore</h2>
+    <h2>Modalità sviluppo</h2>
     <div id="devBody"></div>
     <div class="sheet-btns">
       <button class="btn-cancel" onclick="document.getElementById('devOverlay').classList.remove('open')"><svg class="ic"><use href="#i-x"/></svg>Chiudi</button>
@@ -1006,7 +1026,7 @@ div.set-row{cursor:default}
    Archivio usato dal resto dell'app (ref().on / set / push / remove):
    i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '5.1.1';
+const APP_VERSIONE = '5.2.0';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
@@ -1078,6 +1098,7 @@ const db = (()=>{
   function avvisa(){ ascoltatori.forEach(a=>{ try { a.cb({val:()=>leggi(a.p)}); } catch(e){ console.error(e); } }); }
   function scrivi(p, v){
     const prima = JSON.stringify(albero);
+    const valorePrima = leggi(p);
     const ks = pezzi(p);
     let n = albero;
     for(let i=0; i<ks.length-1; i++){
@@ -1094,6 +1115,7 @@ const db = (()=>{
     else { albero._ts[u] = ora; delete albero._del[u]; }
     try { memorizza(); }
     catch(e){ albero = JSON.parse(prima); return Promise.reject(new Error('memoria piena')); }
+    registraModifiche([{percorso: ks.join('/'), prima: valorePrima, dopo: elimina ? null : copia(v)}], 'app');
     avvisa();
     cloudModificato();
     return Promise.resolve();
@@ -1113,10 +1135,17 @@ const db = (()=>{
     };
   }
   function tutto(){ return copia(albero); }
-  function sostituisci(nuovo){
+  function sostituisci(nuovo, origine){
     const prima = albero;
     albero = unisci(nuovo, {});
     try { memorizza(); } catch(e){ albero = prima; throw new Error('Memoria piena'); }
+    // nel registro finiscono solo le registrazioni cambiate davvero
+    const ua = unitaDi(prima), ub = unitaDi(albero), diff = [];
+    new Set([...Object.keys(ua), ...Object.keys(ub)]).forEach(u=>{
+      if(JSON.stringify(ua[u]===undefined ? null : ua[u]) !== JSON.stringify(ub[u]===undefined ? null : ub[u]))
+        diff.push({percorso:u, prima: ua[u]===undefined ? null : ua[u], dopo: ub[u]===undefined ? null : ub[u]});
+    });
+    if(diff.length) registraModifiche(diff, origine || 'importazione');
     avvisa();
   }
   return { ref, tutto, sostituisci };
@@ -1145,11 +1174,46 @@ function idbSet(k, v){ return idb().then(d=> new Promise((ok,ko)=>{ const t = d.
 function contenutoCopia(){
   return JSON.stringify({app:'guasti-metro', versione:APP_VERSIONE, salvato:new Date().toISOString(), dati:db.tutto()});
 }
+/* Legge il contenuto del file in modo tollerante.
+   Sul telefono OneDrive a volte non accorcia il file quando l'app lo riscrive più corto:
+   in fondo restano pezzi della versione precedente e il JSON non si legge più.
+   Qui si tolgono BOM e caratteri nulli e si prende solo il primo oggetto completo. */
+function estraiJSON(testo){
+  const s = String(testo || '').replace(/^﻿/, '').replace(/\u0000/g, '').trim();
+  try { return JSON.parse(s); } catch(e){}
+  const i = s.indexOf('{');
+  if(i<0) return null;
+  let prof = 0, inStr = false, esc = false;
+  for(let k=i; k<s.length; k++){
+    const c = s[k];
+    if(inStr){ if(esc) esc = false; else if(c==='\\') esc = true; else if(c==='"') inStr = false; continue; }
+    if(c==='"') inStr = true;
+    else if(c==='{') prof++;
+    else if(c==='}'){ prof--; if(prof===0){ try { return JSON.parse(s.slice(i, k+1)); } catch(e){ return null; } } }
+  }
+  return null;   // oggetto non chiuso: il file è stato letto a metà
+}
 function leggiCopia(testo){
-  let o;
-  try { o = JSON.parse(testo); } catch(e){ throw new Error('Il file non è leggibile'); }
+  const o = estraiJSON(testo);
+  if(o===null){
+    const t = String(testo || '');
+    try { DEV_ERRORI.push(new Date().toTimeString().slice(0,8) + ' file non leggibile: ' + t.length + ' caratteri, inizio "' + t.slice(0,60).replace(/\s+/g,' ') + '", fine "' + t.slice(-40).replace(/\s+/g,' ') + '"'); } catch(x){}
+    if(t.trim().startsWith('{')){
+      // letto a metà: si riprova come per gli altri errori passeggeri
+      const e = new Error('Il file è incompleto: OneDrive non l\'ha ancora scaricato tutto, riprova tra poco'); e.name = 'NotReadableError'; throw e;
+    }
+    throw new Error('Il file non è leggibile: non contiene dati di Guasti Treni Pro');
+  }
   if(!o || o.app!=='guasti-metro' || !o.dati || typeof o.dati!=='object') throw new Error('Il file non è una copia di Guasti Treni Pro');
   return o;
+}
+/* Legge il testo del file. Se il file ha dei byte ma la lettura torna vuota,
+   è una lettura fallita: non va mai trattata come file vuoto (si perderebbero i dati degli altri). */
+async function leggiTestoFile(h){
+  const f = await h.getFile();
+  const testo = (await f.text()).trim();
+  if(!testo && f.size>0){ const e = new Error('lettura vuota di un file da ' + f.size + ' byte'); e.name = 'NotReadableError'; throw e; }
+  return {f, testo};
 }
 function contaDati(d){ d = d || {}; return Object.keys(d.guasti || {}).length + Object.keys(d.segnalazioni || {}).length; }
 
@@ -1201,11 +1265,12 @@ async function cloudSincronizza(){
         // file non cambiato e niente da salvare: non serve rileggerlo
         if(cloudStato==='ok' && f.lastModified===cloudUltimaModifica && !cloudInfo().sporco) return true;
         const testo = (await f.text()).trim();
+        if(!testo && f.size>0){ const e = new Error('lettura vuota di un file da ' + f.size + ' byte'); e.name = 'NotReadableError'; throw e; }
         const remoto = unisci(testo ? leggiCopia(testo).dati : {}, {});
         const locale = db.tutto();
         const unito = unisci(locale, remoto);
         const su = stabile(unito);
-        if(su !== stabile(locale)) db.sostituisci(unito);
+        if(su !== stabile(locale)) db.sostituisci(unito, 'file');
         if(su !== stabile(remoto)){
           cloudFase = 'scrittura';
           const w = await cloudFile.createWritable();
@@ -1289,7 +1354,7 @@ async function cloudAvvio(){
 async function cloudCollega(h){
   let p = 'prompt';
   try { p = await h.requestPermission({mode:'readwrite'}); } catch(e){}
-  const testo = await conRiprova(async()=> (await (await h.getFile()).text()).trim());
+  const {testo} = await conRiprova(()=> leggiTestoFile(h));
   if(testo) leggiCopia(testo);   // se il file non è valido si ferma qui
   cloudFile = h; cloudUltimaModifica = 0;
   await idbSet('file', h);
@@ -1351,7 +1416,7 @@ function copiaRipristina(){
     try {
       const o = leggiCopia(await f.text());
       const prima = contaDati(db.tutto());
-      db.sostituisci(unisci(db.tutto(), o.dati));
+      db.sostituisci(unisci(db.tutto(), o.dati), 'importazione');
       const dopo = contaDati(db.tutto());
       if(cloudFile){ cloudUltimaModifica = 0; cloudSincronizza(); } else { cloudSalvaInfo({sporco:false}); renderCloud(); }
       showToast(dopo>prima ? `Aggiunte ${dopo-prima} registrazioni` : 'Nessuna registrazione nuova nella copia');
@@ -1493,6 +1558,7 @@ async function devCancellaTutto(){
   const n = contaDati(db.tutto());
   if(!confirm(`Cancellare da ${QUI} tutte le ${n} registrazioni, il collegamento al file e le impostazioni del cloud?`)) return;
   if(!cloudFile && n>0 && !confirm('Nessun file nel cloud è collegato: senza una copia queste registrazioni andranno perse. Continuare?')) return;
+  registraModifiche([{percorso:'tutti i dati', prima: n + ' registrazioni', dopo: null}], 'reset');
   try { localStorage.removeItem(LOCALE_KEY); localStorage.removeItem(CLOUD_KEY); } catch(e){}
   try { await idbSet('file', null); } catch(e){}
   location.reload();
@@ -2797,25 +2863,174 @@ function svuotaDatiLocali(){
   showToast('Preferenze reimpostate');
 }
 
-/* ════════ MODALITÀ SVILUPPATORE ════════
-   Si attiva toccando 7 volte il numero di versione (in alto o in fondo alle Impostazioni). */
+/* ════════ MODALITÀ SVILUPPO (nascosta) ════════
+   Si attiva e si disattiva con 7 tocchi rapidi sul numero di versione.
+   All'attivazione chiede la password (iniziale admin1234, si cambia dal pannello). */
 const APP_AUTORE = 'Denis Tramontano';
 const DEV_ERRORI = [];
-window.addEventListener('error', e=> DEV_ERRORI.push(new Date().toTimeString().slice(0,8) + ' ' + (e.message || 'errore') + (e.lineno ? ' (riga ' + e.lineno + ')' : '')));
-window.addEventListener('unhandledrejection', e=> DEV_ERRORI.push(new Date().toTimeString().slice(0,8) + ' ' + ((e.reason && e.reason.message) || String(e.reason))));
+const DEV_LOG = [];
+const oraBreve = ()=> new Date().toTimeString().slice(0,8);
+window.addEventListener('error', e=> DEV_ERRORI.push(oraBreve() + ' ' + (e.message || 'errore') + (e.lineno ? ' (riga ' + e.lineno + ')' : '')));
+window.addEventListener('unhandledrejection', e=> DEV_ERRORI.push(oraBreve() + ' ' + ((e.reason && e.reason.message) || String(e.reason))));
+// copia dei messaggi della console, da vedere nel pannello
+['log','info','warn','error'].forEach(k=>{
+  const orig = console[k] ? console[k].bind(console) : ()=>{};
+  console[k] = (...a)=>{
+    try {
+      DEV_LOG.push(oraBreve() + ' ' + k + ': ' + a.map(x=> x instanceof Error ? x.name + ': ' + x.message : (typeof x==='object' ? JSON.stringify(x) : String(x))).join(' ').slice(0, 300));
+      if(DEV_LOG.length > 100) DEV_LOG.shift();
+    } catch(e){}
+    orig(...a);
+  };
+});
+const DEV_PASS_KEY = 'guastiMetro.devPass';
+const DEV_PASS_INIZIALE = 'admin1234';
+function devPassword(){ try { return localStorage.getItem(DEV_PASS_KEY) || DEV_PASS_INIZIALE; } catch(e){ return DEV_PASS_INIZIALE; } }
 let devTocchi = 0, devTimer = null;
 
 function tapVersione(){
   clearTimeout(devTimer);
   devTimer = setTimeout(()=>{ devTocchi = 0; }, 2000);
-  devTocchi++;
-  if(prefs.dev){ if(devTocchi===1) return; if(devTocchi>=3){ devTocchi = 0; apriDev(); } return; }
-  if(devTocchi>=7){
-    devTocchi = 0;
+  if(++devTocchi < 7) return;
+  devTocchi = 0;
+  if(prefs.dev){ devDisattiva(); return; }
+  apriPassword('accesso');
+}
+
+/* ── Password ── */
+function apriPassword(modo){
+  const accesso = modo==='accesso';
+  document.getElementById('devPassTitolo').textContent = accesso ? 'Accesso riservato' : 'Cambia password';
+  document.getElementById('devPassBody').innerHTML = accesso
+    ? `<div class="field"><label for="devPass1">Password</label><input type="password" id="devPass1" autocomplete="off" onkeydown="if(event.key==='Enter')confermaPassword('accesso')"></div>`
+    : `<div class="field"><label for="devPass0">Password attuale</label><input type="password" id="devPass0" autocomplete="off"></div>
+       <div class="field"><label for="devPass1">Nuova password</label><input type="password" id="devPass1" autocomplete="new-password"></div>
+       <div class="field"><label for="devPass2">Ripeti la nuova password</label><input type="password" id="devPass2" autocomplete="new-password"></div>`;
+  document.getElementById('devPassErr').textContent = '';
+  document.getElementById('devPassOk').onclick = ()=> confermaPassword(modo);
+  document.getElementById('devPassOk').textContent = accesso ? 'Entra' : 'Salva password';
+  document.getElementById('devPassOverlay').classList.add('open');
+  setTimeout(()=>{ const i = document.getElementById(accesso ? 'devPass1' : 'devPass0'); if(i) i.focus(); }, 100);
+}
+function chiudiPassword(){ document.getElementById('devPassOverlay').classList.remove('open'); }
+function confermaPassword(modo){
+  const err = document.getElementById('devPassErr');
+  if(modo==='accesso'){
+    if(document.getElementById('devPass1').value !== devPassword()){ err.textContent = 'Password errata'; return; }
+    chiudiPassword();
     setPref('dev', true);
-    showToast('Modalità sviluppatore attivata');
     apriDev();
-  } else if(devTocchi>=4){ const r = 7-devTocchi; showToast(`Ancora ${r} ${r===1 ? 'tocco' : 'tocchi'} per la modalità sviluppatore`); }
+    return;
+  }
+  const v0 = document.getElementById('devPass0').value, v1 = document.getElementById('devPass1').value, v2 = document.getElementById('devPass2').value;
+  if(v0 !== devPassword()){ err.textContent = 'La password attuale non è corretta'; return; }
+  if(v1.length < 4){ err.textContent = 'La nuova password deve avere almeno 4 caratteri'; return; }
+  if(v1 !== v2){ err.textContent = 'Le due password non coincidono'; return; }
+  try { localStorage.setItem(DEV_PASS_KEY, v1); } catch(e){ err.textContent = 'Non riesco a salvarla'; return; }
+  chiudiPassword();
+  showToast('Password cambiata');
+}
+
+/* ── Registro delle modifiche ai dati ──
+   Ogni aggiunta, modifica, eliminazione, importazione o reset crea una riga con
+   data e ora, azione, elemento, valore prima e dopo. Resta sul dispositivo. */
+const REGISTRO_KEY = 'guastiMetro.registro';
+const REGISTRO_MAX = 1000;
+const ORIGINI = {app:'fatta qui', file:'arrivata dal file', importazione:'da una copia', reset:'reset'};
+function leggiRegistro(){ try { return JSON.parse(localStorage.getItem(REGISTRO_KEY) || '[]') || []; } catch(e){ return []; } }
+function descriviElemento(p, v){
+  const pz = String(p).split('/'), tipo = pz[0];
+  const nomi = {guasti:'Guasto', segnalazioni:'Segnalazione', materiali_extra:'Materiale', materiali_deleted:'Materiale nascosto', descrizioni_preset:'Descrizione predefinita', modelli_messaggio:'Modello', impostazioni:'Impostazione'};
+  let d = nomi[tipo] || p;
+  if(v && typeof v==='object' && !Array.isArray(v)){
+    if(v.linea) d += ' ' + v.linea;
+    if(v.data) d += ' ' + fmtData(v.data) + (v.ora ? ' ' + v.ora : '');
+    if(v.breve) d += ' · ' + v.breve;
+    if(v.nome) d += ' ' + v.nome;
+  } else if(tipo.startsWith('materiali')) d += ' ' + pz.slice(1).join(' ');
+  else if(typeof v==='string') d += ' · ' + v.slice(0, 40);
+  else if(tipo==='impostazioni') d += ' ' + pz.slice(1).join(' ');
+  return d;
+}
+function registraModifiche(lista, origine){
+  const r = leggiRegistro();
+  const quando = new Date().toISOString();
+  lista.forEach(({percorso, prima, dopo})=>{
+    if(prima!=null && dopo!=null && JSON.stringify(prima)===JSON.stringify(dopo)) return;
+    const azione = origine==='reset' ? 'reset' : origine==='importazione' ? 'importazione' : (prima==null ? 'aggiunta' : (dopo==null ? 'eliminazione' : 'modifica'));
+    r.push({quando, azione, origine, elemento: percorso, descrizione: descriviElemento(percorso, dopo!=null ? dopo : prima), prima: prima==null ? null : prima, dopo: dopo==null ? null : dopo});
+  });
+  if(r.length > REGISTRO_MAX) r.splice(0, r.length - REGISTRO_MAX);
+  try { localStorage.setItem(REGISTRO_KEY, JSON.stringify(r)); }
+  catch(e){ try { localStorage.setItem(REGISTRO_KEY, JSON.stringify(r.slice(-300))); } catch(x){} }
+}
+function testoValore(v){ return v==null ? '—' : (typeof v==='object' ? JSON.stringify(v) : String(v)); }
+function diffBreve(a, b){
+  if(a && b && typeof a==='object' && typeof b==='object' && !Array.isArray(a)){
+    const campi = [...new Set([...Object.keys(a), ...Object.keys(b)])].filter(k=> JSON.stringify(a[k])!==JSON.stringify(b[k]));
+    return campi.map(k=> `${k}: ${testoValore(a[k])} → ${testoValore(b[k])}`).join(' · ');
+  }
+  return testoValore(a) + ' → ' + testoValore(b);
+}
+function devRegistro(){
+  const r = leggiRegistro().slice().reverse();
+  let h = `<div class="sec-sub" style="margin-bottom:16px">${r.length} ${r.length===1 ? 'modifica registrata' : 'modifiche registrate'} su ${QUI}${r.length>150 ? ', qui le ultime 150' : ''}</div>`;
+  h += r.length ? '<div class="set-box">' + r.slice(0,150).map(x=>`<div class="reg-row">
+      <div class="reg-top"><b>${escapeHtml(x.azione)}</b><span>${new Date(x.quando).toLocaleString('it-IT', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'})}</span></div>
+      <div class="reg-el">${escapeHtml(x.descrizione || x.elemento)}${x.origine && x.origine!=='app' ? ' · ' + escapeHtml(ORIGINI[x.origine] || x.origine) : ''}</div>
+      ${x.azione==='modifica' || (x.origine==='file' && x.prima!=null && x.dopo!=null) ? `<div class="reg-diff">${escapeHtml(diffBreve(x.prima, x.dopo))}</div>` : ''}
+    </div>`).join('') + '</div>'
+    : '<div class="set-box" style="padding:16px;font-size:14px;color:var(--text2)">Nessuna modifica registrata</div>';
+  h += '<div class="set-box">'
+     + rigaDev('file','b-blue','Esporta come testo','File .txt leggibile','devEsportaRegistro(\'txt\')')
+     + rigaDev('download','b-purple','Esporta come JSON','Con tutti i valori prima e dopo','devEsportaRegistro(\'json\')')
+     + rigaDev('trash','b-red','Svuota il registro','Chiede conferma','devSvuotaRegistro()', true)
+     + '</div>';
+  h += `<div class="sheet-btns"><button class="btn-edit" onclick="apriDev()">${ic('back','')}Indietro</button></div>`;
+  document.getElementById('devBody').innerHTML = h;
+  document.querySelector('#devOverlay .sheet').scrollTop = 0;
+}
+function scaricaFile(nome, testo, tipo){
+  const url = URL.createObjectURL(new Blob([testo], {type: tipo}));
+  const a = document.createElement('a');
+  a.href = url; a.download = nome;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+function devEsportaRegistro(formato){
+  const r = leggiRegistro();
+  if(!r.length){ showToast('Il registro è vuoto'); return; }
+  if(formato==='json'){ scaricaFile(`guasti-treni-pro-registro-${oggiISO()}.json`, JSON.stringify(r, null, 2), 'application/json'); return; }
+  const righe = r.map(x=> [new Date(x.quando).toLocaleString('it-IT'), x.azione, ORIGINI[x.origine] || x.origine, x.descrizione || x.elemento, 'prima: ' + testoValore(x.prima), 'dopo: ' + testoValore(x.dopo)].join(' | '));
+  scaricaFile(`guasti-treni-pro-registro-${oggiISO()}.txt`, '﻿Registro modifiche Guasti Treni Pro\n\n' + righe.join('\n'), 'text/plain;charset=utf-8');
+}
+function devSvuotaRegistro(){
+  const n = leggiRegistro().length;
+  if(!n){ showToast('Il registro è già vuoto'); return; }
+  if(!confirm(`Cancellare tutte le ${n} righe del registro delle modifiche? Non si possono recuperare.`)) return;
+  try { localStorage.removeItem(REGISTRO_KEY); } catch(e){}
+  devRegistro();
+  showToast('Registro svuotato');
+}
+
+/* ── Memoria locale in sola lettura ── */
+async function devMemoria(){
+  let h = '<div class="set-lbl">Memoria del browser (localStorage)</div>';
+  const chiavi = [];
+  try { for(let i=0; i<localStorage.length; i++) chiavi.push(localStorage.key(i)); } catch(e){}
+  chiavi.sort();
+  h += chiavi.length ? chiavi.map(k=>{
+    const v = localStorage.getItem(k) || '';
+    const mostra = k===DEV_PASS_KEY ? '(nascosta)' : (v.length > 3000 ? v.slice(0, 3000) + ' … (' + v.length + ' caratteri in tutto)' : v);
+    return `<div class="lbl">${escapeHtml(k)} · ${(v.length*2/1024).toFixed(1).replace('.', ',')} KB</div><div class="detail-text mem-val">${escapeHtml(mostra)}</div>`;
+  }).join('<div style="height:16px"></div>') : '<div class="set-box" style="padding:16px;font-size:14px;color:var(--text2)">Vuota</div>';
+  h += '<div class="set-lbl" style="margin-top:24px">Archivio file collegati (IndexedDB)</div>';
+  let idbTesto = 'Nessun file collegato';
+  try { const h1 = await idbGet('file'); if(h1) idbTesto = 'guastiMetro / h / file → ' + (h1.name || 'file'); } catch(e){ idbTesto = 'Non disponibile: ' + e.message; }
+  h += `<div class="detail-text mem-val">${escapeHtml(idbTesto)}</div>`;
+  h += `<div class="sheet-btns"><button class="btn-edit" onclick="apriDev()">${ic('back','')}Indietro</button></div>`;
+  document.getElementById('devBody').innerHTML = h;
+  document.querySelector('#devOverlay .sheet').scrollTop = 0;
 }
 function versioneApp(){ const m = (document.querySelector('.firma')?.textContent || '').match(/\d+\.\d+\.\d+/); return m ? m[0] : '?'; }
 function datiGrezzi(){
@@ -2860,12 +3075,21 @@ function apriDev(){
   h += '<div class="set-lbl">Errori recenti</div>';
   h += DEV_ERRORI.length ? DEV_ERRORI.slice(-10).reverse().map(e=>`<div class="dev-err">${escapeHtml(e)}</div>`).join('') + '<div style="height:24px"></div>'
                          : '<div class="set-box" style="padding:16px;font-size:14px;color:var(--text2)">Nessun errore da quando hai aperto l\'app</div>';
+  h += '<div class="set-lbl">Log della console</div>';
+  h += DEV_LOG.length ? `<div class="detail-text mem-val" style="margin-bottom:24px">${escapeHtml(DEV_LOG.slice(-20).reverse().join('\n'))}</div>`
+                      : '<div class="set-box" style="padding:16px;font-size:14px;color:var(--text2)">Nessun messaggio</div>';
+  const nReg = leggiRegistro().length;
+  h += '<div class="set-lbl">Dati</div><div class="set-box">';
+  h += rigaDev('list','b-blue','Registro modifiche', nReg + (nReg===1 ? ' riga' : ' righe') + ' · aggiunte, modifiche, eliminazioni','devRegistro()');
+  h += rigaDev('search','b-gray','Memoria locale','Contenuto salvato sul dispositivo, sola lettura','devMemoria()');
+  h += rigaDev('download','b-purple','Scarica tutti i dati','File .json con i dati grezzi','devScarica()');
+  h += '</div>';
   h += '<div class="set-lbl">Strumenti</div><div class="set-box">';
   h += rigaDev('copy','b-blue','Copia diagnostica','Testo da incollare quando segnali un problema','devCopia()');
-  h += rigaDev('download','b-purple','Scarica tutti i dati','File .json con i dati grezzi','devScarica()');
   h += devAzioniExtra();
   h += rigaDev('refresh','b-amber','Ricarica da zero','Svuota la cache dell\'app e la ricarica','devRicarica()');
-  h += rigaDev('x','b-red','Disattiva modalità sviluppatore','Si riattiva con 7 tocchi sulla versione','devDisattiva()', true);
+  h += rigaDev('settings','b-gray','Cambia password','Serve per entrare qui','apriPassword(\'cambio\')');
+  h += rigaDev('x','b-red','Esci dalla modalità sviluppo','Si riattiva con 7 tocchi sulla versione','devDisattiva()', true);
   h += '</div>';
   document.getElementById('devBody').innerHTML = h;
   document.getElementById('devOverlay').classList.add('open');
@@ -2895,7 +3119,7 @@ async function devRicarica(){
 function devDisattiva(){
   document.getElementById('devOverlay').classList.remove('open');
   setPref('dev', false);
-  showToast('Modalità sviluppatore disattivata');
+  showToast('Modalità sviluppo disattivata');
 }
 
 /* ════════ STATISTICHE ════════ */
