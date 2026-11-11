@@ -305,7 +305,7 @@ div.set-row{cursor:default}
   <header class="topbar">
     <div class="topbar-logo" id="topLogo"><svg class="ic ic-lg"><use href="#i-alert"/></svg>Guasti Treni<span>Pro</span></div>
     <button class="back" id="topBack" style="display:none" onclick="tornaHome()" aria-label="Torna alla Home"><span class="btn"><svg class="ic"><use href="#i-back"/></svg></span><span id="topTitle"></span></button>
-    <div class="firma" onclick="tapVersione()">v5.0.0</div>
+    <div class="firma" onclick="tapVersione()">v5.0.1</div>
   </header>
 
   <main class="scroll-area">
@@ -432,7 +432,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 5.0.0</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 5.0.1</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -453,7 +453,7 @@ div.set-row{cursor:default}
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v5.0.0</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v5.0.1</div>
     </section>
 
     <!-- ── PAGINA: NUOVO GUASTO ── -->
@@ -988,7 +988,7 @@ div.set-row{cursor:default}
    Archivio usato dal resto dell'app (ref().on / set / push / remove):
    i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '5.0.0';
+const APP_VERSIONE = '5.0.1';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
@@ -1135,6 +1135,28 @@ function leggiCopia(testo){
 }
 function contaDati(d){ d = d || {}; return Object.keys(d.guasti || {}).length + Object.keys(d.segnalazioni || {}).length; }
 
+/* OneDrive può cambiare il file mentre l'app lo legge o lo scrive (sta sincronizzando):
+   il browser allora dà un errore "state had changed since it was read from disk".
+   Non è un vero problema: basta rileggere il file da capo poco dopo. */
+const attesa = ms => new Promise(r=> setTimeout(r, ms));
+function erroreTransitorio(e){
+  return !!e && (['InvalidStateError','NotReadableError','NoModificationAllowedError','InvalidModificationError'].includes(e.name)
+    || /changed since|state had changed|could not be read|in use/i.test(e.message || ''));
+}
+async function conRiprova(fn){
+  for(let i=1; ; i++){
+    try { return await fn(); }
+    catch(e){ if(erroreTransitorio(e) && i<4){ await attesa(700*i); continue; } throw e; }
+  }
+}
+function testoErrore(e){
+  if(erroreTransitorio(e)) return 'OneDrive sta aggiornando il file, riprovo tra poco';
+  if(e && e.name==='NotFoundError') return 'Il file non si trova più: è stato spostato o cancellato';
+  if(e && e.name==='QuotaExceededError') return 'Spazio esaurito';
+  return (e && e.message) || 'errore sconosciuto';
+}
+let cloudErroriDiFila = 0;
+
 /* Legge il file, unisce con i dati di qui, aggiorna entrambi se serve */
 async function cloudSincronizza(){
   if(!cloudFile) return;
@@ -1145,24 +1167,34 @@ async function cloudSincronizza(){
         if(cloudStato!=='permesso') cloudChiestoAuto = false;   // il permesso è scaduto adesso: al prossimo tocco lo richiede
         cloudStato = 'permesso'; return;
       }
-      const f = await cloudFile.getFile();
-      // file non cambiato e niente da salvare: non serve rileggerlo
-      if(cloudStato==='ok' && f.lastModified===cloudUltimaModifica && !cloudInfo().sporco){ cloudSalvaInfo({ultimo:Date.now()}); return; }
-      const testo = (await f.text()).trim();
-      const remoto = unisci(testo ? leggiCopia(testo).dati : {}, {});
-      const locale = db.tutto();
-      const unito = unisci(locale, remoto);
-      const su = stabile(unito);
-      if(su !== stabile(locale)) db.sostituisci(unito);
-      if(su !== stabile(remoto)){
-        const w = await cloudFile.createWritable();
-        await w.write(contenutoCopia());
-        await w.close();
-        cloudUltimaModifica = (await cloudFile.getFile()).lastModified;
-      } else cloudUltimaModifica = f.lastModified;
-      cloudStato = 'ok'; cloudErrore = '';
-      cloudSalvaInfo({ultimo:Date.now(), nome:cloudFile.name, sporco:false});
-    } catch(e){ cloudStato = 'errore'; cloudErrore = e.message || 'errore sconosciuto'; console.error(e); }
+      const saltato = await conRiprova(async()=>{
+        const f = await cloudFile.getFile();
+        // file non cambiato e niente da salvare: non serve rileggerlo
+        if(cloudStato==='ok' && f.lastModified===cloudUltimaModifica && !cloudInfo().sporco) return true;
+        const testo = (await f.text()).trim();
+        const remoto = unisci(testo ? leggiCopia(testo).dati : {}, {});
+        const locale = db.tutto();
+        const unito = unisci(locale, remoto);
+        const su = stabile(unito);
+        if(su !== stabile(locale)) db.sostituisci(unito);
+        if(su !== stabile(remoto)){
+          const w = await cloudFile.createWritable();
+          await w.write(contenutoCopia());
+          await w.close();
+          cloudUltimaModifica = (await cloudFile.getFile()).lastModified;
+        } else cloudUltimaModifica = f.lastModified;
+        return false;
+      });
+      cloudStato = 'ok'; cloudErrore = ''; cloudErroriDiFila = 0;
+      cloudSalvaInfo(saltato ? {ultimo:Date.now()} : {ultimo:Date.now(), nome:cloudFile.name, sporco:false});
+    } catch(e){
+      console.error(e);
+      cloudUltimaModifica = 0;   // la prossima volta rilegge tutto
+      cloudErroriDiFila++;
+      // errore passeggero: l'avviso compare solo se continua per più controlli di fila
+      if(erroreTransitorio(e) && cloudErroriDiFila < 3) return;
+      cloudStato = 'errore'; cloudErrore = testoErrore(e);
+    }
   })();
   await cloudInCorso;
   cloudInCorso = null;
@@ -1231,7 +1263,7 @@ async function cloudRiattiva(){
 async function cloudCollega(h){
   let p = 'prompt';
   try { p = await h.requestPermission({mode:'readwrite'}); } catch(e){}
-  const testo = (await (await h.getFile()).text()).trim();
+  const testo = await conRiprova(async()=> (await (await h.getFile()).text()).trim());
   if(testo) leggiCopia(testo);   // se il file non è valido si ferma qui
   cloudFile = h; cloudUltimaModifica = 0;
   await idbSet('file', h);
@@ -1245,14 +1277,14 @@ async function cloudCreaFile(){
   try {
     const h = await window.showSaveFilePicker({suggestedName:'guasti-treni-pro-dati.json', types:TIPI_COPIA});
     await cloudCollega(h);
-  } catch(e){ if(e.name!=='AbortError') showToast(e.message || 'Non riesco a creare il file'); }
+  } catch(e){ if(e.name!=='AbortError') showToast(testoErrore(e)); }
 }
 async function cloudApriFile(){
   chiudiCloud();
   try {
     const [h] = await window.showOpenFilePicker({types:TIPI_COPIA, multiple:false});
     await cloudCollega(h);
-  } catch(e){ if(e.name!=='AbortError') showToast(e.message || 'File non valido'); }
+  } catch(e){ if(e.name!=='AbortError') showToast(testoErrore(e)); }
 }
 function cloudScollega(){
   chiudiCloud();
@@ -1321,7 +1353,7 @@ function renderCloud(){
     testo = 'In pausa · tocca per riattivare'; classe = 'ko';
     avviso = VERSIONE_PC ? 'Clicca qui e consenti l\'accesso al file dei dati.' : 'Il salvataggio nel cloud è in pausa. Tocca per riattivarlo.';
   } else if(cloudFile && cloudStato==='errore'){
-    testo = cloudErrore + ' · riprovo alla prossima modifica'; classe = 'ko';
+    testo = cloudErrore; classe = 'ko';
     if(VERSIONE_PC) avviso = 'Problema con il file dei dati: ' + cloudErrore;
   } else if(VERSIONE_PC && FILE_API){
     testo = 'Nessun file collegato';
