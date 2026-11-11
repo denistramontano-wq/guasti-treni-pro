@@ -107,6 +107,17 @@ div.set-row{cursor:default}
 .switch.on::after{left:20px}
 .conn{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0}
 .conn.ok{background:var(--green)} .conn.ko{background:var(--red)}
+.top-right{display:flex;align-items:center;gap:8px}
+.top-sync{position:relative;width:40px;height:40px;border-radius:12px;border:none;background:rgba(255,255,255,.14);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.top-sync:active{background:rgba(255,255,255,.28)}
+.top-sync i{position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--amber);display:none}
+.top-sync.avviso i{display:block}
+.gira .ic{animation:gira 1s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+.h-sync{width:100%;display:flex;align-items:center;gap:16px;padding:16px;margin-bottom:8px;border:1px solid var(--border);border-radius:16px;background:var(--surface);color:var(--text);text-align:left;cursor:pointer}
+.h-sync:active{background:var(--surface2)}
+.h-sync .t{display:block;font-size:16px;font-weight:700}
+.h-sync .s{display:block;font-size:13px;color:var(--text2);line-height:1.4;margin-top:4px}
 .h-cloud{width:100%;display:flex;align-items:center;gap:16px;padding:16px;margin-bottom:8px;border:none;border-radius:16px;background:var(--amber-bg);color:var(--amber-fg);text-align:left;font-size:14px;font-weight:700;line-height:1.4;cursor:pointer}
 .h-cloud .ic{flex-shrink:0}
 .cloud-note{font-size:14px;color:var(--text2);line-height:1.5;margin-bottom:16px}
@@ -305,7 +316,10 @@ div.set-row{cursor:default}
   <header class="topbar">
     <div class="topbar-logo" id="topLogo"><svg class="ic ic-lg"><use href="#i-alert"/></svg>Guasti Treni<span>Pro</span></div>
     <button class="back" id="topBack" style="display:none" onclick="tornaHome()" aria-label="Torna alla Home"><span class="btn"><svg class="ic"><use href="#i-back"/></svg></span><span id="topTitle"></span></button>
-    <div class="firma" onclick="tapVersione()">v5.0.1</div>
+    <div class="top-right">
+      <button class="top-sync" id="topSync" style="display:none" onclick="aggiornaDati()" aria-label="Aggiorna dati" title="Aggiorna dati"><svg class="ic"><use href="#i-refresh"/></svg><i></i></button>
+      <div class="firma" onclick="tapVersione()">v5.1.0</div>
+    </div>
   </header>
 
   <main class="scroll-area">
@@ -323,6 +337,10 @@ div.set-row{cursor:default}
         <button class="h-st warn" onclick="homeVaiRecidivi()"><b id="homeRecid">–</b><span>treni recidivi</span></button>
       </div>
 
+      <button class="h-sync" id="homeSync" style="display:none" onclick="aggiornaDati()">
+        <span class="bubble b-green" id="homeSyncIc"><svg class="ic"><use href="#i-refresh"/></svg></span>
+        <span><span class="t">Aggiorna dati</span><span class="s" id="homeSyncSub"></span></span>
+      </button>
       <button class="h-cloud" id="homeCloud" style="display:none" onclick="homeCloudTocca()"><svg class="ic"><use href="#i-cloud"/></svg><span id="homeCloudTxt"></span></button>
 
       <button class="h-hero" onclick="apri('guasto')">
@@ -432,7 +450,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 5.0.1</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 5.1.0</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -453,7 +471,7 @@ div.set-row{cursor:default}
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v5.0.1</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v5.1.0</div>
     </section>
 
     <!-- ── PAGINA: NUOVO GUASTO ── -->
@@ -988,7 +1006,7 @@ div.set-row{cursor:default}
    Archivio usato dal resto dell'app (ref().on / set / push / remove):
    i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '5.0.1';
+const APP_VERSIONE = '5.1.0';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
@@ -1114,7 +1132,7 @@ let cloudFile = null;
 let cloudStato = 'nessuno';   // nessuno | ok | permesso | errore
 let cloudErrore = '';
 let cloudTimer = null, cloudInCorso = null, cloudAncora = false;
-let cloudUltimaModifica = 0, cloudChiestoAuto = false;
+let cloudUltimaModifica = 0;
 
 function cloudInfo(){ try { return JSON.parse(localStorage.getItem(CLOUD_KEY) || '{}') || {}; } catch(e){ return {}; } }
 function cloudSalvaInfo(o){ try { localStorage.setItem(CLOUD_KEY, JSON.stringify(Object.assign(cloudInfo(), o))); } catch(e){} }
@@ -1164,8 +1182,7 @@ async function cloudSincronizza(){
   cloudInCorso = (async()=>{
     try {
       if(await cloudFile.queryPermission({mode:'readwrite'}) !== 'granted'){
-        if(cloudStato!=='permesso') cloudChiestoAuto = false;   // il permesso è scaduto adesso: al prossimo tocco lo richiede
-        cloudStato = 'permesso'; return;
+        cloudStato = 'permesso'; return;   // il telefono ha tolto il permesso: serve il tasto "Aggiorna dati"
       }
       const saltato = await conRiprova(async()=>{
         const f = await cloudFile.getFile();
@@ -1216,23 +1233,30 @@ document.addEventListener('visibilitychange', ()=>{
 window.addEventListener('focus', cloudControlla);
 setInterval(cloudControlla, 10000);
 
-/* Il browser chiede di nuovo il permesso sul file quando l'app viene riaperta.
-   Lo chiede da solo al primo tocco o tasto, senza dover cercare l'avviso. */
-async function cloudRiprendiAlTocco(e){
-  if(!cloudFile || cloudStato!=='permesso' || cloudChiestoAuto) return;
-  if(e && e.target && e.target.closest && e.target.closest('#cloudOverlay, #homeCloud')) return;
-  cloudChiestoAuto = true;
+/* Tasto "Aggiorna dati" (Home, barra in alto, Copia nel cloud).
+   Il telefono toglie il permesso sul file quando l'app viene chiusa: il tasto lo richiede
+   (funziona sempre perché parte da un tocco), poi legge, unisce e salva il file.
+   Finché il permesso c'è, l'app continua anche ad aggiornarsi da sola. */
+let aggiornoAMano = false;
+async function aggiornaDati(){
+  chiudiCloud();
+  if(!cloudFile){ apriCloud(); return; }
+  if(aggiornoAMano) return;
+  aggiornoAMano = true; renderCloud();
   try {
-    if(await cloudFile.requestPermission({mode:'readwrite'}) === 'granted'){
-      cloudStato = 'ok';
-      await cloudSincronizza();
-      if(cloudStato==='ok') showToast('File dei dati collegato');
-    }
-  } catch(err){}
-  renderCloud();
+    if(await cloudFile.requestPermission({mode:'readwrite'}) !== 'granted'){ showToast('Senza il permesso il file non si può aggiornare'); return; }
+    cloudStato = 'ok'; cloudUltimaModifica = 0;
+    await cloudSincronizza();
+    if(cloudStato==='errore') showToast(cloudErrore);
+    else if(cloudErroriDiFila>0) showToast('OneDrive sta aggiornando il file, riprova tra poco');
+    else showToast('Dati aggiornati');
+  } catch(e){ showToast(testoErrore(e)); }
+  finally { aggiornoAMano = false; renderCloud(); }
 }
-document.addEventListener('click', cloudRiprendiAlTocco, true);
-document.addEventListener('keydown', cloudRiprendiAlTocco, true);
+function modificheDaInviare(){
+  const t = db.tutto(), u = cloudInfo().ultimo || 0;
+  return Object.values(t._ts || {}).filter(x=> x>u).length + Object.values(t._del || {}).filter(x=> x>u).length;
+}
 
 async function cloudAvvio(){
   try { if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}
@@ -1246,18 +1270,6 @@ async function cloudAvvio(){
       }
     } catch(e){ cloudFile = null; cloudStato = 'nessuno'; }
   }
-  renderCloud();
-}
-async function cloudRiattiva(){
-  chiudiCloud();
-  if(!cloudFile) return;
-  try {
-    if(await cloudFile.requestPermission({mode:'readwrite'}) === 'granted'){
-      cloudStato = 'ok';
-      await cloudSincronizza();
-      if(cloudStato==='ok') showToast('File dei dati collegato');
-    } else showToast('Permesso non concesso');
-  } catch(e){ showToast('Permesso non concesso'); }
   renderCloud();
 }
 async function cloudCollega(h){
@@ -1295,7 +1307,6 @@ function cloudScollega(){
   renderCloud();
   showToast('File scollegato');
 }
-async function cloudSalvaOra(){ chiudiCloud(); cloudUltimaModifica = 0; await cloudSincronizza(); if(cloudStato==='ok') showToast('Dati aggiornati'); }
 
 /* Copia a mano: funziona ovunque */
 async function copiaSalva(){
@@ -1346,15 +1357,14 @@ function testoUltimo(t){
 function renderCloud(){
   const info = cloudInfo();
   const n = contaDati(db.tutto());
+  const pend = cloudFile ? modificheDaInviare() : 0;
+  const txtPend = pend ? `${pend} ${pend===1 ? 'modifica' : 'modifiche'} da inviare` : '';
   let testo, classe = '', avviso = '';
-  if(cloudFile && cloudStato==='ok'){
-    testo = `${cloudFile.name} · aggiornato ${testoUltimo(info.ultimo)}`; classe = 'ok';
-  } else if(cloudFile && cloudStato==='permesso'){
-    testo = 'In pausa · tocca per riattivare'; classe = 'ko';
-    avviso = VERSIONE_PC ? 'Clicca qui e consenti l\'accesso al file dei dati.' : 'Il salvataggio nel cloud è in pausa. Tocca per riattivarlo.';
-  } else if(cloudFile && cloudStato==='errore'){
+  if(cloudFile && cloudStato==='errore'){
     testo = cloudErrore; classe = 'ko';
-    if(VERSIONE_PC) avviso = 'Problema con il file dei dati: ' + cloudErrore;
+  } else if(cloudFile){
+    testo = `${cloudFile.name} · aggiornato ${testoUltimo(info.ultimo)}` + (txtPend ? ' · ' + txtPend : '');
+    classe = pend ? 'ko' : 'ok';
   } else if(VERSIONE_PC && FILE_API){
     testo = 'Nessun file collegato';
     avviso = 'Collega il file dei dati (guasti-treni-pro-dati.json) nella cartella di OneDrive.';
@@ -1370,8 +1380,25 @@ function renderCloud(){
   if(sub){ sub.textContent = testo; document.getElementById('setCloudDot').className = 'conn ' + classe; }
   const b = document.getElementById('homeCloud');
   if(b){ b.style.display = avviso ? 'flex' : 'none'; document.getElementById('homeCloudTxt').textContent = avviso; }
+  // tasto "Aggiorna dati" in Home e nella barra in alto
+  const hs = document.getElementById('homeSync');
+  if(hs){
+    hs.style.display = cloudFile ? 'flex' : 'none';
+    let sub, col;
+    if(aggiornoAMano){ sub = 'Aggiornamento in corso...'; col = 'b-green'; }
+    else if(cloudStato==='errore'){ sub = cloudErrore; col = 'b-red'; }
+    else { sub = 'Ultimo aggiornamento ' + testoUltimo(info.ultimo) + (txtPend ? ' · ' + txtPend : ''); col = pend ? 'b-amber' : 'b-green'; }
+    document.getElementById('homeSyncSub').textContent = sub;
+    document.getElementById('homeSyncIc').className = 'bubble ' + col + (aggiornoAMano ? ' gira' : '');
+  }
+  const ts = document.getElementById('topSync');
+  if(ts){
+    ts.style.display = cloudFile ? 'flex' : 'none';
+    ts.classList.toggle('gira', aggiornoAMano);
+    ts.classList.toggle('avviso', !!pend || cloudStato==='errore');
+  }
 }
-function homeCloudTocca(){ if(cloudFile && cloudStato==='permesso') cloudRiattiva(); else apriCloud(); }
+function homeCloudTocca(){ if(cloudFile) aggiornaDati(); else apriCloud(); }
 
 function rigaCloud(icona, colore, titolo, sotto, azione, pericolo){
   return `<button class="set-row${pericolo ? ' danger' : ''}" onclick="${azione}"><span class="bubble ${colore}">${ic(icona,'')}</span>`
@@ -1380,11 +1407,8 @@ function rigaCloud(icona, colore, titolo, sotto, azione, pericolo){
 function apriCloud(){
   let note, righe = '';
   if(FILE_API && cloudFile){
-    note = cloudStato==='permesso'
-      ? `Il browser chiede di nuovo il permesso di usare il file. Finché non lo riattivi, le modifiche restano solo su ${QUI}.`
-      : `I dati sono nel file ${cloudFile.name}: ogni modifica viene salvata lì e le modifiche fatte da altri dispositivi collegati allo stesso file vengono unite.`;
-    if(cloudStato==='permesso') righe += rigaCloud('refresh','b-green','Riattiva il file','Concedi di nuovo il permesso','cloudRiattiva()');
-    else righe += rigaCloud('refresh','b-green','Aggiorna adesso','Legge e salva subito il file','cloudSalvaOra()');
+    note = `I dati sono nel file ${cloudFile.name}, insieme a quelli degli altri dispositivi collegati. Tocca "Aggiorna dati" per inviare le tue modifiche e ricevere quelle degli altri: se il ${VERSIONE_PC ? 'browser' : 'telefono'} chiede il permesso, premi "Consenti".`;
+    righe += rigaCloud('refresh','b-green','Aggiorna dati','Invia le tue modifiche e ricevi quelle degli altri','aggiornaDati()');
     righe += rigaCloud('x','b-red','Scollega il file',`I dati restano su ${QUI}`,'cloudScollega()', true);
   } else if(FILE_API){
     note = VERSIONE_PC
@@ -1410,9 +1434,9 @@ function devInfoExtra(){
   return [
     ['Dati', 'su ' + QUI + (VERSIONE_PC ? ' (versione PC)' : '')],
     ['File collegato', cloudFile ? cloudFile.name : (FILE_API ? 'nessuno' : 'non supportato dal browser')],
-    ['Stato file', {nessuno:'—', ok:'sincronizzato', permesso:'in attesa di permesso', errore:'errore: ' + cloudErrore}[cloudStato] || cloudStato],
-    ['Ultima sincronizzazione', testoUltimo(info.ultimo)],
-    ['Modifiche da salvare', info.sporco ? 'sì' : 'no'],
+    ['Stato file', {nessuno:'—', ok:'si aggiorna da solo', permesso:'senza permesso · serve Aggiorna dati', errore:'errore: ' + cloudErrore}[cloudStato] || cloudStato],
+    ['Ultimo aggiornamento', testoUltimo(info.ultimo)],
+    ['Modifiche da inviare', cloudFile ? modificheDaInviare() : (info.sporco ? 'sì' : 'no')],
     ['Eliminazioni ricordate', Object.keys(t._del || {}).length]
   ];
 }

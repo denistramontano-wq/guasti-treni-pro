@@ -1,5 +1,5 @@
 // Service worker Guasti Treni Pro — cambia CACHE ad ogni nuova versione dell'app
-const CACHE = 'guasti-treni-pro-v5.0.0';
+const CACHE = 'guasti-treni-pro-v5.1.0';
 const SHELL = [
   './',
   './index.html',
