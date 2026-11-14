@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Guasti Pro">
-<meta name="theme-color" content="#3B2FB0">
+<meta name="theme-color" content="#133A66">
 <meta name="description" content="Registrazione guasti dei treni della metropolitana">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
@@ -15,16 +15,19 @@
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <title>Guasti Treni Pro</title>
 <style>
+/* Palette blu, ripresa dall'app aziendale dell'Assistenza di Linea in chiave moderna */
 :root{
-  --bg:#F3F2FC; --surface:#fff; --surface2:#F7F6FF;
-  --border:#E1DEFA; --border2:#C9C3F2;
-  --purple:#5145CD; --purple-dk:#3B2FB0; --purple-lt:#ECEAFE;
-  --text:#1A1735; --text2:#5E5A86; --text3:#8A86B0;
-  --green:#1FA352; --green-bg:#D3F2DD; --green-fg:#147A3C;
-  --red:#E03B3B; --red-bg:#FDDCDC; --red-fg:#B42323;
-  --amber:#FFB020; --amber-bg:#FFF1D6; --amber-fg:#8A5A00;
-  --blue:#1E6FE0; --blue-bg:#DCE9FC;
-  --gray-bg:#ECEBF3; --gray-fg:#4A4766;
+  color-scheme:dark;
+  --bg:#0D2B4E; --surface:#133A66; --surface2:#1A4A80;
+  --border:#24578F; --border2:#33679E;
+  --purple:#5145CD; --purple-dk:#3B2FB0; --purple-lt:#2A3D8C; --purple-ink:#CFCAFF;
+  --text:#FFFFFF; --text2:#B9CCE4; --text3:#87A3C6;
+  --green:#1FA352; --green-bg:#174B39; --green-fg:#7BE0A4;
+  --red:#E03B3B; --red-bg:#4D2236; --red-fg:#FF8F8F;
+  --amber:#FFB020; --amber-bg:#4A3B17; --amber-fg:#FFC95C;
+  --blue:#5AA2FF; --blue-bg:#183F73;
+  --gray-bg:#1E4775; --gray-fg:#C9D7EA;
+  --orange:#F28C28; --ink:#0D2B4E; --tile-light:#EEF2F7; --tile-blue:#1E6FE0;
   --m1:#E03B3B; --m2:#1FA352; --m3:#F2C200; --m4:#1E6FE0; --m5:#8B4DE0;
   --top-h:56px;
   --safe-t:env(safe-area-inset-top, 0px);
@@ -41,17 +44,14 @@ button{font-family:inherit}
 .ic-lg{width:24px;height:24px}
 
 /* ── TOPBAR ── */
-.topbar{min-height:calc(var(--top-h) + var(--safe-t));padding:var(--safe-t) 16px 0;background:var(--purple-dk);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-shrink:0;position:relative;z-index:50}
-.topbar-logo{font-size:20px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;white-space:nowrap}
-.topbar-logo .ic{color:var(--amber)}
-.topbar-logo span{color:#C9C3F2}
-.firma{font-size:12px;line-height:1.4;color:rgba(255,255,255,.8);text-align:right;padding:8px 0;cursor:default;-webkit-user-select:none;user-select:none}
+.topbar{min-height:calc(var(--top-h) + var(--safe-t));padding:var(--safe-t) 16px 0;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-shrink:0;position:relative;z-index:50}
+.firma{font-size:12px;line-height:1.4;color:var(--text3);text-align:right;padding:8px 0;cursor:default;-webkit-user-select:none;user-select:none}
 .dev-err{font-size:12px;line-height:1.5;color:var(--red-fg);background:var(--red-bg);border-radius:12px;padding:8px 16px;margin-top:8px;word-break:break-word}
 .mem-val{font-size:12px;line-height:1.5;margin-top:8px;max-height:240px;overflow:auto;word-break:break-all}
 .reg-row{padding:16px 0;border-bottom:1px solid var(--border)}
 .reg-row:last-child{border-bottom:none}
 .reg-top{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--text2)}
-.reg-top b{font-weight:700;color:var(--purple)}
+.reg-top b{font-weight:700;color:var(--purple-ink)}
 .reg-el{font-size:14px;line-height:1.4;margin-top:8px}
 .reg-diff{font-size:12px;line-height:1.5;color:var(--text2);margin-top:8px;word-break:break-word}
 
@@ -64,32 +64,53 @@ button{font-family:inherit}
 .back:active .btn{background:rgba(255,255,255,.28)}
 
 /* ── HOME ── */
-.hello{margin-bottom:16px}
-.hello h1{font-size:24px;font-weight:700;line-height:1.2}
-.hello p{font-size:14px;color:var(--text2);margin-top:8px}
-.h-status{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:24px}
+/* sezioni come nell'app aziendale: Attività (riquadri pieni), Oggi, Funzioni (righe con striscia arancione) */
+.hm-sez{font-size:22px;font-weight:700;line-height:1.2;margin:32px 0 16px}
+.hm-sx > .hm-sez:first-child,.hm-dx > .hm-sez:first-child{margin-top:0}
+.hm-dx{margin-top:32px}
+.hm .h-cloud{margin:16px 0 0}
+.att{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tile{min-height:136px;border:none;border-radius:16px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;gap:16px;text-align:left;color:#fff;cursor:pointer}
+.tile .t{display:block;font-size:17px;font-weight:700;line-height:1.2}
+.tile .s{display:block;font-size:13px;line-height:1.4;opacity:.85;margin-top:8px}
+.tile:active{filter:brightness(.92)}
+.t-red{background:var(--red)}
+.t-light{background:var(--tile-light);color:var(--ink)}
+.t-light .ic{color:var(--orange)}
+.t-blue{background:var(--tile-blue)}
+.t-green{background:var(--green)}
+.ic-xl{width:40px;height:40px;stroke-width:1.75}
+.h-status{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .h-st{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 8px;text-align:center;cursor:pointer;color:var(--text)}
-.h-st b{display:block;font-size:24px;font-weight:700;line-height:1.2}
+.h-st:active{background:var(--surface2)}
+.h-st b{display:block;font-size:28px;font-weight:700;line-height:1.1}
 .h-st span{font-size:12px;color:var(--text2);line-height:1.3;display:block;margin-top:8px}
+.h-st small{display:block;font-size:11px;color:var(--text3);margin-top:8px;line-height:1.3}
+.h-st small:empty{display:none}
 .h-st.ko b{color:var(--red-fg)}
 .h-st.warn b{color:var(--amber-fg)}
-.h-hero{width:100%;display:flex;align-items:center;gap:16px;padding:16px;border:none;border-radius:16px;background:var(--purple);color:#fff;text-align:left;margin-bottom:8px;cursor:pointer}
-.h-hero:active{background:var(--purple-dk)}
-.h-hero .bubble{width:48px;height:48px;border-radius:16px;background:rgba(255,255,255,.16);color:#fff}
-.h-hero .t{font-size:18px;font-weight:700}
-.h-hero .s{font-size:13px;color:rgba(255,255,255,.8)}
-.h-hero .go{margin-left:auto}
-.h-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.h-grid .h-tile:last-child:nth-child(odd){grid-column:1/-1;min-height:auto}
-.h-tile{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;color:var(--text);min-height:128px}
-.h-tile:active,.h-st:active{background:var(--surface2)}
-.h-tile .t{font-size:16px;font-weight:700}
-.h-tile .s{font-size:13px;color:var(--text2);line-height:1.4}
+.funz{display:flex;flex-direction:column;gap:8px}
+.fz{display:flex;align-items:stretch;min-height:64px;width:100%;padding:0;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;color:var(--text);text-align:left;cursor:pointer}
+.fz:active{background:var(--surface2)}
+.fz .str{width:8px;background:var(--orange);flex-shrink:0}
+.fz .tx{flex:1;min-width:0;padding:8px 16px;display:flex;flex-direction:column;justify-content:center}
+.fz .tx b{font-size:16px;font-weight:700}
+.fz .tx span{font-size:13px;color:var(--text2);margin-top:8px;line-height:1.3}
+.fz .ico{width:64px;display:flex;align-items:center;justify-content:center;background:var(--surface2);color:#fff;flex-shrink:0}
+.fz .ico.avviso{color:var(--orange)}
+.fz .ico.ko{color:var(--red-fg)}
+.fz .badge{align-self:center;margin-right:16px;font-size:12px;font-weight:700;background:var(--orange);color:var(--ink);border-radius:24px;padding:0 8px;line-height:24px;white-space:nowrap}
+.fz .badge[hidden]{display:none}
+.top-home{display:flex;align-items:center;gap:16px;min-width:0}
+.top-home .logo{width:40px;height:40px;border-radius:12px;background:var(--purple);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.top-home .nome{font-size:18px;font-weight:700;line-height:1.2;color:#fff;white-space:nowrap}
+.top-home .nome span{color:var(--orange)}
+.top-home .data{font-size:13px;color:var(--text2);margin-top:4px;white-space:nowrap}
 .bubble{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .b-amber{background:var(--amber-bg);color:var(--amber-fg)}
 .b-blue{background:var(--blue-bg);color:var(--blue)}
 .b-green{background:var(--green-bg);color:var(--green-fg)}
-.b-purple{background:var(--purple-lt);color:var(--purple)}
+.b-purple{background:var(--purple-lt);color:var(--purple-ink)}
 .b-gray{background:var(--gray-bg);color:var(--gray-fg)}
 .b-red{background:var(--red-bg);color:var(--red-fg)}
 
@@ -122,10 +143,6 @@ div.set-row{cursor:default}
 .top-sync.avviso i{display:block}
 .gira .ic{animation:gira 1s linear infinite}
 @keyframes gira{to{transform:rotate(360deg)}}
-.h-sync{width:100%;display:flex;align-items:center;gap:16px;padding:16px;margin-bottom:8px;border:1px solid var(--border);border-radius:16px;background:var(--surface);color:var(--text);text-align:left;cursor:pointer}
-.h-sync:active{background:var(--surface2)}
-.h-sync .t{display:block;font-size:16px;font-weight:700}
-.h-sync .s{display:block;font-size:13px;color:var(--text2);line-height:1.4;margin-top:4px}
 .h-cloud{width:100%;display:flex;align-items:center;gap:16px;padding:16px;margin-bottom:8px;border:none;border-radius:16px;background:var(--amber-bg);color:var(--amber-fg);text-align:left;font-size:14px;font-weight:700;line-height:1.4;cursor:pointer}
 .h-cloud .ic{flex-shrink:0}
 .cloud-note{font-size:14px;color:var(--text2);line-height:1.5;margin-bottom:16px}
@@ -139,13 +156,13 @@ div.set-row{cursor:default}
 #page-m7 .linea{min-height:56px;border-radius:16px;border:none;background:var(--c);color:var(--ci);font-size:20px;font-weight:700;cursor:pointer;outline-offset:3px}
 #page-m7 .linea[aria-pressed="true"]{outline:3px solid var(--text)}
 #page-m7 .linea small{display:block;font-size:12px;font-weight:400}
-#page-m7 .L1{--c:var(--m1);--ci:#fff} #page-m7 .L2{--c:var(--m2);--ci:#fff} #page-m7 .L3{--c:var(--m3);--ci:var(--text)}
+#page-m7 .L1{--c:var(--m1);--ci:#fff} #page-m7 .L2{--c:var(--m2);--ci:#fff} #page-m7 .L3{--c:var(--m3);--ci:#1A1735}
 #page-m7 .seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px}
 #page-m7 .seg button{min-height:40px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;padding:0 8px}
 #page-m7 .seg button[aria-pressed="true"]{background:var(--purple);border-color:var(--purple);color:#fff}
 #page-m7 .hint{display:block;font-size:13px;color:var(--text2);margin-top:8px;line-height:1.5}
 #page-m7 .hint[hidden]{display:none}
-#page-m7 .link{background:none;border:none;padding:0;color:var(--purple);font-weight:700;font-size:inherit;cursor:pointer}
+#page-m7 .link{background:none;border:none;padding:0;color:var(--purple-ink);font-weight:700;font-size:inherit;cursor:pointer}
 #page-m7 .file-orario{font-size:13px;color:var(--text2);margin-bottom:8px;word-break:break-word}
 #page-m7 .staz-row{display:grid;grid-template-columns:1fr 48px;gap:8px}
 #page-m7 select.staz{width:100%;min-height:48px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);padding:0 16px;font-size:16px;font-weight:700;font-family:inherit}
@@ -173,7 +190,7 @@ div.set-row{cursor:default}
 #page-m7 .inc-nota{font-size:13px;color:var(--text2);margin-top:8px;line-height:1.5}
 #page-m7 .tl{color:var(--text3);margin-right:2px}
 #page-m7 details.inc-alt{margin-top:8px}
-#page-m7 details.inc-alt summary{cursor:pointer;font-weight:700;min-height:40px;display:flex;align-items:center;color:var(--purple)}
+#page-m7 details.inc-alt summary{cursor:pointer;font-weight:700;min-height:40px;display:flex;align-items:center;color:var(--purple-ink)}
 #page-m7 details.inc-alt ul{list-style:none;margin:0;padding:0;font-size:14px}
 #page-m7 details.inc-alt li{padding:8px 0;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap}
 #page-m7 details.inc-alt li.passato{opacity:.6}
@@ -196,7 +213,7 @@ div.set-row{cursor:default}
 #page-m7 .cd{background:var(--acc);color:var(--acc-ink);border-radius:24px;padding:0 8px;line-height:20px;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
 #page-m7 .cd.sec{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1.5px var(--acc)}
 #page-m7 .bin{font-size:12px;font-weight:700;border-radius:8px;padding:0 8px;line-height:24px}
-#page-m7 .bin.P{background:var(--purple-lt);color:var(--purple-dk)}
+#page-m7 .bin.P{background:var(--purple-lt);color:var(--purple-ink)}
 #page-m7 .bin.D{background:var(--blue-bg);color:var(--blue)}
 #page-m7 .det{padding:8px 16px 16px;background:var(--surface2);font-size:14px;line-height:1.5}
 #page-m7 .det .corsa{margin:8px 0;padding-bottom:8px;border-bottom:1px solid var(--border)}
@@ -224,7 +241,7 @@ div.set-row{cursor:default}
 #page-m7 .imp .f{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);padding:8px 0}
 #page-m7 .imp .f div{flex:1;min-width:0;font-size:14px}
 #page-m7 .imp .f small{display:block;color:var(--text2);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#page-m7 .imp .f button{border:none;background:none;color:var(--purple);font-size:13px;font-weight:700;min-height:32px;padding:0 8px;cursor:pointer;border-radius:8px}
+#page-m7 .imp .f button{border:none;background:none;color:var(--purple-ink);font-size:13px;font-weight:700;min-height:32px;padding:0 8px;cursor:pointer;border-radius:8px}
 #page-m7 .imp .f button[data-rimuovi]{color:var(--red-fg)}
 #page-m7 .imp .m{font-size:14px;padding:8px 0}
 #page-m7 .big{width:100%;min-height:48px;border-radius:12px;border:none;font-size:15px;font-weight:700;margin-top:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
@@ -250,7 +267,7 @@ div.set-row{cursor:default}
 #page-m7 .colbin .bin{display:none}
 #page-m7 .m7-col + .m7-col{margin-top:24px}
 #page-m7 .m7-aiuto{margin-top:16px}
-#page-m7 .m7-aiuto summary{list-style:none;cursor:pointer;min-height:40px;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--purple)}
+#page-m7 .m7-aiuto summary{list-style:none;cursor:pointer;min-height:40px;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--purple-ink)}
 #page-m7 .m7-aiuto-txt{font-size:14px;line-height:1.5;color:var(--text2)}
 #page-m7 .m7-aiuto-txt p{margin-top:8px}
 #page-m7 .m7-piede{margin-top:24px;font-size:12px;color:var(--text3);text-align:center;line-height:1.6}
@@ -271,8 +288,8 @@ div.set-row{cursor:default}
 .hint{font-size:12px;font-weight:400;color:var(--text3)}
 .field input,.field select,.field textarea{width:100%;min-height:48px;padding:8px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:16px;background:var(--surface2);color:var(--text);outline:none;-webkit-appearance:none;appearance:none;font-family:inherit}
 .field textarea{resize:vertical;min-height:96px;padding:16px;line-height:1.5}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--purple);background:#fff}
-.field select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235E5A86' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 16px center;background-size:16px;padding-right:40px}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--purple);background:var(--surface2)}
+.field select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B9CCE4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 16px center;background-size:16px;padding-right:40px}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .req{color:var(--red)}
 
@@ -283,7 +300,7 @@ div.set-row{cursor:default}
 .line-opt input:checked + .line-opt-box{border-color:transparent;color:#fff}
 .line-opt[data-line="M1"] input:checked + .line-opt-box{background:var(--m1)}
 .line-opt[data-line="M2"] input:checked + .line-opt-box{background:var(--m2)}
-.line-opt[data-line="M3"] input:checked + .line-opt-box{background:var(--m3);color:var(--text)}
+.line-opt[data-line="M3"] input:checked + .line-opt-box{background:var(--m3);color:#1A1735}
 .line-opt[data-line="M4"] input:checked + .line-opt-box{background:var(--m4)}
 .line-opt[data-line="M5"] input:checked + .line-opt-box{background:var(--m5)}
 .line-opt input:focus-visible + .line-opt-box,.toggle-opt input:focus-visible + .toggle-opt-box{outline:2px solid var(--purple);outline-offset:2px}
@@ -298,8 +315,8 @@ div.set-row{cursor:default}
 .btn-primary{width:100%;min-height:56px;padding:16px;border-radius:16px;font-size:16px;font-weight:700;cursor:pointer;border:none;background:var(--purple);color:#fff;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-primary:active{background:var(--purple-dk)}
 .btn-primary:disabled{opacity:.5}
-.btn-secondary{width:100%;min-height:48px;padding:8px 16px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;border:none;background:var(--purple-lt);color:var(--purple-dk);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
-.link-btn{background:none;border:none;color:var(--purple);font-size:14px;font-weight:700;cursor:pointer;padding:8px;display:inline-flex;align-items:center;gap:8px;border-radius:8px}
+.btn-secondary{width:100%;min-height:48px;padding:8px 16px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;border:none;background:var(--purple-lt);color:var(--purple-ink);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+.link-btn{background:none;border:none;color:var(--purple-ink);font-size:14px;font-weight:700;cursor:pointer;padding:8px;display:inline-flex;align-items:center;gap:8px;border-radius:8px}
 .link-btn.danger{color:var(--red-fg)}
 .links-row{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
 
@@ -319,7 +336,7 @@ div.set-row{cursor:default}
 .f-chip.active{background:var(--purple);border-color:var(--purple);color:#fff}
 .f-chip[data-f="M1"].active{background:var(--m1);border-color:var(--m1)}
 .f-chip[data-f="M2"].active{background:var(--m2);border-color:var(--m2)}
-.f-chip[data-f="M3"].active{background:var(--m3);border-color:var(--m3);color:var(--text)}
+.f-chip[data-f="M3"].active{background:var(--m3);border-color:var(--m3);color:#1A1735}
 .f-chip[data-f="M4"].active{background:var(--m4);border-color:var(--m4)}
 .f-chip[data-f="M5"].active{background:var(--m5);border-color:var(--m5)}
 .tabs .f-chip{flex:1;justify-content:center}
@@ -334,7 +351,7 @@ div.set-row{cursor:default}
 .status-pill{font-size:12px;font-weight:700;padding:0 8px;line-height:24px;border-radius:24px;display:inline-flex;align-items:center;gap:8px}
 .status-pill.riparato{background:var(--green-bg);color:var(--green-fg)}
 .status-pill.non-riparato{background:var(--red-bg);color:var(--red-fg)}
-.status-pill.neutro{background:var(--purple-lt);color:var(--purple-dk)}
+.status-pill.neutro{background:var(--purple-lt);color:var(--purple-ink)}
 
 .empty-state{text-align:center;padding:64px 24px;color:var(--text3)}
 .empty-state .ic{width:48px;height:48px;stroke-width:1.5;margin-bottom:8px}
@@ -342,7 +359,7 @@ div.set-row{cursor:default}
 .empty-sub{font-size:14px;color:var(--text3)}
 
 /* ── OVERLAY / SHEET ── */
-.overlay{display:none;position:fixed;inset:0;background:rgba(26,23,53,.5);z-index:200;align-items:flex-end;justify-content:center}
+.overlay{display:none;position:fixed;inset:0;background:rgba(3,14,30,.65);z-index:200;align-items:flex-end;justify-content:center}
 .overlay.open{display:flex}
 .sheet{background:var(--surface);border-radius:24px 24px 0 0;padding:16px 16px calc(24px + var(--safe-b));width:100%;max-width:520px;max-height:88vh;overflow-y:auto}
 .sheet-handle{width:40px;height:4px;background:var(--border2);border-radius:4px;margin:0 auto 16px}
@@ -357,7 +374,7 @@ div.set-row{cursor:default}
 .sheet-btns{display:flex;gap:8px;margin-top:16px}
 .sheet-btns button{flex:1;min-height:48px;padding:8px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-cancel{background:var(--surface2);color:var(--text2)}
-.btn-edit{background:var(--purple-lt);color:var(--purple-dk)}
+.btn-edit{background:var(--purple-lt);color:var(--purple-ink)}
 .btn-del{background:var(--red-bg);color:var(--red-fg)}
 .btn-wa{background:var(--green);color:#fff}
 .btn-copy{background:var(--blue-bg);color:var(--blue)}
@@ -400,12 +417,12 @@ div.set-row{cursor:default}
 .rank-main{flex:1;min-width:0}
 .rank-title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
 .rank-sub{font-size:13px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rank-count{text-align:right;font-size:20px;font-weight:700;color:var(--purple);line-height:1.1}
+.rank-count{text-align:right;font-size:20px;font-weight:700;color:var(--purple-ink);line-height:1.1}
 .rank-count small{display:block;font-size:11px;font-weight:400;color:var(--text3)}
 .rank-row > .ic{color:var(--text3)}
 .chart svg{display:block;width:100%;height:auto}
 
-.toast{position:fixed;bottom:calc(var(--safe-b) + 24px);left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:8px 24px;line-height:24px;border-radius:24px;font-size:14px;font-weight:700;z-index:500;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+.toast{position:fixed;bottom:calc(var(--safe-b) + 24px);left:50%;transform:translateX(-50%);background:#fff;color:var(--ink);padding:8px 24px;line-height:24px;border-radius:24px;font-size:14px;font-weight:700;z-index:500;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1}
 </style>
 </head>
@@ -448,11 +465,14 @@ div.set-row{cursor:default}
 <div id="appRoot" style="height:100%;display:flex;flex-direction:column">
 
   <header class="topbar">
-    <div class="topbar-logo" id="topLogo"><svg class="ic ic-lg"><use href="#i-alert"/></svg>Guasti Treni<span>Pro</span></div>
+    <div class="top-home" id="topLogo">
+      <span class="logo"><svg class="ic"><use href="#i-train"/></svg></span>
+      <span><span class="nome">Guasti Treni <span>Pro</span></span><span class="data" id="topData" style="display:block">—</span></span>
+    </div>
     <button class="back" id="topBack" style="display:none" onclick="tornaHome()" aria-label="Torna alla Home"><span class="btn"><svg class="ic"><use href="#i-back"/></svg></span><span id="topTitle"></span></button>
     <div class="top-right">
       <button class="top-sync" id="topSync" style="display:none" onclick="aggiornaDati()" aria-label="Aggiorna dati" title="Aggiorna dati"><svg class="ic"><use href="#i-refresh"/></svg><i></i></button>
-      <div class="firma" onclick="tapVersione()">v6.0.0</div>
+      <div class="firma" onclick="tapVersione()">v6.1.0</div>
     </div>
   </header>
 
@@ -460,55 +480,60 @@ div.set-row{cursor:default}
 
     <!-- ── PAGINA: HOME ── -->
     <section class="page active" id="page-home">
-      <div class="hello">
-        <h1 id="homeSaluto">Buongiorno</h1>
-        <p id="homeData">—</p>
-      </div>
+      <div class="hm">
+        <div class="hm-sx">
+          <h2 class="hm-sez">Attività</h2>
+          <div class="att">
+            <button class="tile t-red" onclick="apri('guasto')">
+              <svg class="ic ic-xl"><use href="#i-plus"/></svg>
+              <span><span class="t">Nuovo guasto</span><span class="s">Registra un guasto in linea</span></span>
+            </button>
+            <button class="tile t-light" onclick="apri('segnalazione')">
+              <svg class="ic ic-xl"><use href="#i-megaphone"/></svg>
+              <span><span class="t">Segnalazione</span><span class="s">Problema per i depositi</span></span>
+            </button>
+            <button class="tile t-blue" onclick="apri('m7')">
+              <svg class="ic ic-xl"><use href="#i-clock"/></svg>
+              <span><span class="t">Orari M7</span><span class="s">Passaggi in stazione</span></span>
+            </button>
+            <button class="tile t-green" onclick="apri('stat')">
+              <svg class="ic ic-xl"><use href="#i-chart"/></svg>
+              <span><span class="t">Statistiche</span><span class="s">Guasti, treni e recidivi</span></span>
+            </button>
+          </div>
 
-      <div class="h-status">
-        <button class="h-st" onclick="homeVaiOggi()"><b id="homeOggi">–</b><span>guasti oggi</span></button>
-        <button class="h-st ko" onclick="homeVaiNonRiparati()"><b id="homeNonRip">–</b><span>non riparati</span></button>
-        <button class="h-st warn" onclick="homeVaiRecidivi()"><b id="homeRecid">–</b><span>treni recidivi</span></button>
-      </div>
+          <button class="h-cloud" id="homeCloud" style="display:none" onclick="homeCloudTocca()"><svg class="ic"><use href="#i-cloud"/></svg><span id="homeCloudTxt"></span></button>
 
-      <button class="h-sync" id="homeSync" style="display:none" onclick="aggiornaDati()">
-        <span class="bubble b-green" id="homeSyncIc"><svg class="ic"><use href="#i-refresh"/></svg></span>
-        <span><span class="t">Aggiorna dati</span><span class="s" id="homeSyncSub"></span></span>
-      </button>
-      <button class="h-cloud" id="homeCloud" style="display:none" onclick="homeCloudTocca()"><svg class="ic"><use href="#i-cloud"/></svg><span id="homeCloudTxt"></span></button>
+          <h2 class="hm-sez">Oggi</h2>
+          <div class="h-status">
+            <button class="h-st" onclick="homeVaiOggi()"><b id="homeOggi">–</b><span>guasti oggi</span><small id="homeOggiCfr"></small></button>
+            <button class="h-st ko" onclick="homeVaiNonRiparati()"><b id="homeNonRip">–</b><span>non riparati</span><small id="homeNonRipCfr"></small></button>
+            <button class="h-st warn" onclick="homeVaiRecidivi()"><b id="homeRecid">–</b><span>treni recidivi</span><small id="homeRecidCfr"></small></button>
+          </div>
+        </div>
 
-      <button class="h-hero" onclick="apri('guasto')">
-        <span class="bubble"><svg class="ic ic-lg"><use href="#i-plus"/></svg></span>
-        <span><span class="t" style="display:block">Nuovo guasto</span><span class="s">Registra un guasto in linea</span></span>
-        <svg class="ic go"><use href="#i-chevron"/></svg>
-      </button>
-
-      <div class="h-grid">
-        <button class="h-tile" onclick="apri('segnalazione')">
-          <span class="bubble b-amber"><svg class="ic"><use href="#i-megaphone"/></svg></span>
-          <span class="t">Segnalazione</span>
-          <span class="s">Problema da inviare ai depositi</span>
-        </button>
-        <button class="h-tile" onclick="apri('elenco')">
-          <span class="bubble b-blue"><svg class="ic"><use href="#i-list"/></svg></span>
-          <span class="t">Elenchi</span>
-          <span class="s" id="homeElenchiSub">Guasti e segnalazioni</span>
-        </button>
-        <button class="h-tile" onclick="apri('stat')">
-          <span class="bubble b-green"><svg class="ic"><use href="#i-chart"/></svg></span>
-          <span class="t">Statistiche</span>
-          <span class="s">Guasti, treni e recidivi</span>
-        </button>
-        <button class="h-tile" onclick="apri('m7')">
-          <span class="bubble b-purple"><svg class="ic"><use href="#i-clock"/></svg></span>
-          <span class="t">Orari M7</span>
-          <span class="s">Passaggi dei treni per stazione</span>
-        </button>
-        <button class="h-tile" onclick="apri('impostazioni')">
-          <span class="bubble b-gray"><svg class="ic"><use href="#i-settings"/></svg></span>
-          <span class="t">Impostazioni</span>
-          <span class="s">File dei dati, materiali, app</span>
-        </button>
+        <div class="hm-dx">
+          <h2 class="hm-sez">Funzioni</h2>
+          <div class="funz">
+            <button class="fz" onclick="homeElenco('guasti')">
+              <span class="str"></span><span class="tx"><b>Elenco guasti</b><span id="homeGuastiSub">—</span></span>
+              <span class="ico"><svg class="ic"><use href="#i-list"/></svg></span>
+            </button>
+            <button class="fz" onclick="homeElenco('segnalazioni')">
+              <span class="str"></span><span class="tx"><b>Elenco segnalazioni</b><span id="homeSegSub">—</span></span>
+              <span class="ico"><svg class="ic"><use href="#i-list"/></svg></span>
+            </button>
+            <button class="fz" id="homeSync" style="display:none" onclick="aggiornaDati()">
+              <span class="str"></span><span class="tx"><b>Aggiorna dati</b><span id="homeSyncSub"></span></span>
+              <span class="badge" id="homeSyncBadge" hidden></span>
+              <span class="ico" id="homeSyncIc"><svg class="ic"><use href="#i-refresh"/></svg></span>
+            </button>
+            <button class="fz" onclick="apri('impostazioni')">
+              <span class="str"></span><span class="tx"><b>Impostazioni</b><span>File dei dati, materiali, modelli</span></span>
+              <span class="ico"><svg class="ic"><use href="#i-settings"/></svg></span>
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -589,7 +614,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 6.0.0</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 6.1.0</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -610,7 +635,7 @@ div.set-row{cursor:default}
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v6.0.0</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v6.1.0</div>
     </section>
 
     <!-- ── PAGINA: NUOVO GUASTO ── -->
@@ -1223,7 +1248,7 @@ div.set-row{cursor:default}
    Archivio usato dal resto dell'app (ref().on / set / push / remove):
    i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '6.0.0';
+const APP_VERSIONE = '6.1.0';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
@@ -1660,12 +1685,15 @@ function renderCloud(){
   const hs = document.getElementById('homeSync');
   if(hs){
     hs.style.display = cloudFile ? 'flex' : 'none';
-    let sub, col;
-    if(aggiornoAMano){ sub = 'Aggiornamento in corso...'; col = 'b-green'; }
-    else if(cloudStato==='errore'){ sub = cloudErrore; col = 'b-red'; }
-    else { sub = 'Ultimo aggiornamento ' + testoUltimo(info.ultimo) + (txtPend ? ' · ' + txtPend : ''); col = pend ? 'b-amber' : 'b-green'; }
+    let sub, col = '';
+    if(aggiornoAMano) sub = 'Aggiornamento in corso...';
+    else if(cloudStato==='errore'){ sub = cloudErrore; col = ' ko'; }
+    else { sub = 'Ultimo aggiornamento ' + testoUltimo(info.ultimo); col = pend ? ' avviso' : ''; }
     document.getElementById('homeSyncSub').textContent = sub;
-    document.getElementById('homeSyncIc').className = 'bubble ' + col + (aggiornoAMano ? ' gira' : '');
+    document.getElementById('homeSyncIc').className = 'ico' + col + (aggiornoAMano ? ' gira' : '');
+    const bd = document.getElementById('homeSyncBadge');
+    bd.hidden = !pend || aggiornoAMano;
+    bd.textContent = pend + ' da inviare';
   }
   const ts = document.getElementById('topSync');
   if(ts){
@@ -2906,19 +2934,36 @@ window.addEventListener('popstate', ()=>{
 /* ════════ HOME ════════ */
 function renderHome(){
   renderCloud();
-  const ora = new Date().getHours();
-  document.getElementById('homeSaluto').textContent = ora<13 ? 'Buongiorno' : (ora<18 ? 'Buon pomeriggio' : 'Buonasera');
-  const d = new Date().toLocaleDateString('it-IT', {weekday:'long', day:'numeric', month:'long'});
-  document.getElementById('homeData').textContent = d.charAt(0).toUpperCase() + d.slice(1) + ' · cosa devi fare?';
+  aggiornaDataTop();
   const oggi = oggiISO();
+  const ieriD = new Date(); ieriD.setDate(ieriD.getDate()-1);
+  const ieri = oggiISO(ieriD);
   const guasti = Object.values(allGuasti);
-  document.getElementById('homeOggi').textContent = guasti.filter(g=>g.data===oggi).length;
+  const nOggi = guasti.filter(g=>g.data===oggi).length, nIeri = guasti.filter(g=>g.data===ieri).length;
+  document.getElementById('homeOggi').textContent = nOggi;
+  document.getElementById('homeOggiCfr').textContent = 'ieri ' + nIeri;
   document.getElementById('homeNonRip').textContent = guasti.filter(g=>g.riparato!=='si').length;
-  const anno = String(new Date().getFullYear());
-  const annoEntries = Object.entries(allGuasti).filter(([id,g])=> (g.data||'').slice(0,4)===anno);
-  document.getElementById('homeRecid').textContent = calcolaStat(annoEntries).treniRecidivi.length;
+  document.getElementById('homeNonRipCfr').textContent = 'su ' + guasti.length + ' in totale';
+  const annoN = new Date().getFullYear(), anno = String(annoN), annoPrima = String(annoN-1);
+  const perAnno = a=> Object.entries(allGuasti).filter(([id,g])=> (g.data||'').slice(0,4)===a);
+  document.getElementById('homeRecid').textContent = calcolaStat(perAnno(anno)).treniRecidivi.length;
+  const precedenti = perAnno(annoPrima);
+  document.getElementById('homeRecidCfr').textContent = precedenti.length ? 'nel ' + annoPrima + ': ' + calcolaStat(precedenti).treniRecidivi.length : 'quest\'anno';
   const ng = guasti.length, ns = Object.keys(allSegnalazioni).length;
-  document.getElementById('homeElenchiSub').textContent = `${ng} ${ng===1?'guasto':'guasti'} · ${ns} ${ns===1?'segnalazione':'segnalazioni'}`;
+  document.getElementById('homeGuastiSub').textContent = ng===1 ? '1 registrato' : ng + ' registrati';
+  document.getElementById('homeSegSub').textContent = ns===1 ? '1 registrata' : ns + ' registrate';
+}
+/* data e ora sotto il nome dell'app, come nell'app aziendale */
+function aggiornaDataTop(){
+  const d = new Date();
+  const g = d.toLocaleDateString('it-IT', {weekday:'long'});
+  document.getElementById('topData').textContent = g.charAt(0).toUpperCase() + g.slice(1) + ' ' + d.toLocaleDateString('it-IT') + ' · ' + d.toTimeString().slice(0,5);
+}
+setInterval(()=>{ if(paginaCorrente==='home') aggiornaDataTop(); }, 20000);
+function homeElenco(tab){
+  filtriElencoPuliti();
+  if(tab==='segnalazioni') setElencoTab('segnalazioni', document.querySelector('.tabs .f-chip[data-tab="segnalazioni"]'));
+  mostraPagina('elenco');
 }
 function attivaChip(sel){
   const el = document.querySelector(sel); if(!el) return;
@@ -3472,10 +3517,10 @@ function svgAndamento(){
   const x = i => pl + (W-pl-pr) * i/5;
   const y = v => pt + (H-pt-pb) * (1 - v/max);
   const linea = (key,c) => `<polyline fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="${mesi.map((m,i)=>x(i)+','+y(m[key])).join(' ')}"/>`
-    + mesi.map((m,i)=>`<circle cx="${x(i)}" cy="${y(m[key])}" r="3" fill="#fff" stroke="${c}" stroke-width="2"/>`).join('');
-  const griglia = [0, .5, 1].map(f=>`<line x1="${pl}" x2="${W-pr}" y1="${y(max*f)}" y2="${y(max*f)}" stroke="#E1DEFA" stroke-width="1"/>`).join('');
-  const valori = mesi.map((m,i)=>`<text x="${x(i)}" y="${y(m.tot)-8}" text-anchor="middle" font-size="11" font-weight="700" fill="#5E5A86">${m.tot}</text>`).join('');
-  const etichette = mesi.map((m,i)=>`<text x="${x(i)}" y="${H-8}" text-anchor="middle" font-size="11" fill="#8A86B0">${m.lbl}</text>`).join('');
+    + mesi.map((m,i)=>`<circle cx="${x(i)}" cy="${y(m[key])}" r="3" fill="#133A66" stroke="${c}" stroke-width="2"/>`).join('');
+  const griglia = [0, .5, 1].map(f=>`<line x1="${pl}" x2="${W-pr}" y1="${y(max*f)}" y2="${y(max*f)}" stroke="#24578F" stroke-width="1"/>`).join('');
+  const valori = mesi.map((m,i)=>`<text x="${x(i)}" y="${y(m.tot)-8}" text-anchor="middle" font-size="11" font-weight="700" fill="#B9CCE4">${m.tot}</text>`).join('');
+  const etichette = mesi.map((m,i)=>`<text x="${x(i)}" y="${H-8}" text-anchor="middle" font-size="11" fill="#87A3C6">${m.lbl}</text>`).join('');
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Andamento guasti ultimi 6 mesi">${griglia}${linea('no',C_KO)}${linea('tot',C_TOT)}${valori}${etichette}</svg>`;
 }
 
