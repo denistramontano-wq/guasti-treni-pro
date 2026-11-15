@@ -112,6 +112,32 @@ button,input,select,textarea{font-family:inherit}
 .t-blue{background:var(--tile-blue)}
 .t-green{background:var(--green)}
 .ic-xl{width:40px;height:40px;stroke-width:1.75}
+/* tasto Impostazioni in alto: ingranaggio riconoscibile (sul PC anche la scritta) */
+.top-set{min-height:40px;padding:0 8px;border-radius:12px;border:1.5px solid var(--border2);background:var(--surface2);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-size:var(--fs-s);font-weight:700;cursor:pointer;flex-shrink:0}
+.top-set span{display:none}
+.top-set:active{background:var(--purple-lt)}
+/* elenchi: ricerca + tasto Filtri, filtri in una card, gruppi per giorno */
+.cerca-riga{display:flex;gap:8px;margin-bottom:16px}
+.cerca-riga .search-bar{flex:1;margin-bottom:0}
+.btn-filtri{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 16px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:var(--fs-s);font-weight:700;cursor:pointer;flex-shrink:0}
+.btn-filtri.attivi{border-color:var(--orange)}
+.btn-filtri.aperto{background:var(--purple-lt);border-color:var(--purple)}
+.btn-filtri .n{background:var(--orange);color:var(--ink);border-radius:24px;padding:0 8px;line-height:20px;font-size:var(--fs-xs)}
+.btn-filtri .n:empty{display:none}
+.filtri-card[hidden]{display:none}
+.filtri-card .lbl{margin-bottom:8px}
+.filtri-az{display:flex;flex-wrap:wrap;gap:8px}
+.filtri-az button{flex:1 1 160px;width:auto;margin-top:0;min-height:48px}
+details.giorno{margin-bottom:8px}
+details.giorno > summary{list-style:none;display:flex;align-items:center;gap:8px;min-height:48px;padding:8px 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;cursor:pointer}
+details.giorno > summary::-webkit-details-marker{display:none}
+details.giorno > summary .gt{font-size:var(--fs-m);font-weight:700}
+details.giorno > summary .conta{margin-left:auto;font-size:var(--fs-xs);color:var(--text2);text-align:right}
+details.giorno > summary .conta b{color:var(--red-fg);font-weight:700}
+details.giorno > summary .freccia{color:var(--text3);transition:transform .15s}
+details.giorno[open] > summary .freccia{transform:rotate(90deg)}
+details.giorno[open] > summary{border-color:var(--border2)}
+.giorno-lista{padding-top:8px}
 .h-status{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .h-st{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 8px;text-align:center;cursor:pointer;color:var(--text)}
 .h-st:active{background:var(--surface2)}
@@ -148,7 +174,10 @@ button,input,select,textarea{font-family:inherit}
   .top-home .nome{font-size:var(--fs-m)}
   .top-home .data{font-size:var(--fs-xs);margin-top:0}
   .topbar{gap:8px}
+  .top-sync,.top-set{width:32px;height:32px;min-height:32px;padding:0;border-radius:8px}
+  .top-sync i{top:4px;right:4px}
 }
+@media (max-width:359px){ .top-home .logo{display:none} }
 .bubble{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .b-amber{background:var(--amber-bg);color:var(--amber-fg)}
 .b-blue{background:var(--blue-bg);color:var(--blue)}
@@ -502,6 +531,7 @@ div.set-row{cursor:default}
   <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></symbol>
   <symbol id="i-maximize" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></symbol>
   <symbol id="i-minimize" viewBox="0 0 24 24"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></symbol>
 </svg>
@@ -518,7 +548,8 @@ div.set-row{cursor:default}
     <div class="top-right">
       <button class="top-sync" id="topSync" style="display:none" onclick="aggiornaDati()" aria-label="Aggiorna dati" title="Aggiorna dati"><svg class="ic"><use href="#i-refresh"/></svg><i></i></button>
       <button class="top-sync" id="topFull" style="display:none" onclick="tuttoSchermo()" aria-label="Tutto schermo" title="Tutto schermo"><svg class="ic"><use href="#i-maximize"/></svg></button>
-      <div class="firma" onclick="tapVersione()">v6.5.1</div>
+      <button class="top-set" id="topSet" onclick="apri('impostazioni')" aria-label="Impostazioni" title="Impostazioni"><svg class="ic"><use href="#i-settings"/></svg><span>Impostazioni</span></button>
+      <div class="firma" onclick="tapVersione()">v2.0.1</div>
     </div>
   </header>
 
@@ -562,22 +593,6 @@ div.set-row{cursor:default}
               <span class="str"></span><span class="tx"><b>Elenco segnalazioni</b><span id="homeSegSub">—</span></span>
               <span class="ico"><svg class="ic"><use href="#i-list"/></svg></span>
             </button>
-            <button class="fz" id="homeSync" style="display:none" onclick="aggiornaDati()">
-              <span class="str"></span><span class="tx"><b>Aggiorna dati</b><span id="homeSyncSub"></span></span>
-              <span class="badge" id="homeSyncBadge" hidden></span>
-              <span class="ico" id="homeSyncIc"><svg class="ic"><use href="#i-refresh"/></svg></span>
-            </button>
-            <button class="fz" onclick="apri('impostazioni')">
-              <span class="str"></span><span class="tx"><b>Impostazioni</b><span>File dei dati, materiali, modelli</span></span>
-              <span class="ico"><svg class="ic"><use href="#i-settings"/></svg></span>
-            </button>
-          </div>
-
-          <h2 class="hm-sez">Oggi</h2>
-          <div class="h-status">
-            <button class="h-st" onclick="homeVaiOggi()"><b id="homeOggi">–</b><span>guasti oggi</span><small id="homeOggiCfr"></small></button>
-            <button class="h-st ko" onclick="homeVaiNonRiparati()"><b id="homeNonRip">–</b><span>non riparati</span><small id="homeNonRipCfr"></small></button>
-            <button class="h-st warn" onclick="homeVaiRecidivi()"><b id="homeRecid">–</b><span>treni recidivi</span><small id="homeRecidCfr"></small></button>
           </div>
         </div>
       </div>
@@ -665,7 +680,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 6.5.1</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.0.1</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -686,7 +701,7 @@ div.set-row{cursor:default}
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v6.5.1</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.0.1</div>
     </section>
 
     <!-- ── PAGINA: NUOVO GUASTO ── -->
@@ -860,10 +875,15 @@ div.set-row{cursor:default}
 
       <!-- ── TAB GUASTI ── -->
       <div id="tab-guasti">
-        <div class="search-bar">
-          <svg class="ic"><use href="#i-search"/></svg>
-          <input type="search" id="searchInput" placeholder="Cerca testo, materiale, stazione..." oninput="renderElenco()">
+        <div class="cerca-riga">
+          <div class="search-bar">
+            <svg class="ic"><use href="#i-search"/></svg>
+            <input type="search" id="searchInput" placeholder="Cerca materiale, guasto, stazione..." oninput="renderElenco()">
+          </div>
+          <button class="btn-filtri" id="btnFiltri" onclick="apriFiltri('g')" aria-expanded="false"><svg class="ic"><use href="#i-filter"/></svg><span class="l">Filtri</span><span class="n" id="nFiltri"></span></button>
         </div>
+        <div class="card filtri-card" id="filtriG" hidden>
+        <div class="lbl">Linea</div>
         <div class="filter-chips" id="lineFilters">
           <button class="f-chip active" data-f="ALL" onclick="setLineFilter('ALL',this)">Tutte</button>
           <button class="f-chip" data-f="M1" onclick="setLineFilter('M1',this)">M1</button>
@@ -872,6 +892,7 @@ div.set-row{cursor:default}
           <button class="f-chip" data-f="M4" onclick="setLineFilter('M4',this)">M4</button>
           <button class="f-chip" data-f="M5" onclick="setLineFilter('M5',this)">M5</button>
         </div>
+        <div class="lbl">Stato</div>
         <div class="filter-chips">
           <button class="f-chip active" data-s="ALL" onclick="setStatusFilter('ALL',this)">Tutti gli stati</button>
           <button class="f-chip" data-s="no" onclick="setStatusFilter('no',this)">Non riparati</button>
@@ -915,17 +936,27 @@ div.set-row{cursor:default}
           </div>
         </div>
 
-        <button class="btn-secondary" style="margin-top:0;margin-bottom:16px" onclick="scaricaCSV()"><svg class="ic"><use href="#i-download"/></svg>Scarica elenco (CSV)</button>
+        <div class="filtri-az">
+          <button class="btn-secondary" onclick="azzeraFiltri('g')"><svg class="ic ic-sm"><use href="#i-x"/></svg>Azzera filtri</button>
+          <button class="btn-secondary" onclick="scaricaCSV()"><svg class="ic ic-sm"><use href="#i-download"/></svg>Scarica elenco (CSV)</button>
+          <button class="btn-primary" onclick="chiudiFiltri('g')"><svg class="ic ic-sm"><use href="#i-check-circle"/></svg>Mostra risultati</button>
+        </div>
+        </div>
 
         <div id="elencoList"></div>
       </div>
 
       <!-- ── TAB SEGNALAZIONI ── -->
       <div id="tab-segnalazioni" style="display:none">
-        <div class="search-bar">
-          <svg class="ic"><use href="#i-search"/></svg>
-          <input type="search" id="searchInputSeg" placeholder="Cerca testo, vettura..." oninput="renderElencoSeg()">
+        <div class="cerca-riga">
+          <div class="search-bar">
+            <svg class="ic"><use href="#i-search"/></svg>
+            <input type="search" id="searchInputSeg" placeholder="Cerca materiale, vettura, problema..." oninput="renderElencoSeg()">
+          </div>
+          <button class="btn-filtri" id="btnFiltriSeg" onclick="apriFiltri('s')" aria-expanded="false"><svg class="ic"><use href="#i-filter"/></svg><span class="l">Filtri</span><span class="n" id="nFiltriSeg"></span></button>
         </div>
+        <div class="card filtri-card" id="filtriS" hidden>
+        <div class="lbl">Linea</div>
         <div class="filter-chips" id="lineFiltersSeg">
           <button class="f-chip active" data-f="ALL" onclick="setLineFilterSeg('ALL',this)">Tutte</button>
           <button class="f-chip" data-f="M1" onclick="setLineFilterSeg('M1',this)">M1</button>
@@ -972,7 +1003,12 @@ div.set-row{cursor:default}
           </div>
         </div>
 
-        <button class="btn-secondary" style="margin-top:0;margin-bottom:16px" onclick="scaricaCSVSeg()"><svg class="ic"><use href="#i-download"/></svg>Scarica elenco (CSV)</button>
+        <div class="filtri-az">
+          <button class="btn-secondary" onclick="azzeraFiltri('s')"><svg class="ic ic-sm"><use href="#i-x"/></svg>Azzera filtri</button>
+          <button class="btn-secondary" onclick="scaricaCSVSeg()"><svg class="ic ic-sm"><use href="#i-download"/></svg>Scarica elenco (CSV)</button>
+          <button class="btn-primary" onclick="chiudiFiltri('s')"><svg class="ic ic-sm"><use href="#i-check-circle"/></svg>Mostra risultati</button>
+        </div>
+        </div>
 
         <div id="elencoListSeg"></div>
       </div>
@@ -1306,7 +1342,7 @@ div.set-row{cursor:default}
    Archivio usato dal resto dell'app (ref().on / set / push / remove):
    i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '6.5.1';
+const APP_VERSIONE = '2.0.1';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
@@ -1592,7 +1628,7 @@ document.addEventListener('visibilitychange', ()=>{
 window.addEventListener('focus', cloudControlla);
 setInterval(cloudControlla, 10000);
 
-/* Tasto "Aggiorna dati" (Home, barra in alto, Copia nel cloud).
+/* Tasto "Aggiorna dati": solo in alto a destra, nella barra.
    Il telefono toglie il permesso sul file quando l'app viene chiusa: il tasto lo richiede
    (funziona sempre perché parte da un tocco), poi legge, unisce e salva il file.
    Finché il permesso c'è, l'app continua anche ad aggiornarsi da sola. */
@@ -1739,28 +1775,18 @@ function renderCloud(){
   if(sub){ sub.textContent = testo; document.getElementById('setCloudDot').className = 'conn ' + classe; }
   const b = document.getElementById('homeCloud');
   if(b){ b.style.display = avviso ? 'flex' : 'none'; document.getElementById('homeCloudTxt').textContent = avviso; }
-  // tasto "Aggiorna dati" in Home e nella barra in alto
-  const hs = document.getElementById('homeSync');
-  if(hs){
-    hs.style.display = cloudFile ? 'flex' : 'none';
-    let sub, col = '';
-    if(aggiornoAMano) sub = 'Aggiornamento in corso...';
-    else if(cloudStato==='errore'){ sub = cloudErrore; col = ' ko'; }
-    else { sub = 'Ultimo aggiornamento ' + testoUltimo(info.ultimo); col = pend ? ' avviso' : ''; }
-    document.getElementById('homeSyncSub').textContent = sub;
-    document.getElementById('homeSyncIc').className = 'ico' + col + (aggiornoAMano ? ' gira' : '');
-    const bd = document.getElementById('homeSyncBadge');
-    bd.hidden = !pend || aggiornoAMano;
-    bd.textContent = pend + ' da inviare';
-  }
+  // tasto "Aggiorna dati" nella barra in alto: il suggerimento dice com'è la situazione
   const ts = document.getElementById('topSync');
   if(ts){
+    ts.title = aggiornoAMano ? 'Aggiornamento in corso...'
+      : (cloudStato==='errore' ? 'Aggiorna dati · ' + cloudErrore
+      : 'Aggiorna dati · ultimo aggiornamento ' + testoUltimo(info.ultimo) + (txtPend ? ' · ' + txtPend : ''));
     ts.style.display = cloudFile ? 'flex' : 'none';
     ts.classList.toggle('gira', aggiornoAMano);
     ts.classList.toggle('avviso', !!pend || cloudStato==='errore');
   }
 }
-function homeCloudTocca(){ if(cloudFile) aggiornaDati(); else apriCloud(); }
+function homeCloudTocca(){ apriCloud(); }
 
 function rigaCloud(icona, colore, titolo, sotto, azione, pericolo){
   return `<button class="set-row${pericolo ? ' danger' : ''}" onclick="${azione}"><span class="bubble ${colore}">${ic(icona,'')}</span>`
@@ -1769,8 +1795,7 @@ function rigaCloud(icona, colore, titolo, sotto, azione, pericolo){
 function apriCloud(){
   let note, righe = '';
   if(FILE_API && cloudFile){
-    note = `I dati sono nel file ${cloudFile.name}, insieme a quelli degli altri dispositivi collegati. Tocca "Aggiorna dati" per inviare le tue modifiche e ricevere quelle degli altri: se il ${VERSIONE_PC ? 'browser' : 'telefono'} chiede il permesso, premi "Consenti".`;
-    righe += rigaCloud('refresh','b-green','Aggiorna dati','Invia le tue modifiche e ricevi quelle degli altri','aggiornaDati()');
+    note = `I dati sono nel file ${cloudFile.name}, insieme a quelli degli altri dispositivi collegati. Per inviare le tue modifiche e ricevere quelle degli altri tocca il tasto con le due frecce in alto a destra: se il ${VERSIONE_PC ? 'browser' : 'telefono'} chiede il permesso, premi "Consenti".`;
     righe += rigaCloud('x','b-red','Scollega il file',`I dati restano su ${QUI}`,'cloudScollega()', true);
   } else if(FILE_API){
     note = VERSIONE_PC
@@ -1796,7 +1821,7 @@ function devInfoExtra(){
   return [
     ['Dati', 'su ' + QUI + (VERSIONE_PC ? ' (versione PC)' : '')],
     ['File collegato', cloudFile ? cloudFile.name : (FILE_API ? 'nessuno' : 'non supportato dal browser')],
-    ['Stato file', {nessuno:'—', ok:'si aggiorna da solo', permesso:'senza permesso · serve Aggiorna dati', errore:'errore: ' + cloudErrore}[cloudStato] || cloudStato],
+    ['Stato file', {nessuno:'—', ok:'si aggiorna da solo', permesso:'senza permesso · serve il tasto Aggiorna dati in alto', errore:'errore: ' + cloudErrore}[cloudStato] || cloudStato],
     ['Ultimo aggiornamento', testoUltimo(info.ultimo)],
     ['Modifiche da inviare', cloudFile ? modificheDaInviare() : (info.sporco ? 'sì' : 'no')],
     ['Eliminazioni ricordate', Object.keys(t._del || {}).length]
@@ -2191,12 +2216,96 @@ function renderElenco(){
     document.getElementById('elencoCount').textContent = entries.length + (entries.length===1?' guasto trovato':' guasti trovati');
   }
 
+  contaFiltri('g');
   if(entries.length===0){
     list.innerHTML = `<div class="empty-state">${ic('search','')}<div class="empty-title">Nessun guasto trovato</div><div class="empty-sub">Modifica i filtri o la ricerca</div></div>`;
     return;
   }
 
-  list.innerHTML = entries.map(([id,g])=> htmlCardGuasto(id, g, `openDetail('guasto','${id}')`)).join('');
+  const cerca = !!document.getElementById('searchInput').value.trim() || contaFiltri('g') > 0;
+  list.innerHTML = htmlPerGiorni('g', entries, ([id,g])=> htmlCardGuasto(id, g, `openDetail('guasto','${id}')`), cerca);
+}
+
+/* ── Elenchi divisi per giorno: ogni giorno è un menu a discesa ──
+   Si apre da solo il giorno più recente; con una ricerca o dei filtri si aprono tutti. */
+const giorniAperti = {g: new Set(), s: new Set()};
+const giorniChiusi = {g: new Set(), s: new Set()};
+function etichettaGiorno(iso){
+  if(!iso) return 'Senza data';
+  const ieri = new Date(); ieri.setDate(ieri.getDate()-1);
+  const d = new Date(iso + 'T12:00:00');
+  let t = d.toLocaleDateString('it-IT', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  t = t.charAt(0).toUpperCase() + t.slice(1);
+  if(iso===oggiISO()) return 'Oggi · ' + t;
+  if(iso===oggiISO(ieri)) return 'Ieri · ' + t;
+  return t;
+}
+function htmlPerGiorni(tipo, entries, card, tuttiAperti){
+  const gruppi = new Map();
+  entries.slice().sort((a,b)=> ((b[1].data||'') + (b[1].ora||'')).localeCompare((a[1].data||'') + (a[1].ora||'')) || (b[1].creato||0) - (a[1].creato||0))
+    .forEach(e=>{ const k = e[1].data || ''; if(!gruppi.has(k)) gruppi.set(k, []); gruppi.get(k).push(e); });
+  let primo = true;
+  let h = '';
+  gruppi.forEach((lista, giorno)=>{
+    const aperto = tuttiAperti || giorniAperti[tipo].has(giorno) || (primo && !giorniChiusi[tipo].has(giorno));
+    primo = false;
+    const nonRip = tipo==='g' ? lista.filter(([id,g])=> g.riparato!=='si').length : 0;
+    const quanti = lista.length + ' ' + (tipo==='g' ? (lista.length===1 ? 'guasto' : 'guasti') : (lista.length===1 ? 'segnalazione' : 'segnalazioni'));
+    h += `<details class="giorno"${aperto ? ' open' : ''} data-giorno="${giorno}" data-tipo="${tipo}">
+      <summary onclick="ricordaGiorno(this.parentElement)">${ic('chevron','ic-sm freccia')}<span class="gt">${escapeHtml(etichettaGiorno(giorno))}</span><span class="conta">${quanti}${nonRip ? ` · <b>${nonRip} non ${nonRip===1 ? 'riparato' : 'riparati'}</b>` : ''}</span></summary>
+      <div class="giorno-lista">${lista.map(card).join('')}</div>
+    </details>`;
+  });
+  return h;
+}
+function ricordaGiorno(el){
+  const t = el.dataset.tipo, g = el.dataset.giorno;
+  // si chiama al clic, prima che il menu cambi stato: conta lo stato che avrà dopo
+  if(!el.open){ giorniAperti[t].add(g); giorniChiusi[t].delete(g); }
+  else { giorniAperti[t].delete(g); giorniChiusi[t].add(g); }
+}
+
+/* ── Filtri: nascosti dietro il tasto "Filtri", si aprono in una card ── */
+function apriFiltri(t){
+  const card = document.getElementById(t==='g' ? 'filtriG' : 'filtriS');
+  const btn = document.getElementById(t==='g' ? 'btnFiltri' : 'btnFiltriSeg');
+  card.hidden = !card.hidden;
+  btn.setAttribute('aria-expanded', String(!card.hidden));
+  btn.classList.toggle('aperto', !card.hidden);
+}
+function chiudiFiltri(t){
+  document.getElementById(t==='g' ? 'filtriG' : 'filtriS').hidden = true;
+  const btn = document.getElementById(t==='g' ? 'btnFiltri' : 'btnFiltriSeg');
+  btn.setAttribute('aria-expanded', 'false');
+  btn.classList.remove('aperto');
+}
+function contaFiltri(t){
+  const s = t==='g' ? '' : 'Seg';
+  let n = 0;
+  if((t==='g' ? lineFilter : lineFilterSeg)!=='ALL') n++;
+  if(t==='g' && statusFilter!=='ALL') n++;
+  if(document.getElementById('monthFilter'+s).value!=='ALL') n++;
+  if(document.getElementById('yearFilter'+s).value!=='ALL') n++;
+  if(document.getElementById('dayFilter'+s).value) n++;
+  document.getElementById(t==='g' ? 'nFiltri' : 'nFiltriSeg').textContent = n || '';
+  document.getElementById(t==='g' ? 'btnFiltri' : 'btnFiltriSeg').classList.toggle('attivi', n>0);
+  return n;
+}
+function azzeraFiltri(t){
+  if(t==='g'){
+    lineFilter = 'ALL'; statusFilter = 'ALL';
+    attivaChip('#lineFilters .f-chip[data-f="ALL"]');
+    attivaChip('#tab-guasti .f-chip[data-s="ALL"]');
+    ['monthFilter','yearFilter'].forEach(id=> document.getElementById(id).value = 'ALL');
+    document.getElementById('dayFilter').value = '';
+    renderElenco();
+  } else {
+    lineFilterSeg = 'ALL';
+    attivaChip('#lineFiltersSeg .f-chip[data-f="ALL"]');
+    ['monthFilterSeg','yearFilterSeg'].forEach(id=> document.getElementById(id).value = 'ALL');
+    document.getElementById('dayFilterSeg').value = '';
+    renderElencoSeg();
+  }
 }
 function htmlCardGuasto(id, g, onclick){
     const color = LINE_COLORS[g.linea] || '#888';
@@ -2248,12 +2357,14 @@ function renderElencoSeg(){
     document.getElementById('elencoCount').textContent = entries.length + (entries.length===1?' segnalazione trovata':' segnalazioni trovate');
   }
 
+  contaFiltri('s');
   if(entries.length===0){
     list.innerHTML = `<div class="empty-state">${ic('search','')}<div class="empty-title">Nessuna segnalazione trovata</div><div class="empty-sub">Modifica i filtri o la ricerca</div></div>`;
     return;
   }
 
-  list.innerHTML = entries.map(([id,g])=>{
+  const cerca = !!document.getElementById('searchInputSeg').value.trim() || contaFiltri('s') > 0;
+  list.innerHTML = htmlPerGiorni('s', entries, ([id,g])=>{
     const color = LINE_COLORS[g.linea] || '#888';
     const dataFmt = g.data ? g.data.split('-').reverse().join('/') : '';
     return `<div class="guasto-card" style="border-left-color:${color}" onclick="openDetail('segnalazione','${id}')">
@@ -2267,7 +2378,7 @@ function renderElencoSeg(){
         ${g.vettura?`<span>${ic('wrench')}${escapeHtml(g.vettura)}</span>`:''}
       </div>
     </div>`;
-  }).join('');
+  }, cerca);
 }
 function csvEscape(v){
   const s = (v===undefined||v===null) ? '' : String(v);
@@ -2987,22 +3098,12 @@ function renderHome(){
   renderCloud();
   aggiornaDataTop();
   const oggi = oggiISO();
-  const ieriD = new Date(); ieriD.setDate(ieriD.getDate()-1);
-  const ieri = oggiISO(ieriD);
   const guasti = Object.values(allGuasti);
-  const nOggi = guasti.filter(g=>g.data===oggi).length, nIeri = guasti.filter(g=>g.data===ieri).length;
-  document.getElementById('homeOggi').textContent = nOggi;
-  document.getElementById('homeOggiCfr').textContent = 'ieri ' + nIeri;
-  document.getElementById('homeNonRip').textContent = guasti.filter(g=>g.riparato!=='si').length;
-  document.getElementById('homeNonRipCfr').textContent = 'su ' + guasti.length + ' in totale';
-  const annoN = new Date().getFullYear(), anno = String(annoN), annoPrima = String(annoN-1);
-  const perAnno = a=> Object.entries(allGuasti).filter(([id,g])=> (g.data||'').slice(0,4)===a);
-  document.getElementById('homeRecid').textContent = calcolaStat(perAnno(anno)).treniRecidivi.length;
-  const precedenti = perAnno(annoPrima);
-  document.getElementById('homeRecidCfr').textContent = precedenti.length ? 'nel ' + annoPrima + ': ' + calcolaStat(precedenti).treniRecidivi.length : 'quest\'anno';
   const ng = guasti.length, ns = Object.keys(allSegnalazioni).length;
-  document.getElementById('homeGuastiSub').textContent = ng===1 ? '1 registrato' : ng + ' registrati';
-  document.getElementById('homeSegSub').textContent = ns===1 ? '1 registrata' : ns + ' registrate';
+  const nOggi = guasti.filter(g=>g.data===oggi).length;
+  const nOggiSeg = Object.values(allSegnalazioni).filter(g=>g.data===oggi).length;
+  document.getElementById('homeGuastiSub').textContent = (ng===1 ? '1 registrato' : ng + ' registrati') + (nOggi ? ' · ' + nOggi + ' oggi' : '');
+  document.getElementById('homeSegSub').textContent = (ns===1 ? '1 registrata' : ns + ' registrate') + (nOggiSeg ? ' · ' + nOggiSeg + ' oggi' : '');
 }
 /* data e ora sotto il nome dell'app, come nell'app aziendale */
 function aggiornaDataTop(){
@@ -3032,26 +3133,6 @@ function filtriElencoPuliti(){
   document.getElementById('yearFilter').value = 'ALL';
   document.getElementById('dayFilter').value = '';
   setElencoTab('guasti', document.querySelector('.tabs .f-chip[data-tab="guasti"]'));
-}
-function homeVaiOggi(){
-  filtriElencoPuliti();
-  document.getElementById('dayFilter').value = oggiISO();
-  renderElenco();
-  mostraPagina('elenco');
-}
-function homeVaiNonRiparati(){
-  filtriElencoPuliti();
-  statusFilter = 'no';
-  attivaChip('#tab-guasti .f-chip[data-s="no"]');
-  renderElenco();
-  mostraPagina('elenco');
-}
-function homeVaiRecidivi(){
-  statModo = 'treni'; statPeriodo = 'anno'; statLinea = 'ALL'; statTuttiTreni = false;
-  attivaChip('#statModo .f-chip[data-v="treni"]');
-  attivaChip(`#statPeriodo .f-chip[onclick*="'anno'"]`);
-  attivaChip('#statLinee .f-chip[data-f="ALL"]');
-  mostraPagina('stat');
 }
 
 /* ════════ IMPOSTAZIONI ════════ */
