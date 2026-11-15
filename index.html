@@ -111,11 +111,10 @@ button,input,select,textarea{font-family:inherit}
 .t-light .ic{color:var(--orange)}
 .t-blue{background:var(--tile-blue)}
 .t-green{background:var(--green)}
+.t-purple{background:var(--purple)}
 .ic-xl{width:40px;height:40px;stroke-width:1.75}
-/* tasto Impostazioni in alto: ingranaggio riconoscibile (sul PC anche la scritta) */
-.top-set{min-height:40px;padding:0 8px;border-radius:12px;border:1.5px solid var(--border2);background:var(--surface2);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-size:var(--fs-s);font-weight:700;cursor:pointer;flex-shrink:0}
+/* tasto Impostazioni in alto: stesso aspetto e grandezza degli altri tasti della barra */
 .top-set span{display:none}
-.top-set:active{background:var(--purple-lt)}
 /* elenchi: ricerca + tasto Filtri, filtri in una card, gruppi per giorno */
 .cerca-riga{display:flex;gap:8px;margin-bottom:16px}
 .cerca-riga .search-bar{flex:1;margin-bottom:0}
@@ -219,6 +218,121 @@ div.set-row{cursor:default}
 .h-cloud .ic{flex-shrink:0}
 .cloud-note{font-size:var(--fs-s);color:var(--text2);line-height:1.5;margin-bottom:16px}
 .set-info{text-align:center;font-size:var(--fs-s);color:var(--text3);line-height:1.6}
+
+/* ── TURNI ── */
+.tu-linee{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px}
+.tu-lin{min-height:48px;padding:0 4px;border-radius:12px;border:3px solid transparent;color:#fff;font-size:var(--fs-s);font-weight:700;cursor:pointer;opacity:.6;line-height:1.2}
+.tu-lin small{display:block;font-size:var(--fs-xs);font-weight:400}
+.tu-lin.on{opacity:1;border-color:#fff}
+.tu-CO{background:var(--purple)} .tu-L1{background:var(--m1)} .tu-L2{background:var(--m2)} .tu-L3{background:var(--m3);color:#1A1735} .tu-MLA{background:var(--m5)}
+.tu-viste{display:grid;grid-template-columns:repeat(4,1fr) auto;gap:8px;margin-bottom:16px}
+.tu-viste .tu-carica{display:flex;align-items:center;justify-content:center;gap:8px;min-width:40px;padding:0 8px;color:var(--text)}
+.tu-carica .l{display:none}
+.tu-viste button{min-height:40px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);font-size:var(--fs-s);font-weight:700;cursor:pointer}
+.tu-viste button.on{background:var(--purple);border-color:var(--purple);color:#fff}
+.tu-nav{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.tu-fr{width:40px;height:40px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.tu-giorno{flex:1;min-width:0;text-align:center}
+.tu-giorno b{display:block;font-size:var(--fs-m);font-weight:700}
+.tu-giorno span{font-size:var(--fs-xs);color:var(--text2)}
+.tu-oggi{min-height:40px;padding:0 16px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:var(--fs-s);font-weight:700;cursor:pointer}
+.tu-cod{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:24px;padding:0 4px;border-radius:8px;font-size:var(--fs-xs);font-weight:700;flex-shrink:0}
+.tu-cod.grande{min-width:48px;height:32px;font-size:var(--fs-s)}
+.c-mat{background:var(--amber-bg);color:var(--amber-fg)}
+.c-pom{background:var(--purple-lt);color:var(--purple-ink)}
+.c-gio{background:var(--green-bg);color:var(--green-fg)}
+.c-rip{background:var(--gray-bg);color:var(--text3)}
+.c-sco{background:var(--blue-bg);color:var(--blue)}
+.c-altro{background:var(--surface2);color:var(--text)}
+.c-vuoto{color:var(--text3)}
+.c-cambio{box-shadow:inset 0 0 0 2px var(--orange)}
+.tu-gruppo{margin-bottom:16px}
+.tu-gruppo h3{display:flex;align-items:center;gap:8px;font-size:var(--fs-s);font-weight:700;color:var(--text2);margin-bottom:8px}
+.tu-gruppo h3 .n{margin-left:auto;font-weight:400;font-size:var(--fs-xs)}
+.tu-persona{display:flex;align-items:center;gap:16px;min-height:56px;padding:8px 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:8px}
+.tu-persona.io{border-color:var(--orange)}
+.tu-persona .nome{flex:1;min-width:0}
+.tu-persona .nome b{display:block;font-size:var(--fs-m);font-weight:700}
+.tu-persona .nome span{display:block;font-size:var(--fs-xs);color:var(--text2);margin-top:4px}
+.tu-persona .ora{font-size:var(--fs-s);font-weight:700;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tu-tab{overflow:auto;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+.tu-tabella{border-collapse:separate;border-spacing:0;width:100%;font-size:var(--fs-xs)}
+.tu-tabella th,.tu-tabella td{padding:8px 4px;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap}
+.tu-tabella th{font-weight:700;color:var(--text2);background:var(--surface);position:sticky;top:0;z-index:1}
+.tu-tabella th small{display:block;font-weight:400;color:var(--text3)}
+.tu-tabella .fine{background:#16406F}
+.tu-tabella th.oggi{background:var(--orange);color:#1A1735}
+.tu-tabella th.oggi small{color:#1A1735}
+.tu-tabella td.oggi{background:#4A3A2E;box-shadow:inset 2px 0 0 var(--orange),inset -2px 0 0 var(--orange)}
+.tu-tabella tr:last-child td.oggi{box-shadow:inset 2px 0 0 var(--orange),inset -2px 0 0 var(--orange),inset 0 -2px 0 var(--orange)}
+.tu-giorno.oggi b{color:var(--orange)}
+.tu-giorno.oggi span{display:inline-block;margin-top:4px;padding:0 8px;border-radius:8px;background:var(--orange);color:#1A1735;font-weight:700}
+/* note delle celle Excel */
+.tu-cod.c-nota{position:relative;cursor:pointer}
+.tu-cod.c-nota::after{content:'';position:absolute;top:-4px;right:-4px;width:10px;height:10px;border-radius:50%;background:var(--orange);border:2px solid var(--bg)}
+.tu-persona.con-nota{align-items:flex-start}
+.tu-nota-in{display:flex !important;align-items:flex-start;gap:8px;margin-top:8px !important;padding:8px;border-radius:8px;background:#4A3A2E;color:var(--text) !important;font-size:var(--fs-s) !important;line-height:1.4}
+.tu-nota-in .ic{color:var(--orange);flex-shrink:0;margin-top:2px}
+.tu-nota{padding:16px;border-radius:12px;background:var(--surface2);margin-bottom:8px}
+.tu-nota p{font-size:var(--fs-m);line-height:1.5;white-space:pre-wrap}
+.tu-nota span{display:block;margin-top:8px;font-size:var(--fs-xs);color:var(--text2)}
+.tu-legenda h3{display:flex;align-items:center;gap:8px}
+.tu-legenda h3 .ic{color:var(--orange)}
+.tu-nota-r{display:flex;gap:16px;padding:8px 0;border-bottom:1px solid var(--border);font-size:var(--fs-s);line-height:1.4}
+.tu-nota-r:last-child{border-bottom:none}
+.tu-nota-r b{flex-shrink:0;width:88px;font-weight:700}
+.tu-nota-r em{font-style:normal;font-weight:700}
+.tu-nota-r small{color:var(--text2);font-size:var(--fs-xs)}
+.tu-nota-r.oggi b{color:var(--orange)}
+.tu-tabella th:first-child,.tu-tabella td:first-child{position:sticky;left:0;z-index:2;background:var(--surface);text-align:left;padding-left:16px;padding-right:8px;font-size:var(--fs-s);font-weight:700}
+.tu-tabella tr.io td:first-child{color:var(--orange)}
+.tu-chi{display:flex;gap:8px;margin-bottom:16px}
+.tu-chi select{flex:1;min-width:0;min-height:48px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);padding:0 16px;font-size:var(--fs-m)}
+.tu-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.tu-cal .gs{font-size:var(--fs-xs);font-weight:700;color:var(--text2);text-align:center;padding-bottom:4px}
+.tu-cal .gg{min-height:56px;padding:4px;background:var(--surface);border:1px solid var(--border);border-radius:8px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.tu-cal .gg.vuoto{background:none;border:none}
+.tu-cal .gg.oggi{border:2px solid var(--orange);background:#4A3A2E}
+.tu-cal .gg.oggi .d{color:var(--orange);font-weight:700}
+.tu-cal .gg .d{font-size:var(--fs-xs);color:var(--text2)}
+.tu-cal .gg .tu-cod{width:100%;min-width:0}
+.tu-cal .gg .h{display:none;font-size:var(--fs-xs);color:var(--text3)}
+.tu-riep{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:16px}
+.tu-riep div{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:8px 4px;text-align:center}
+.tu-riep b{display:block;font-size:var(--fs-l);font-weight:700}
+.tu-riep span{font-size:var(--fs-xs);color:var(--text2)}
+.tu-legenda{margin-top:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px}
+.tu-legenda h3{font-size:var(--fs-s);font-weight:700;margin-bottom:8px}
+.tu-leg-r{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:var(--fs-xs);color:var(--text2)}
+.tu-leg-r b{color:var(--text);font-weight:700}
+.tu-fonte{display:flex;align-items:center;gap:8px;font-size:var(--fs-xs);color:var(--text3);margin-top:16px;word-break:break-word}
+.tu-vuoto{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px 16px;text-align:center}
+.tu-vuoto p{font-size:var(--fs-m);line-height:1.5;margin-bottom:16px}
+.tu-vuoto p:last-child{margin-bottom:0}
+.tu-file{display:flex;align-items:center;gap:16px;padding:8px 0;border-bottom:1px solid var(--border)}
+.tu-file:last-child{border-bottom:none}
+.tu-file .tu-lin{min-height:32px;padding:0 8px;opacity:1;border-width:0}
+.tu-file .tx{flex:1;min-width:0}
+.tu-file .tx b{display:block;font-size:var(--fs-s);font-weight:700}
+.tu-file .tx span{display:block;font-size:var(--fs-xs);color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tu-esiti{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.tu-esiti > div{display:flex;gap:8px;align-items:flex-start;font-size:var(--fs-s)}
+.tu-esiti small{display:block;font-size:var(--fs-xs);color:var(--text2);word-break:break-word}
+.tu-esiti .ok{color:var(--green-fg)} .tu-esiti .er{color:var(--red-fg)}
+.tu-esiti b{font-weight:700}
+@media (min-width:900px){
+  .tu-gruppi{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));column-gap:16px}
+  .tu-viste{max-width:800px}
+  .tu-carica .l{display:inline}
+  .tu-viste .tu-carica{padding:0 16px}
+  .tu-linee{max-width:800px}
+  .tu-cal .gg{min-height:88px;padding:8px}
+  .tu-cal .gg .tu-cod{height:32px;font-size:var(--fs-s)}
+  .tu-cal .gg .h{display:block}
+  .tu-leg-griglia{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));column-gap:24px}
+  .tu-tabella{font-size:var(--fs-s)}
+  .tu-riep{max-width:640px}
+}
 
 /* ── ORARI M7 ── */
 #page-m7{--acc:var(--purple);--acc-ink:#fff;--ink:var(--text)}
@@ -531,6 +645,12 @@ div.set-row{cursor:default}
   <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+  <symbol id="i-bed" viewBox="0 0 24 24"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
   <symbol id="i-filter" viewBox="0 0 24 24"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></symbol>
   <symbol id="i-maximize" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></symbol>
   <symbol id="i-minimize" viewBox="0 0 24 24"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></symbol>
@@ -548,8 +668,8 @@ div.set-row{cursor:default}
     <div class="top-right">
       <button class="top-sync" id="topSync" style="display:none" onclick="aggiornaDati()" aria-label="Aggiorna dati" title="Aggiorna dati"><svg class="ic"><use href="#i-refresh"/></svg><i></i></button>
       <button class="top-sync" id="topFull" style="display:none" onclick="tuttoSchermo()" aria-label="Tutto schermo" title="Tutto schermo"><svg class="ic"><use href="#i-maximize"/></svg></button>
-      <button class="top-set" id="topSet" onclick="apri('impostazioni')" aria-label="Impostazioni" title="Impostazioni"><svg class="ic"><use href="#i-settings"/></svg><span>Impostazioni</span></button>
-      <div class="firma" onclick="tapVersione()">v2.0.1</div>
+      <button class="top-sync top-set" id="topSet" onclick="apri('impostazioni')" aria-label="Impostazioni" title="Impostazioni"><svg class="ic"><use href="#i-settings"/></svg><span>Impostazioni</span></button>
+      <div class="firma" onclick="tapVersione()">v2.2.0</div>
     </div>
   </header>
 
@@ -576,6 +696,10 @@ div.set-row{cursor:default}
             <button class="tile t-green" onclick="apri('stat')">
               <svg class="ic ic-xl"><use href="#i-chart"/></svg>
               <span><span class="t">Statistiche</span><span class="s">Guasti, treni e recidivi</span></span>
+            </button>
+            <button class="tile t-purple" onclick="apri('turni')">
+              <svg class="ic ic-xl"><use href="#i-calendar"/></svg>
+              <span><span class="t">Turni</span><span class="s">Giorno, settimana e mese</span></span>
             </button>
           </div>
 
@@ -680,7 +804,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.0.1</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.2.0</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -701,7 +825,7 @@ div.set-row{cursor:default}
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.0.1</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.2.0</div>
     </section>
 
     <!-- ── PAGINA: NUOVO GUASTO ── -->
@@ -1044,6 +1168,19 @@ div.set-row{cursor:default}
       <div id="statBody"></div>
     </section>
 
+    <!-- ── PAGINA: TURNI ── -->
+    <section class="page" id="page-turni">
+      <div class="tu-linee" id="tuLinee" role="group" aria-label="Linea"></div>
+      <div class="tu-viste" id="tuViste" role="group" aria-label="Vista">
+        <button data-v="giorno" onclick="tuVista('giorno')">Giorno</button>
+        <button data-v="settimana" onclick="tuVista('settimana')">Settimana</button>
+        <button data-v="mese" onclick="tuVista('mese')">Mese</button>
+        <button data-v="foglio" onclick="tuVista('foglio')">Foglio</button>
+        <button class="tu-carica" onclick="apriCaricaTurni()" aria-label="Aggiorna turni" title="Aggiorna turni"><svg class="ic"><use href="#i-upload"/></svg><span class="l">Aggiorna turni</span></button>
+      </div>
+      <div id="tuCorpo"></div>
+    </section>
+
     <!-- ── PAGINA: ORARI M7 ── -->
     <section class="page" id="page-m7">
       <div class="m7-due">
@@ -1280,6 +1417,38 @@ div.set-row{cursor:default}
   </div>
 </div>
 
+<!-- ── SHEET AGGIORNA TURNI ── -->
+<div class="overlay" id="turniOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Aggiorna i turni</h2>
+    <div class="sec-sub" style="margin-bottom:16px">Scegli i file Excel dei turni, anche tutti insieme. La linea si riconosce dal nome del file (CO, L1, L2, L3, MLA) e i turni vecchi di quella linea vengono sostituiti. I turni restano su questo dispositivo.</div>
+    <button class="btn-primary" onclick="document.getElementById('tuFile').click()"><svg class="ic"><use href="#i-upload"/></svg>Scegli i file .xlsx</button>
+    <input type="file" id="tuFile" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple hidden onchange="turniFileScelti(this)">
+    <div id="tuEsiti"></div>
+    <div class="sheet-section">
+      <div class="lbl">Turni caricati</div>
+      <div id="tuCaricati"></div>
+    </div>
+    <div class="sheet-btns">
+      <button class="btn-cancel" onclick="document.getElementById('turniOverlay').classList.remove('open')"><svg class="ic"><use href="#i-x"/></svg>Chiudi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SHEET NOTA DEL TURNO ── -->
+<div class="overlay" id="tuNoteOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2 id="tuNoteTit"></h2>
+    <div class="sec-sub" id="tuNoteSub" style="margin-bottom:16px"></div>
+    <div id="tuNoteLista"></div>
+    <div class="sheet-btns">
+      <button class="btn-cancel" onclick="document.getElementById('tuNoteOverlay').classList.remove('open')"><svg class="ic"><use href="#i-x"/></svg>Chiudi</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="devPassOverlay" style="z-index:210">
   <div class="sheet">
     <div class="sheet-handle"></div>
@@ -1342,7 +1511,7 @@ div.set-row{cursor:default}
    Archivio usato dal resto dell'app (ref().on / set / push / remove):
    i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '2.0.1';
+const APP_VERSIONE = '2.2.0';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
@@ -3041,7 +3210,7 @@ function renderDescrizioniList(){
 /* ════════ NAVIGAZIONE ════════ */
 /* Si parte sempre dalla Home; le altre pagine hanno la freccia per tornare.
    Il tasto "indietro" del telefono riporta alla Home invece di chiudere l'app. */
-const TITOLI = {guasto:'Guasto', segnalazione:'Segnalazione', elenco:'Elenchi', stat:'Statistiche', impostazioni:'Impostazioni', m7:'Orari M7'};
+const TITOLI = {guasto:'Guasto', segnalazione:'Segnalazione', elenco:'Elenchi', stat:'Statistiche', impostazioni:'Impostazioni', m7:'Orari M7', turni:'Turni'};
 let paginaCorrente = 'home';
 
 function mostraPagina(name, opts){
@@ -3056,6 +3225,7 @@ function mostraPagina(name, opts){
   if(name==='stat') renderStat();
   if(name==='impostazioni') renderImpostazioni();
   if(name==='m7' && window.m7Mostra) window.m7Mostra();
+  if(name==='turni') renderTurni();
   if(!home && !opts.noHistory){
     if(paginaCorrente==='home') history.pushState({p:name}, '');
     else history.replaceState({p:name}, '');
@@ -3173,7 +3343,7 @@ document.addEventListener('click', e=>{
 }, true);
 setTimeout(aggiornaTastoSchermo, 0);
 
-const PREFS_DEFAULT ={lineaDef:'', dataAuto:true, dopoSalva:'home', dev:false, modello:'', fsAuto:false};
+const PREFS_DEFAULT = {lineaDef:'', dataAuto:true, dopoSalva:'home', dev:false, modello:'', fsAuto:false, turniIo:''};
 let prefs = caricaPrefs();
 let waNumeroCondiviso = '';
 const WA_DEFAULT = '';
@@ -3372,6 +3542,7 @@ function descriviElemento(p, v){
   const pz = String(p).split('/'), tipo = pz[0];
   const nomi = {guasti:'Guasto', segnalazioni:'Segnalazione', materiali_extra:'Materiale', materiali_deleted:'Materiale nascosto', descrizioni_preset:'Descrizione predefinita', modelli_messaggio:'Modello', impostazioni:'Impostazione', orari_m7:'Orario M7'};
   let d = nomi[tipo] || p;
+  if(tipo==='turni') return 'Turni ' + (pz[1]==='CO' ? 'CO ADL' : pz[1]) + (v && v.file ? ' · ' + v.file : '') + (v && v.mesi ? ' · ' + v.mesi + ' mesi' : '');
   if(tipo==='orari_m7' && v && typeof v==='object') return d + ' ' + v.linea + ' ' + v.tipo + ' dal ' + fmtData(v.dal) + (v.file ? ' · ' + v.file : '');
   if(v && typeof v==='object' && !Array.isArray(v)){
     if(v.linea) d += ' ' + v.linea;
@@ -3630,6 +3801,448 @@ function devDisattiva(){
   document.getElementById('devOverlay').classList.remove('open');
   setPref('dev', false);
   showToast('Modalità sviluppo disattivata');
+}
+
+/* ════════ TURNI ════════
+   Si caricano i file Excel dei turni (uno per linea). Ogni file ha un foglio per mese:
+   in alto i giorni, poi una riga per persona con il codice del turno, sotto ogni persona
+   una riga per i cambi, in fondo la legenda (codice, postazione, orari per tipo di giorno).
+   I turni restano su questo dispositivo (non passano dal file su OneDrive). */
+const TURNI_KEY = 'guastiMetro.turni';
+const TU_LINEE = [['CO','CO ADL'], ['L1','L1'], ['L2','L2'], ['L3','L3'], ['MLA','MLA']];   // ordine di importanza
+const TU_MESI = ['GENNAIO','FEBBRAIO','MARZO','APRILE','MAGGIO','GIUGNO','LUGLIO','AGOSTO','SETTEMBRE','OTTOBRE','NOVEMBRE','DICEMBRE'];
+const TU_MESI_L = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+const TU_GS = ['do','lu','ma','me','gi','ve','sa'];
+const TU_FAM = { mat:['1° turno','sun'], gio:['Giornata','sun'], pom:['2° turno','moon'], altro:['Altro','list'], sco:['Scomputo','clock'], rip:['Riposo','bed'] };
+let TURNI = (()=>{ try { return JSON.parse(localStorage.getItem(TURNI_KEY) || '{}') || {}; } catch(e){ return {}; } })();
+const tu = { linea:null, vista:'giorno', data:null, persona:null };
+
+/* ── lettura del file Excel ── */
+async function leggiXlsxTurni(buf){
+  let zip;
+  try { zip = await JSZip.loadAsync(buf); } catch(e){ throw new Error('non è un file Excel (.xlsx) valido'); }
+  const leggi = async (n)=>{ const f = zip.file(n); return f ? f.async('string') : null; };
+  const dp = (s)=> new DOMParser().parseFromString(s, 'application/xml');
+  const wbT = await leggi('xl/workbook.xml');
+  if(!wbT) throw new Error('non è un file Excel (.xlsx) valido');
+  const wb = dp(wbT);
+  const tgt = {};
+  const relT = await leggi('xl/_rels/workbook.xml.rels');
+  if(relT) [...dp(relT).getElementsByTagName('Relationship')].forEach(r=>{
+    const t = r.getAttribute('Target') || '';
+    tgt[r.getAttribute('Id')] = t.startsWith('/') ? t.slice(1) : 'xl/' + t.replace(/^\.\//, '');
+  });
+  const sst = [];
+  const sstT = await leggi('xl/sharedStrings.xml');
+  if(sstT) [...dp(sstT).getElementsByTagName('si')].forEach(si=> sst.push([...si.getElementsByTagName('t')].map(t=> t.textContent).join('')));
+  const colNum = (L)=> [...L].reduce((n,ch)=> n*26 + ch.charCodeAt(0) - 64, 0);
+  /* note di Excel (commenti sulle celle): "Autore: testo" */
+  async function noteDelFoglio(percorso){
+    const note = new Map();
+    const relP = percorso.replace(/([^/]+)$/, '_rels/$1.rels');
+    const relX = await leggi(relP);
+    if(!relX) return note;
+    const rc = [...dp(relX).getElementsByTagName('Relationship')].find(r=> /\/comments$/.test(r.getAttribute('Type') || ''));
+    if(!rc) return note;
+    const base = percorso.replace(/[^/]+$/, '');
+    let t = rc.getAttribute('Target') || '';
+    t = t.startsWith('/') ? t.slice(1) : (base + t).split('/').reduce((a,p)=>{ if(p==='..') a.pop(); else if(p && p!=='.') a.push(p); return a; }, []).join('/');
+    const cx = await leggi(t);
+    if(!cx) return note;
+    const doc = dp(cx);
+    const autori = [...doc.getElementsByTagName('author')].map(a=> a.textContent.trim());
+    for(const cm of doc.getElementsByTagName('comment')){
+      const m = /^([A-Z]+)(\d+)$/.exec(cm.getAttribute('ref') || ''); if(!m) continue;
+      const autore = autori[+cm.getAttribute('authorId')] || '';
+      let testo = [...cm.getElementsByTagName('t')].map(x=> x.textContent).join('').replace(/\s+/g, ' ').trim();
+      if(autore && testo.toLowerCase().startsWith(autore.toLowerCase() + ':')) testo = testo.slice(autore.length + 1).trim();
+      if(!testo) continue;
+      const r = +m[2];
+      if(!note.has(r)) note.set(r, new Map());
+      note.get(r).set(colNum(m[1]), { autore, testo });
+    }
+    return note;
+  }
+  const fogli = [];
+  for(const sh of wb.getElementsByTagName('sheet')){
+    const rid = sh.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'id') || sh.getAttribute('r:id');
+    const xml = rid && tgt[rid] ? await leggi(tgt[rid]) : null;
+    if(!xml) continue;
+    let note = new Map();
+    try { note = await noteDelFoglio(tgt[rid]); } catch(e){}
+    const righe = new Map();
+    for(const c of dp(xml).getElementsByTagName('c')){
+      const m = /^([A-Z]+)(\d+)$/.exec(c.getAttribute('r') || ''); if(!m) continue;
+      const t = c.getAttribute('t'), v = c.getElementsByTagName('v')[0];
+      let val = t==='s' ? (sst[+(v ? v.textContent : -1)] || '')
+              : t==='inlineStr' ? [...c.getElementsByTagName('t')].map(x=> x.textContent).join('')
+              : (v ? v.textContent : '');
+      val = String(val).replace(/\s+/g, ' ').trim();
+      if(!val) continue;
+      const col = [...m[1]].reduce((n,ch)=> n*26 + ch.charCodeAt(0) - 64, 0), r = +m[2];
+      if(!righe.has(r)) righe.set(r, new Map());
+      righe.get(r).set(col, val);
+    }
+    fogli.push({ nome:sh.getAttribute('name') || '', righe, note });
+  }
+  return fogli;
+}
+const tuCodice = (v)=> /^[A-Za-z][A-Za-z0-9]{0,3}$/.test(v) ? v.toUpperCase() : null;
+const tuOra = (v)=> /\d{1,2}[,.:]\d{2}\s*[-–\s]\s*\d{1,2}[,.:]\d{2}/.test(v);
+function tuFormatOra(v){
+  const t = [...String(v).matchAll(/(\d{1,2})[,.:](\d{2})/g)].map(m=> m[1].padStart(2,'0') + ':' + m[2]);
+  return t.join('–');
+}
+function tuGiorniEtichetta(et){
+  const N = {DOM:0, LUN:1, MAR:2, MER:3, GIO:4, VEN:5, SAB:6};
+  const tok = (String(et).toUpperCase().match(/DOM|LUN|MAR|MER|GIO|VEN|SAB/g) || []).map(x=> N[x]);
+  if(tok.length>=2 && /-/.test(et)){ const out = []; for(let d=tok[0], i=0; i<8; i++, d=(d+1)%7){ out.push(d); if(d===tok[tok.length-1]) break; } return out; }
+  return tok;
+}
+function tuLegenda(f, daRiga){
+  const leg = {}, etichette = new Map();
+  const righe = [...f.righe.keys()].filter(r=> r>daRiga).sort((a,b)=> a-b);
+  const righeEtichette = new Set();
+  righe.forEach(r=>{
+    const cols = f.righe.get(r), vv = [...cols.values()];
+    if(vv.length && vv.every(v=> /\b(LUN|MAR|MER|GIO|VEN|SAB|DOM)/i.test(v))){ cols.forEach((v,c)=> etichette.set(c, v)); righeEtichette.add(r); }
+  });
+  righe.forEach(r=>{
+    if(righeEtichette.has(r)) return;   // la riga "LUN - SAB / DOMENICA" non è una voce della legenda
+    const cols = [...f.righe.get(r)].sort((a,b)=> a[0]-b[0]);
+    let cur = null;
+    for(let i=0; i<cols.length; i++){
+      const [c, v] = cols[i];
+      if(tuOra(v)){ if(cur) cur.orari.push({ col:c, ore:tuFormatOra(v) }); continue; }
+      const nx = cols[i+1];
+      if(/^[A-Z][A-Z0-9]{0,3}$/.test(v) && nx && !tuOra(nx[1]) && !/^[A-Z][A-Z0-9]{0,3}$/.test(nx[1]) && !/^\d+$/.test(nx[1])){
+        cur = { d:nx[1], orari:[] };
+        leg[v] = cur; i++;
+      }
+    }
+  });
+  Object.values(leg).forEach(e=> e.orari.forEach(o=>{ o.etichetta = etichette.get(o.col) || ''; o.giorni = tuGiorniEtichetta(o.etichetta); delete o.col; }));
+  return leg;
+}
+function tuInterpretaFoglio(f, anno){
+  const mi = TU_MESI.indexOf(f.nome.trim().toUpperCase());
+  if(mi<0) return null;   // fogli che non sono mesi (Foglio1, "Gennaio a 8"...)
+  let rT = null, cN = null;
+  for(const r of [...f.righe.keys()].sort((a,b)=> a-b).slice(0,6)){
+    for(const [c,v] of f.righe.get(r)) if(v.toUpperCase()===TU_MESI[mi]){ rT = r; cN = c; break; }
+    if(rT) break;
+  }
+  if(!rT) return null;
+  const giorni = new Map();
+  for(const [c,v] of f.righe.get(rT)) if(c>cN && /^\d{1,2}$/.test(v) && +v>=1 && +v<=31) giorni.set(c, +v);
+  if(!giorni.size) return null;
+  const nG = new Date(anno, mi+1, 0).getDate();
+  const persone = [];
+  let ultima = null, rUltima = -1;
+  for(const r of [...f.righe.keys()].filter(x=> x>rT).sort((a,b)=> a-b)){
+    const cols = f.righe.get(r), nome = cols.get(cN);
+    const vals = [];
+    giorni.forEach((g,c)=>{ const k = tuCodice(cols.get(c) || ''); if(k && g<=nG) vals.push([g,k]); });
+    if(nome && !/^\d+$/.test(nome) && vals.length>=3){
+      const turni = Array(nG).fill('');
+      vals.forEach(([g,k])=> turni[g-1] = k);
+      ultima = { nome, turni, cambi:{}, note:{}, riga:r };
+      persone.push(ultima); rUltima = r;
+    } else if(!nome && ultima && r===rUltima+1 && vals.length){
+      vals.forEach(([g,k])=>{ if(k!==ultima.turni[g-1]) ultima.cambi[g] = k; });   // riga dei cambi sotto la persona
+    }
+  }
+  if(!persone.length) return null;
+  /* note: sulla riga della persona o su quella dei cambi; sul nome valgono per tutto il mese (giorno 0) */
+  if(f.note) f.note.forEach((cols, r)=>{
+    const p = persone.find(x=> x.riga===r || x.riga+1===r);
+    if(!p) return;
+    cols.forEach((n, c)=>{
+      const g = c===cN ? 0 : giorni.get(c);
+      if(g===undefined || g>nG) return;
+      (p.note[g] = p.note[g] || []).push(n);
+    });
+  });
+  persone.forEach(p=>{ delete p.riga; if(!Object.keys(p.note).length) delete p.note; });
+  return { chiave: anno + '-' + String(mi+1).padStart(2,'0'), persone, legenda: tuLegenda(f, rUltima) };
+}
+function tuLineaDaNome(n){
+  const u = n.toUpperCase();
+  if(/^CO\b|\bCO ADL\b|\bCO\b/.test(u)) return 'CO';
+  if(/MLA/.test(u)) return 'MLA';
+  const m = /(?:^|[^A-Z])L\s?([123])(?![0-9])/.exec(u);
+  return m ? 'L' + m[1] : null;
+}
+async function importaTurni(files){
+  const esiti = [];
+  for(const f of files){
+    if(!/\.xlsx$/i.test(f.name)){ esiti.push({ ok:false, f:f.name, msg:'non è un file .xlsx' }); continue; }
+    const linea = tuLineaDaNome(f.name);
+    if(!linea){ esiti.push({ ok:false, f:f.name, msg:'non capisco la linea: il nome del file deve contenere CO, L1, L2, L3 o MLA' }); continue; }
+    try {
+      const anno = +((/20\d\d/.exec(f.name) || [new Date().getFullYear()])[0]);
+      const fogli = await leggiXlsxTurni(await f.arrayBuffer());
+      const mesi = {};
+      fogli.forEach(fg=>{ const m = tuInterpretaFoglio(fg, anno); if(m) mesi[m.chiave] = { persone:m.persone, legenda:m.legenda }; });
+      const nM = Object.keys(mesi).length;
+      if(!nM) throw new Error('nessun mese con turni trovato nel file');
+      const persone = new Set(); Object.values(mesi).forEach(m=> m.persone.forEach(p=> persone.add(p.nome)));
+      const prima = TURNI[linea] ? { file:TURNI[linea].file, mesi:Object.keys(TURNI[linea].mesi).length } : null;
+      TURNI[linea] = { file:f.name, caricato:Date.now(), anno, mesi };
+      esiti.push({ ok:true, linea, f:f.name, msg: nM + (nM===1 ? ' mese' : ' mesi') + ' · ' + persone.size + ' persone' });
+      try { registraModifiche([{ percorso:'turni/' + linea, prima, dopo:{ file:f.name, mesi:nM } }], 'importazione'); } catch(e){}
+    } catch(e){ esiti.push({ ok:false, f:f.name, msg:e.message }); }
+  }
+  try { localStorage.setItem(TURNI_KEY, JSON.stringify(TURNI)); }
+  catch(e){ esiti.push({ ok:false, f:'', msg:'memoria del browser piena: i turni non sono stati salvati' }); }
+  return esiti;
+}
+
+/* ── finestra "Aggiorna i turni" ── */
+function apriCaricaTurni(){
+  document.getElementById('tuEsiti').innerHTML = '';
+  renderTurniCaricati();
+  document.getElementById('turniOverlay').classList.add('open');
+}
+function renderTurniCaricati(){
+  const el = document.getElementById('tuCaricati');
+  const righe = TU_LINEE.filter(([k])=> TURNI[k]).map(([k,n])=>{
+    const L = TURNI[k], nM = Object.keys(L.mesi).length;
+    return `<div class="tu-file"><span class="tu-lin tu-${k} on">${n}</span><div class="tx"><b>${nM} ${nM===1 ? 'mese' : 'mesi'} · caricato il ${new Date(L.caricato).toLocaleDateString('it-IT')}</b><span>${escapeHtml(L.file)}</span></div><button class="link-btn danger" onclick="rimuoviTurni('${k}')">Rimuovi</button></div>`;
+  });
+  el.innerHTML = righe.length ? righe.join('') : '<div class="dev-vuoto">Nessun turno caricato</div>';
+}
+async function turniFileScelti(inp){
+  const files = [...inp.files]; inp.value = '';
+  if(!files.length) return;
+  document.getElementById('tuEsiti').innerHTML = '<div class="gest-msg">Lettura dei file in corso...</div>';
+  const esiti = await importaTurni(files);
+  document.getElementById('tuEsiti').innerHTML = '<div class="tu-esiti">' + esiti.map(e=>
+    `<div class="${e.ok ? 'ok' : 'er'}">${ic(e.ok ? 'check-circle' : 'x-circle')}<span><b>${e.linea ? (e.linea==='CO' ? 'CO ADL' : e.linea) + ' · ' : ''}${escapeHtml(e.msg)}</b>${e.f ? `<small>${escapeHtml(e.f)}</small>` : ''}</span></div>`).join('') + '</div>';
+  renderTurniCaricati();
+  const primo = esiti.find(e=> e.ok);
+  if(primo && !TURNI[tu.linea]) tu.linea = primo.linea;
+  if(paginaCorrente==='turni') renderTurni();
+}
+function rimuoviTurni(k){
+  if(!confirm('Togliere i turni della ' + (k==='CO' ? 'CO ADL' : k) + '? Potrai ricaricarli dal file Excel.')) return;
+  const prima = { file:TURNI[k].file, mesi:Object.keys(TURNI[k].mesi).length };
+  delete TURNI[k];
+  try { localStorage.setItem(TURNI_KEY, JSON.stringify(TURNI)); } catch(e){}
+  try { registraModifiche([{ percorso:'turni/' + k, prima, dopo:null }], 'app'); } catch(e){}
+  renderTurniCaricati();
+  if(paginaCorrente==='turni') renderTurni();
+}
+
+/* ── dati per la vista ── */
+const tuMese = (linea, iso)=> TURNI[linea] && TURNI[linea].mesi[iso.slice(0,7)];
+const tuSonoIo = (n)=> !!prefs.turniIo && n.trim().toUpperCase()===prefs.turniIo.trim().toUpperCase();
+function tuFam(c, leg){
+  if(!c) return 'vuoto';
+  if(c==='R') return 'rip';
+  if(c==='S') return 'sco';
+  if(/^M/.test(c)) return 'mat';
+  if(/^P/.test(c)) return 'pom';
+  if(/^G/.test(c)) return 'gio';
+  const d = (leg && leg[c] && leg[c].d) || '';
+  if(/1°/.test(d)) return 'mat';
+  if(/2°/.test(d)) return 'pom';
+  if(/GIORNATA|ITINERANT/i.test(d)) return 'gio';
+  return 'altro';
+}
+function tuDescr(c, leg){
+  if(c==='R') return 'Riposo';
+  if(c==='S') return 'Scomputo';
+  return (leg && leg[c] && leg[c].d) || '';
+}
+function tuOrario(c, leg, w){
+  const e = leg && leg[c];
+  if(!e || !e.orari.length) return '';
+  const o = e.orari.find(x=> x.giorni.includes(w)) || e.orari.find(x=> !x.giorni.length) || (e.orari.length===1 ? e.orari[0] : null);
+  return o ? o.ore : '';
+}
+function tuTurno(linea, nome, iso){
+  const m = tuMese(linea, iso); if(!m) return null;
+  const p = m.persone.find(x=> x.nome===nome); if(!p) return null;
+  const g = +iso.slice(8), cambio = p.cambi[g];
+  return { c:cambio || p.turni[g-1] || '', cambio:!!cambio, previsto:p.turni[g-1] || '', leg:m.legenda,
+           note:(p.note && p.note[g]) || null, nome, iso };
+}
+function tuCod(t, grande){
+  if(!t || !t.c) return '<span class="tu-cod c-vuoto">–</span>';
+  const tit = (t.cambio ? 'Cambio: previsto ' + t.previsto + ' · ' : '') + (tuDescr(t.c, t.leg) || t.c)
+            + (t.note ? ' · Nota: ' + t.note.map(n=> n.testo).join(' / ') : '');
+  const clic = t.note ? ` role="button" tabindex="0" onclick="tuMostraNote('${escapeHtml(t.nome).replace(/'/g, '&#39;')}','${t.iso}')"` : '';
+  return `<span class="tu-cod c-${tuFam(t.c, t.leg)}${t.cambio ? ' c-cambio' : ''}${t.note ? ' c-nota' : ''}${grande ? ' grande' : ''}" title="${escapeHtml(tit)}"${clic}>${escapeHtml(t.c)}</span>`;
+}
+/* note di una persona in un giorno (e quelle sul nome, valide per il mese) */
+function tuNoteDi(nome, iso){
+  const m = tuMese(tu.linea, iso); if(!m) return [];
+  const p = m.persone.find(x=> x.nome===nome); if(!p || !p.note) return [];
+  return [...(p.note[+iso.slice(8)] || [])];
+}
+function tuMostraNote(nome, iso){
+  const note = tuNoteDi(nome, iso);
+  if(!note.length) return;
+  const d = tuData(iso).toLocaleDateString('it-IT', {weekday:'long', day:'numeric', month:'long'});
+  document.getElementById('tuNoteTit').textContent = nome;
+  document.getElementById('tuNoteSub').textContent = d.charAt(0).toUpperCase() + d.slice(1);
+  document.getElementById('tuNoteLista').innerHTML = note.map(n=> `<div class="tu-nota"><p>${escapeHtml(n.testo)}</p>${n.autore ? `<span>${escapeHtml(n.autore)}</span>` : ''}</div>`).join('');
+  document.getElementById('tuNoteOverlay').classList.add('open');
+}
+/* elenco delle note di un insieme di giorni, per le viste settimana, mese e foglio */
+function tuElencoNote(giorni, soloNome){
+  const righe = [];
+  giorni.forEach(iso=>{
+    const m = tuMese(tu.linea, iso); if(!m) return;
+    const g = +iso.slice(8);
+    m.persone.forEach(p=>{
+      if(soloNome && p.nome!==soloNome) return;
+      if(p.note && p.note[g]) p.note[g].forEach(n=> righe.push({iso, nome:p.nome, n}));
+      if(g===1 && p.note && p.note[0]) p.note[0].forEach(n=> righe.push({iso:'', nome:p.nome, n}));
+    });
+  });
+  if(!righe.length) return '';
+  const oggi = oggiISO();
+  return `<div class="tu-legenda"><h3>${ic('message','ic-sm')}Note${righe.length>1 ? ' · ' + righe.length : ''}</h3>` + righe.map(r=>
+    `<div class="tu-nota-r${r.iso===oggi ? ' oggi' : ''}"><b>${r.iso ? tuData(r.iso).toLocaleDateString('it-IT', {weekday:'short', day:'numeric', month:'short'}) : 'Tutto il mese'}</b><span>${soloNome ? '' : `<em>${escapeHtml(r.nome)}</em> · `}${escapeHtml(r.n.testo)}${r.n.autore ? ` <small>(${escapeHtml(r.n.autore)})</small>` : ''}</span></div>`).join('') + '</div>';
+}
+const tuIso = (d)=> oggiISO(d);
+const tuData = (iso)=> new Date(iso + 'T12:00:00');
+function tuSposta(n){
+  const d = tuData(tu.data);
+  if(tu.vista==='giorno') d.setDate(d.getDate() + n);
+  else if(tu.vista==='settimana') d.setDate(d.getDate() + 7*n);
+  else { d.setDate(1); d.setMonth(d.getMonth() + n); }
+  tu.data = tuIso(d);
+  renderTurni();
+}
+function tuOggi(){ tu.data = oggiISO(); renderTurni(); }
+function tuVista(v){ tu.vista = v; try { localStorage.setItem('guastiMetro.turniVista', v); } catch(e){} renderTurni(); }
+function tuLinea(k){ tu.linea = k; tu.persona = null; try { localStorage.setItem('guastiMetro.turniLinea', k); } catch(e){} renderTurni(); }
+function tuNav(titolo, sotto, eOggi){
+  return `<div class="tu-nav"><button class="tu-fr" onclick="tuSposta(-1)" aria-label="Indietro">${ic('back','')}</button>
+    <div class="tu-giorno${eOggi ? ' oggi' : ''}"><b>${titolo}</b><span>${sotto}</span></div>
+    <button class="tu-fr" onclick="tuSposta(1)" aria-label="Avanti">${ic('next','')}</button>
+    <button class="tu-oggi" onclick="tuOggi()">Oggi</button></div>`;
+}
+function tuLegendaHtml(m, linea){
+  const L = TURNI[linea];
+  const voci = Object.entries(m.legenda || {});
+  const base = [['R','Riposo'], ['S','Scomputo']].filter(([c])=> !m.legenda[c]);
+  const h = voci.map(([c,e])=> `<div class="tu-leg-r">${tuCod({c, leg:m.legenda})}<span><b>${escapeHtml(e.d)}</b>${e.orari.length ? ' · ' + e.orari.map(o=> (o.etichetta ? escapeHtml(o.etichetta.toLowerCase()) + ' ' : '') + o.ore).join(' · ') : ''}</span></div>`).join('')
+          + base.map(([c,d])=> `<div class="tu-leg-r">${tuCod({c, leg:{}})}<span><b>${d}</b></span></div>`).join('');
+  return `<div class="tu-legenda"><h3>Legenda ${linea==='CO' ? 'CO ADL' : linea}</h3><div class="tu-leg-griglia">${h}</div></div>
+    <div class="tu-fonte">${ic('file','ic-sm')}${escapeHtml(L.file)} · caricato il ${new Date(L.caricato).toLocaleDateString('it-IT')}</div>`;
+}
+
+/* ── viste ── */
+function renderTurni(){
+  if(!tu.data) tu.data = oggiISO();
+  if(!tu.linea){
+    let salvata = null; try { salvata = localStorage.getItem('guastiMetro.turniLinea'); } catch(e){}
+    tu.linea = (salvata && TURNI[salvata]) ? salvata : ((TU_LINEE.find(([k])=> TURNI[k]) || ['CO'])[0]);
+    try { tu.vista = localStorage.getItem('guastiMetro.turniVista') || tu.vista; } catch(e){}
+  }
+  document.getElementById('tuLinee').innerHTML = TU_LINEE.map(([k,n])=>
+    `<button class="tu-lin tu-${k}${tu.linea===k ? ' on' : ''}${TURNI[k] ? '' : ' manca'}" onclick="tuLinea('${k}')">${n}${TURNI[k] ? '' : '<small>da caricare</small>'}</button>`).join('');
+  document.querySelectorAll('#tuViste button').forEach(b=> b.classList.toggle('on', b.dataset.v===tu.vista));
+  const corpo = document.getElementById('tuCorpo');
+  const L = TURNI[tu.linea], nomeL = tu.linea==='CO' ? 'CO ADL' : tu.linea;
+  if(!L){
+    corpo.innerHTML = `<div class="tu-vuoto"><p>Per vedere i turni della <b>${nomeL}</b> carica il suo file Excel.</p><button class="btn-primary" onclick="apriCaricaTurni()">${ic('upload','')}Aggiorna turni</button></div>`;
+    return;
+  }
+  corpo.innerHTML = ({giorno:tuVistaGiorno, settimana:tuVistaSettimana, mese:tuVistaMese, foglio:tuVistaFoglio}[tu.vista] || tuVistaGiorno)(L, nomeL);
+  /* se la tabella scorre di lato, porta in vista la colonna di oggi */
+  const tab = corpo.querySelector('.tu-tab'), th = tab && tab.querySelector('th.oggi');
+  if(th && tab.scrollWidth > tab.clientWidth){
+    const primo = tab.querySelector('th').offsetWidth;
+    tab.scrollLeft = Math.max(0, th.offsetLeft - primo - (tab.clientWidth - primo - th.offsetWidth) / 2);
+  }
+}
+function tuSenzaMese(iso, nomeL){
+  const d = tuData(iso);
+  return `<div class="tu-vuoto"><p>Nel file della ${nomeL} non ci sono i turni di <b>${TU_MESI_L[d.getMonth()]} ${d.getFullYear()}</b>.</p></div>`;
+}
+function tuVistaGiorno(L, nomeL){
+  const d = tuData(tu.data), w = d.getDay(), m = tuMese(tu.linea, tu.data);
+  const ieri = new Date(); ieri.setDate(ieri.getDate()-1);
+  const domani = new Date(); domani.setDate(domani.getDate()+1);
+  const sotto = tu.data===oggiISO() ? 'oggi' : tu.data===oggiISO(ieri) ? 'ieri' : tu.data===oggiISO(domani) ? 'domani' : nomeL;
+  let titolo = d.toLocaleDateString('it-IT', {weekday:'long', day:'numeric', month:'long'});
+  titolo = titolo.charAt(0).toUpperCase() + titolo.slice(1);
+  let h = tuNav(titolo, sotto, tu.data===oggiISO());
+  if(!m) return h + tuSenzaMese(tu.data, nomeL);
+  const gruppi = {};
+  m.persone.forEach(p=>{ const t = tuTurno(tu.linea, p.nome, tu.data); const f = tuFam(t.c, t.leg); (gruppi[f] = gruppi[f] || []).push([p.nome, t]); });
+  h += '<div class="tu-gruppi">';
+  ['mat','gio','pom','altro','sco','rip'].forEach(f=>{
+    const chi = gruppi[f]; if(!chi) return;
+    h += `<div class="tu-gruppo"><h3>${ic(TU_FAM[f][1],'ic-sm')}${TU_FAM[f][0]}<span class="n">${chi.length}</span></h3>` + chi.map(([nome,t])=>{
+      const io = tuSonoIo(nome), descr = f==='rip' || f==='sco' ? '' : tuDescr(t.c, t.leg);
+      const note = t.note ? t.note.map(n=> `<span class="tu-nota-in">${ic('message','ic-sm')}${escapeHtml(n.testo)}</span>`).join('') : '';
+      return `<div class="tu-persona${io ? ' io' : ''}${t.note ? ' con-nota' : ''}">${tuCod(Object.assign({}, t, {note:null}), true)}<div class="nome"><b>${escapeHtml(nome)}${io ? ' · tu' : ''}</b>${descr || t.cambio ? `<span>${escapeHtml(descr)}${t.cambio ? (descr ? ' · ' : '') + 'cambio, previsto ' + escapeHtml(t.previsto) : ''}</span>` : ''}${note}</div><div class="ora">${tuOrario(t.c, t.leg, w)}</div></div>`;
+    }).join('') + '</div>';
+  });
+  return h + '</div>' + tuLegendaHtml(m, tu.linea);
+}
+function tuVistaSettimana(L, nomeL){
+  const d = tuData(tu.data); d.setDate(d.getDate() - (d.getDay()+6)%7);
+  const giorni = [...Array(7)].map((_,i)=>{ const x = new Date(d); x.setDate(d.getDate()+i); return tuIso(x); });
+  const f = (iso)=> tuData(iso).toLocaleDateString('it-IT', {day:'numeric', month:'short'});
+  let h = tuNav(f(giorni[0]) + ' – ' + f(giorni[6]), 'settimana · ' + nomeL);
+  const nomi = [];
+  giorni.forEach(g=>{ const m = tuMese(tu.linea, g); if(m) m.persone.forEach(p=>{ if(!nomi.includes(p.nome)) nomi.push(p.nome); }); });
+  if(!nomi.length) return h + tuSenzaMese(tu.data, nomeL);
+  const oggi = oggiISO();
+  const cls = (g)=> { const w = tuData(g).getDay(); return (w===0 || w===6 ? 'fine' : '') + (g===oggi ? ' oggi' : ''); };
+  h += `<div class="tu-tab"><table class="tu-tabella"><tr><th>Nome</th>${giorni.map(g=> `<th class="${cls(g)}">${TU_GS[tuData(g).getDay()]}<small>${+g.slice(8)}</small></th>`).join('')}</tr>`;
+  h += nomi.map(n=> `<tr class="${tuSonoIo(n) ? 'io' : ''}"><td>${escapeHtml(n)}</td>${giorni.map(g=> `<td class="${cls(g)}">${tuCod(tuTurno(tu.linea, n, g))}</td>`).join('')}</tr>`).join('');
+  h += '</table></div>' + tuElencoNote(giorni);
+  const m = tuMese(tu.linea, tu.data) || tuMese(tu.linea, giorni[0]);
+  return h + (m ? tuLegendaHtml(m, tu.linea) : '');
+}
+function tuVistaMese(L, nomeL){
+  const d = tuData(tu.data), m = tuMese(tu.linea, tu.data);
+  let h = tuNav(TU_MESI_L[d.getMonth()].charAt(0).toUpperCase() + TU_MESI_L[d.getMonth()].slice(1) + ' ' + d.getFullYear(), nomeL);
+  if(!m) return h + tuSenzaMese(tu.data, nomeL);
+  const nomi = m.persone.map(p=> p.nome);
+  if(!tu.persona || !nomi.includes(tu.persona)) tu.persona = nomi.find(tuSonoIo) || nomi[0];
+  const io = tuSonoIo(tu.persona);
+  h = `<div class="tu-chi"><select onchange="tu.persona=this.value;renderTurni()" aria-label="Persona">${nomi.map(n=> `<option value="${escapeHtml(n)}"${n===tu.persona ? ' selected' : ''}>${escapeHtml(n)}${tuSonoIo(n) ? ' (tu)' : ''}</option>`).join('')}</select>
+    <button class="btn-filtri${io ? ' aperto' : ''}" onclick="tuSonoIoImposta()">${ic(io ? 'check-circle' : 'user','')}<span class="l">${io ? 'Sei tu' : 'Sono io'}</span></button></div>` + h;
+  h += '<div class="tu-cal">' + ['lu','ma','me','gi','ve','sa','do'].map(x=> `<div class="gs">${x}</div>`).join('');
+  const primo = new Date(d.getFullYear(), d.getMonth(), 1), nG = new Date(d.getFullYear(), d.getMonth()+1, 0).getDate();
+  for(let i=0; i<(primo.getDay()+6)%7; i++) h += '<div class="gg vuoto"></div>';
+  const conta = {};
+  const oggi = oggiISO();
+  for(let g=1; g<=nG; g++){
+    const iso = tuIso(new Date(d.getFullYear(), d.getMonth(), g));
+    const t = tuTurno(tu.linea, tu.persona, iso), f = tuFam(t && t.c, t && t.leg);
+    conta[f] = (conta[f] || 0) + 1;
+    const ora = t ? tuOrario(t.c, t.leg, tuData(iso).getDay()) : '';
+    h += `<div class="gg${iso===oggi ? ' oggi' : ''}"><span class="d">${iso===oggi ? 'oggi' : g}</span>${tuCod(t)}${ora ? `<span class="h">${ora}</span>` : ''}</div>`;
+  }
+  h += '</div><div class="tu-riep">' + [['mat','mattine'],['pom','pomeriggi'],['gio','giornate'],['rip','riposi'],['sco','scomputi']].map(([f,l])=> `<div><b>${conta[f] || 0}</b><span>${l}</span></div>`).join('') + '</div>';
+  const giorni = [...Array(nG)].map((_,i)=> tuIso(new Date(d.getFullYear(), d.getMonth(), i+1)));
+  return h + tuElencoNote(giorni, tu.persona) + tuLegendaHtml(m, tu.linea);
+}
+function tuSonoIoImposta(){
+  setPref('turniIo', tuSonoIo(tu.persona) ? '' : tu.persona);
+  showToast(prefs.turniIo ? 'La tua riga sarà evidenziata' : 'Evidenziazione tolta');
+  renderTurni();
+}
+function tuVistaFoglio(L, nomeL){
+  const d = tuData(tu.data), m = tuMese(tu.linea, tu.data);
+  let h = tuNav(TU_MESI_L[d.getMonth()].charAt(0).toUpperCase() + TU_MESI_L[d.getMonth()].slice(1) + ' ' + d.getFullYear(), 'come nel file Excel · ' + nomeL);
+  if(!m) return h + tuSenzaMese(tu.data, nomeL);
+  const nG = new Date(d.getFullYear(), d.getMonth()+1, 0).getDate(), oggi = oggiISO();
+  const giorni = [...Array(nG)].map((_,i)=> tuIso(new Date(d.getFullYear(), d.getMonth(), i+1)));
+  const cls = (g)=> { const w = tuData(g).getDay(); return (w===0 || w===6 ? 'fine' : '') + (g===oggi ? ' oggi' : ''); };
+  h += `<div class="tu-tab"><table class="tu-tabella foglio"><tr><th>${TU_MESI_L[d.getMonth()]}</th>${giorni.map(g=> `<th class="${cls(g)}">${+g.slice(8)}<small>${TU_GS[tuData(g).getDay()]}</small></th>`).join('')}</tr>`;
+  h += m.persone.map(p=> `<tr class="${tuSonoIo(p.nome) ? 'io' : ''}"><td>${escapeHtml(p.nome)}</td>${giorni.map(g=> `<td class="${cls(g)}">${tuCod(tuTurno(tu.linea, p.nome, g))}</td>`).join('')}</tr>`).join('');
+  return h + '</table></div>' + tuElencoNote(giorni) + tuLegendaHtml(m, tu.linea);
 }
 
 /* ════════ STATISTICHE ════════ */
