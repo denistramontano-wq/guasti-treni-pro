@@ -48,6 +48,37 @@ button,input,select,textarea{font-family:inherit}
 .topbar{min-height:calc(var(--top-h) + var(--safe-t));padding:var(--safe-t) 16px 0;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-shrink:0;position:relative;z-index:50}
 .firma{font-size:var(--fs-xs);line-height:1.4;color:var(--text3);text-align:right;padding:8px 0;cursor:default;-webkit-user-select:none;user-select:none}
 .dev-err{font-size:var(--fs-xs);line-height:1.5;color:var(--red-fg);background:var(--red-bg);border-radius:12px;padding:8px 16px;margin-top:8px;word-break:break-word}
+/* ── modalità sviluppo: menu (sezioni) e sottomenu (voci) ── */
+.dev-testata{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.dev-testata h2{margin:0}
+.dev-ver{font-size:var(--fs-xs);font-weight:700;color:var(--purple-ink);background:var(--purple-lt);border-radius:8px;padding:0 8px;line-height:24px}
+.dev-chiudi{margin-left:auto;width:40px;height:40px;border-radius:12px;border:none;background:var(--surface2);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.dev-menu{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.dev-g{background:var(--surface2);border-radius:12px;overflow:hidden}
+.dev-gt{width:100%;display:flex;align-items:center;gap:16px;min-height:48px;padding:8px 16px;border:none;background:none;color:var(--text);font-size:var(--fs-s);font-weight:700;text-align:left;cursor:pointer}
+.dev-gt span{flex:1}
+.dev-gt .freccia{color:var(--text3);transition:transform .15s}
+.dev-g.aperto .dev-gt .freccia{transform:rotate(90deg)}
+.dev-g.attivo .dev-gt{color:var(--purple-ink)}
+.dev-voci{display:none;flex-direction:column;padding:0 8px 8px}
+.dev-g.aperto .dev-voci{display:flex}
+.dev-voci button{min-height:40px;padding:8px 16px 8px 56px;border:none;border-radius:8px;background:none;color:var(--text2);font-size:var(--fs-s);text-align:left;cursor:pointer}
+.dev-voci button.on{background:var(--purple);color:#fff;font-weight:700}
+.dev-tit{display:flex;align-items:center;gap:8px;font-size:var(--fs-s);color:var(--text2);margin-bottom:16px}
+.dev-tit b{color:var(--text);font-weight:700}
+.dev-p{font-size:var(--fs-s);color:var(--text2);line-height:1.5;margin:16px 0}
+.dev-az{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border:none;border-radius:12px;background:var(--purple);color:#fff;font-size:var(--fs-s);font-weight:700;cursor:pointer}
+.dev-az.pericolo{background:var(--red)}
+.dev-vuoto{background:var(--surface2);border-radius:12px;padding:16px;font-size:var(--fs-s);color:var(--text2)}
+.dev-log{max-height:none}
+@media (min-width:900px){
+  /* sul PC: console a tutto schermo con il menu fisso a sinistra */
+  #devOverlay .dev-sheet{width:calc(100vw - 64px);max-width:none;height:calc(100vh - 64px);max-height:none;display:flex;flex-direction:column;overflow:hidden;padding:24px 32px}
+  #devOverlay .dev-wrap{flex:1;min-height:0;display:grid;grid-template-columns:280px minmax(0,1fr);gap:32px}
+  #devOverlay .dev-menu{margin:0;overflow-y:auto;padding-right:16px;border-right:1px solid var(--border)}
+  #devOverlay .dev-main{overflow-y:auto;padding-right:8px}
+  #devOverlay .dev-log{min-height:320px}
+}
 .mem-val{font-size:var(--fs-xs);line-height:1.5;margin-top:8px;max-height:240px;overflow:auto;word-break:break-all}
 .reg-row{padding:16px 0;border-bottom:1px solid var(--border)}
 .reg-row:last-child{border-bottom:none}
@@ -107,6 +138,17 @@ button,input,select,textarea{font-family:inherit}
 .top-home .nome{font-size:var(--fs-l);font-weight:700;line-height:1.2;color:#fff;white-space:nowrap}
 .top-home .nome span{color:var(--orange)}
 .top-home .data{font-size:var(--fs-s);color:var(--text2);margin-top:4px;white-space:nowrap}
+.top-home > span:last-child{min-width:0}
+.top-home .nome,.top-home .data{overflow:hidden;text-overflow:ellipsis}
+.top-right{flex-shrink:0}
+/* telefono: testi più piccoli, così nome e data non finiscono sotto i tasti a destra */
+@media (max-width:899px){
+  .top-home{gap:8px}
+  .top-home .logo{width:32px;height:32px;border-radius:8px}
+  .top-home .nome{font-size:var(--fs-m)}
+  .top-home .data{font-size:var(--fs-xs);margin-top:0}
+  .topbar{gap:8px}
+}
 .bubble{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .b-amber{background:var(--amber-bg);color:var(--amber-fg)}
 .b-blue{background:var(--blue-bg);color:var(--blue)}
@@ -476,7 +518,7 @@ div.set-row{cursor:default}
     <div class="top-right">
       <button class="top-sync" id="topSync" style="display:none" onclick="aggiornaDati()" aria-label="Aggiorna dati" title="Aggiorna dati"><svg class="ic"><use href="#i-refresh"/></svg><i></i></button>
       <button class="top-sync" id="topFull" style="display:none" onclick="tuttoSchermo()" aria-label="Tutto schermo" title="Tutto schermo"><svg class="ic"><use href="#i-maximize"/></svg></button>
-      <div class="firma" onclick="tapVersione()">v6.4.0</div>
+      <div class="firma" onclick="tapVersione()">v6.5.1</div>
     </div>
   </header>
 
@@ -623,7 +665,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 6.4.0</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 6.5.1</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -644,7 +686,7 @@ div.set-row{cursor:default}
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v6.4.0</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v6.5.1</div>
     </section>
 
     <!-- ── PAGINA: NUOVO GUASTO ── -->
@@ -1216,12 +1258,19 @@ div.set-row{cursor:default}
 </div>
 
 <div class="overlay" id="devOverlay">
-  <div class="sheet">
+  <div class="sheet dev-sheet">
     <div class="sheet-handle"></div>
-    <h2>Modalità sviluppo</h2>
-    <div id="devBody"></div>
-    <div class="sheet-btns">
-      <button class="btn-cancel" onclick="document.getElementById('devOverlay').classList.remove('open')"><svg class="ic"><use href="#i-x"/></svg>Chiudi</button>
+    <div class="dev-testata">
+      <h2>Modalità sviluppo</h2>
+      <span class="dev-ver" id="devVer"></span>
+      <button class="dev-chiudi" onclick="chiudiDev()" aria-label="Chiudi"><svg class="ic"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="dev-wrap">
+      <nav class="dev-menu" id="devMenu" aria-label="Menu della modalità sviluppo"></nav>
+      <div class="dev-main" id="devMain">
+        <div class="dev-tit" id="devTit"></div>
+        <div id="devBody"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -1257,7 +1306,7 @@ div.set-row{cursor:default}
    Archivio usato dal resto dell'app (ref().on / set / push / remove):
    i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '6.4.0';
+const APP_VERSIONE = '6.5.1';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
@@ -1753,13 +1802,6 @@ function devInfoExtra(){
     ['Eliminazioni ricordate', Object.keys(t._del || {}).length]
   ];
 }
-function devAzioniExtra(){
-  let h = '';
-  if(cloudFile) h += rigaDev('search','b-blue','Prova il file','Controlla passo per passo lettura e scrittura','devProvaFile()');
-  if(cloudFile) h += rigaDev('refresh','b-green','Sincronizza adesso','Legge e scrive subito il file','devSincronizza()');
-  h += rigaDev('trash','b-red','Cancella i dati di ' + QUI,'Il file nel cloud non viene toccato','devCancellaTutto()', true);
-  return h;
-}
 /* Prova del file passo per passo: il risultato si copia e si invia a chi segue l'app */
 async function devProvaFile(){
   if(!cloudFile){ showToast('Nessun file collegato'); return; }
@@ -1783,11 +1825,11 @@ async function devProvaFile(){
   const esito = righe.join('\n');
   document.getElementById('devBody').innerHTML =
     `<div class="detail-text" style="font-size:var(--fs-s)">${escapeHtml(esito)}</div>
-     <div class="sheet-btns"><button class="btn-copy" onclick="devCopiaProva()">${ic('copy','')}Copia risultato</button><button class="btn-edit" onclick="apriDev()">${ic('back','')}Indietro</button></div>`;
+     <div class="sheet-btns"><button class="btn-copy" onclick="devCopiaProva()">${ic('copy','')}Copia risultato</button><button class="btn-edit" onclick="devProvaFile()">${ic('refresh','')}Ripeti la prova</button></div>`;
   window.devUltimaProva = esito;
 }
 function devCopiaProva(){ copiaNegliAppunti(window.devUltimaProva || '', 'Risultato copiato'); }
-async function devSincronizza(){ cloudUltimaModifica = 0; await cloudSincronizza(); apriDev(); showToast(cloudStato==='ok' ? 'Sincronizzato' : 'Sincronizzazione non riuscita'); }
+async function devSincronizza(){ cloudUltimaModifica = 0; await cloudSincronizza(); devVai('stato'); showToast(cloudStato==='ok' ? 'Sincronizzato' : 'Sincronizzazione non riuscita'); }
 async function devCancellaTutto(){
   const n = contaDati(db.tutto());
   if(!confirm(`Cancellare da ${QUI} tutte le ${n} registrazioni, il collegamento al file e le impostazioni del cloud?`)) return;
@@ -2965,8 +3007,10 @@ function renderHome(){
 /* data e ora sotto il nome dell'app, come nell'app aziendale */
 function aggiornaDataTop(){
   const d = new Date();
-  const g = d.toLocaleDateString('it-IT', {weekday:'long'});
-  document.getElementById('topData').textContent = g.charAt(0).toUpperCase() + g.slice(1) + ' ' + d.toLocaleDateString('it-IT') + ' · ' + d.toTimeString().slice(0,5);
+  const corta = innerWidth < 600;   // sul telefono: "Mer 30/12 · 22:12"
+  const g = d.toLocaleDateString('it-IT', {weekday: corta ? 'short' : 'long'}).replace('.', '');
+  const giorno = corta ? d.toLocaleDateString('it-IT', {day:'2-digit', month:'2-digit'}) : d.toLocaleDateString('it-IT');
+  document.getElementById('topData').textContent = g.charAt(0).toUpperCase() + g.slice(1) + ' ' + giorno + ' · ' + d.toTimeString().slice(0,5);
 }
 setInterval(()=>{ if(paginaCorrente==='home') aggiornaDataTop(); }, 20000);
 function homeElenco(tab){
@@ -3292,9 +3336,8 @@ function devRegistro(){
      + rigaDev('download','b-purple','Esporta come JSON','Con tutti i valori prima e dopo','devEsportaRegistro(\'json\')')
      + rigaDev('trash','b-red','Svuota il registro','Chiede conferma','devSvuotaRegistro()', true)
      + '</div>';
-  h += `<div class="sheet-btns"><button class="btn-edit" onclick="apriDev()">${ic('back','')}Indietro</button></div>`;
   document.getElementById('devBody').innerHTML = h;
-  document.querySelector('#devOverlay .sheet').scrollTop = 0;
+  devInCima();
 }
 function scaricaFile(nome, testo, tipo){
   const url = URL.createObjectURL(new Blob([testo], {type: tipo}));
@@ -3334,9 +3377,8 @@ async function devMemoria(){
   let idbTesto = 'Nessun file collegato';
   try { const h1 = await idbGet('file'); if(h1) idbTesto = 'guastiMetro / h / file → ' + (h1.name || 'file'); } catch(e){ idbTesto = 'Non disponibile: ' + e.message; }
   h += `<div class="detail-text mem-val">${escapeHtml(idbTesto)}</div>`;
-  h += `<div class="sheet-btns"><button class="btn-edit" onclick="apriDev()">${ic('back','')}Indietro</button></div>`;
   document.getElementById('devBody').innerHTML = h;
-  document.querySelector('#devOverlay .sheet').scrollTop = 0;
+  devInCima();
 }
 function versioneApp(){ const m = (document.querySelector('.firma')?.textContent || '').match(/\d+\.\d+\.\d+/); return m ? m[0] : '?'; }
 function datiGrezzi(){
@@ -3375,30 +3417,111 @@ function rigaDev(icona, colore, titolo, sotto, azione, pericolo){
   return `<button class="set-row${pericolo ? ' danger' : ''}" onclick="${azione}"><span class="bubble ${colore}">${ic(icona,'')}</span>`
        + `<span class="set-main"><span class="t" style="display:block">${titolo}</span><span class="s">${sotto}</span></span>${ic('chevron','')}</button>`;
 }
-function apriDev(){
-  let h = '<div class="set-box" style="padding:0 16px">' + devInfo().map(([l,v])=>
-    `<div class="detail-row"><span class="detail-lbl">${escapeHtml(l)}</span><span class="detail-val">${escapeHtml(String(v))}</span></div>`).join('') + '</div>';
-  h += '<div class="set-lbl">Errori recenti</div>';
-  h += DEV_ERRORI.length ? DEV_ERRORI.slice(-10).reverse().map(e=>`<div class="dev-err">${escapeHtml(e)}</div>`).join('') + '<div style="height:24px"></div>'
-                         : '<div class="set-box" style="padding:16px;font-size:var(--fs-s);color:var(--text2)">Nessun errore da quando hai aperto l\'app</div>';
-  h += '<div class="set-lbl">Log della console</div>';
-  h += DEV_LOG.length ? `<div class="detail-text mem-val" style="margin-bottom:24px">${escapeHtml(DEV_LOG.slice(-20).reverse().join('\n'))}</div>`
-                      : '<div class="set-box" style="padding:16px;font-size:var(--fs-s);color:var(--text2)">Nessun messaggio</div>';
-  const nReg = leggiRegistro().length;
-  h += '<div class="set-lbl">Dati</div><div class="set-box">';
-  h += rigaDev('list','b-blue','Registro modifiche', nReg + (nReg===1 ? ' riga' : ' righe') + ' · aggiunte, modifiche, eliminazioni','devRegistro()');
-  h += rigaDev('search','b-gray','Memoria locale','Contenuto salvato sul dispositivo, sola lettura','devMemoria()');
-  h += rigaDev('download','b-purple','Scarica tutti i dati','File .json con i dati grezzi','devScarica()');
-  h += '</div>';
-  h += '<div class="set-lbl">Strumenti</div><div class="set-box">';
-  h += rigaDev('copy','b-blue','Copia diagnostica','Testo da incollare quando segnali un problema','devCopia()');
-  h += devAzioniExtra();
-  h += rigaDev('refresh','b-amber','Ricarica da zero','Svuota la cache dell\'app e la ricarica','devRicarica()');
-  h += rigaDev('settings','b-gray','Cambia password','Serve per entrare qui','apriPassword(\'cambio\')');
-  h += rigaDev('x','b-red','Esci dalla modalità sviluppo','Si riattiva con 7 tocchi sulla versione','devDisattiva()', true);
-  h += '</div>';
-  document.getElementById('devBody').innerHTML = h;
+/* ── Menu della modalità sviluppo: sezioni (menu) e voci (sottomenu) ──
+   Sul telefono il menu sta sopra il contenuto; sul PC il pannello è a tutto schermo
+   con il menu fisso a sinistra, come una console di sviluppo. */
+const DEV_MENU = [
+  {id:'panoramica', t:'Panoramica', ic:'chart', voci:[['info','Stato dell\'app'], ['ambiente','Dispositivo e browser']]},
+  {id:'diagnostica', t:'Diagnostica', ic:'alert', voci:[['errori','Errori'], ['console','Log della console'], ['copia','Copia diagnostica']]},
+  {id:'dati', t:'Dati', ic:'list', voci:[['registro','Registro modifiche'], ['memoria','Memoria locale'], ['grezzi','Dati grezzi']]},
+  {id:'sync', t:'File nel cloud', ic:'cloud', voci:[['stato','Stato del file'], ['provafile','Prova del file'], ['sincronizza','Sincronizza adesso']]},
+  {id:'strumenti', t:'Strumenti', ic:'settings', voci:[['ricarica','Ricarica da zero'], ['password','Cambia password'], ['cancella','Cancella dati locali'], ['esci','Esci dalla modalità sviluppo']]}
+];
+const DEV_AMBIENTE = ['Memoria del browser','Aggiornamento automatico','Aperta come','Rete','Schermo','Indirizzo'];
+let devVoce = 'info';
+const devAperti = new Set(['panoramica']);
+
+function apriDev(voce){
+  document.getElementById('devVer').textContent = 'v' + versioneApp();
+  devVai(voce || devVoce || 'info');
   document.getElementById('devOverlay').classList.add('open');
+}
+function chiudiDev(){ document.getElementById('devOverlay').classList.remove('open'); }
+function devInCima(){ document.getElementById('devMain').scrollTop = 0; document.querySelector('#devOverlay .sheet').scrollTop = 0; }
+function devGruppo(id){
+  if(devAperti.has(id)) devAperti.delete(id); else devAperti.add(id);
+  disegnaMenuDev();
+}
+function disegnaMenuDev(){
+  const conFile = !!cloudFile;
+  document.getElementById('devMenu').innerHTML = DEV_MENU.map(g=>{
+    const voci = g.voci.filter(([k])=> conFile || (k!=='provafile' && k!=='sincronizza'));
+    const attivo = voci.some(([k])=> k===devVoce);
+    const aperto = devAperti.has(g.id) || attivo;
+    return `<div class="dev-g${aperto ? ' aperto' : ''}${attivo ? ' attivo' : ''}">
+      <button class="dev-gt" onclick="devGruppo('${g.id}')" aria-expanded="${aperto}">${ic(g.ic,'')}<span>${escapeHtml(g.t)}</span>${ic('chevron','ic-sm freccia')}</button>
+      <div class="dev-voci">${voci.map(([k,t])=>`<button class="${k===devVoce ? 'on' : ''}" onclick="devVai('${k}')">${escapeHtml(t)}</button>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+function devRighe(r){
+  return '<div class="set-box" style="padding:0 16px">' + r.map(([l,v])=>
+    `<div class="detail-row"><span class="detail-lbl">${escapeHtml(l)}</span><span class="detail-val">${escapeHtml(String(v))}</span></div>`).join('') + '</div>';
+}
+function devAzione(testo, etichetta, icona, azione, pericolo){
+  return `<p class="dev-p">${testo}</p><button class="dev-az${pericolo ? ' pericolo' : ''}" onclick="${azione}">${ic(icona,'')}${etichetta}</button>`;
+}
+function devVai(k){
+  devVoce = k;
+  const g = DEV_MENU.find(x=> x.voci.some(([v])=> v===k)) || DEV_MENU[0];
+  const voce = g.voci.find(([v])=> v===k) || g.voci[0];
+  if(innerWidth < 900) devAperti.clear();   // sul telefono resta aperta solo la sezione scelta
+  devAperti.add(g.id);
+  disegnaMenuDev();
+  document.getElementById('devTit').innerHTML = `<span>${escapeHtml(g.t)}</span>${ic('chevron','ic-sm')}<b>${escapeHtml(voce[1])}</b>`;
+  const body = document.getElementById('devBody');
+  const extra = devInfoExtra().map(r=> r[0]);
+  let h = '';
+  switch(k){
+    case 'info':
+      h = devRighe(devInfo().filter(r=> !DEV_AMBIENTE.includes(r[0]) && !extra.includes(r[0])));
+      break;
+    case 'ambiente':
+      h = devRighe([...devInfo().filter(r=> DEV_AMBIENTE.includes(r[0])), ['Browser', navigator.userAgent]]);
+      break;
+    case 'errori':
+      h = DEV_ERRORI.length ? DEV_ERRORI.slice().reverse().map(e=>`<div class="dev-err">${escapeHtml(e)}</div>`).join('')
+                            : '<div class="dev-vuoto">Nessun errore da quando hai aperto l\'app</div>';
+      break;
+    case 'console':
+      h = DEV_LOG.length ? `<div class="detail-text mem-val dev-log">${escapeHtml(DEV_LOG.slice().reverse().join('\n'))}</div>`
+                         : '<div class="dev-vuoto">Nessun messaggio nella console</div>';
+      break;
+    case 'copia':
+      h = `<div class="detail-text mem-val dev-log">${escapeHtml(devTesto())}</div>` + devAzione('Testo da incollare quando segnali un problema.', 'Copia diagnostica', 'copy', 'devCopia()');
+      break;
+    case 'registro': devRegistro(); devInCima(); return;
+    case 'memoria': body.innerHTML = '<div class="dev-vuoto">Lettura in corso...</div>'; devMemoria(); devInCima(); return;
+    case 'grezzi': {
+      const testo = JSON.stringify(datiGrezzi(), null, 2);
+      h = `<div class="detail-text mem-val dev-log">${escapeHtml(testo.length > 30000 ? testo.slice(0, 30000) + '\n… (' + testo.length + ' caratteri in tutto: scarica il file per vederli tutti)' : testo)}</div>`
+        + devAzione('Tutti i dati di ' + QUI + ' in formato JSON, sola lettura.', 'Scarica il file .json', 'download', 'devScarica()');
+      break;
+    }
+    case 'stato':
+      h = devRighe(devInfoExtra());
+      break;
+    case 'provafile':
+      h = devAzione('Controlla passo per passo permesso, lettura e scrittura del file collegato. La scrittura di prova non cambia il contenuto.', 'Avvia la prova', 'search', 'devProvaFile()');
+      break;
+    case 'sincronizza':
+      h = devAzione('Legge subito il file nel cloud, unisce le modifiche e lo riscrive.', 'Sincronizza adesso', 'refresh', 'devSincronizza()');
+      break;
+    case 'ricarica':
+      h = devAzione('Svuota la cache dell\'app e la ricarica dal sito. I dati non vengono toccati.', 'Ricarica da zero', 'refresh', 'devRicarica()');
+      break;
+    case 'password':
+      h = devAzione('Cambia la password chiesta per entrare in questa modalità.', 'Cambia password', 'settings', 'apriPassword(\'cambio\')');
+      break;
+    case 'cancella':
+      h = devAzione('Cancella da ' + QUI + ' tutte le registrazioni, il collegamento al file e le impostazioni del cloud. Il file nel cloud non viene toccato. Chiede conferma.', 'Cancella dati locali', 'trash', 'devCancellaTutto()', true);
+      break;
+    case 'esci':
+      h = devAzione('Chiude la modalità sviluppo. Si riattiva con 7 tocchi sulla versione e la password.', 'Esci dalla modalità sviluppo', 'x', 'devDisattiva()', true);
+      break;
+  }
+  body.innerHTML = h;
+  devInCima();
 }
 function devCopia(){
   const testo = devTesto();
