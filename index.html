@@ -168,6 +168,18 @@ details.giorno[open] > summary{border-color:var(--border2)}
 .top-home > span:last-child{min-width:0}
 .top-home .nome,.top-home .data{overflow:hidden;text-overflow:ellipsis}
 .top-right{flex-shrink:0}
+/* data e ora a tutto schermo */
+.top-ora{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2;font-variant-numeric:tabular-nums;white-space:nowrap;margin-left:auto}
+.top-ora[hidden]{display:none}
+.top-ora b{font-size:var(--fs-l);font-weight:700;color:#fff}
+.top-ora span{font-size:var(--fs-xs);color:var(--text2)}
+body.a-schermo .top-home .data{display:none !important}
+/* telefono: data e ora su una riga sottile sotto la barra, così il titolo della pagina resta intero */
+@media (max-width:899px){
+  .top-ora{position:absolute;left:0;right:0;top:100%;height:32px;flex-direction:row;align-items:center;justify-content:center;gap:8px;margin:0;background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .top-ora b{font-size:var(--fs-m)}
+  body.a-schermo .scroll-area{padding-top:32px}
+}
 /* telefono: testi più piccoli, così nome e data non finiscono sotto i tasti a destra */
 @media (max-width:899px){
   .top-home{gap:8px}
@@ -842,11 +854,12 @@ div.set-row{cursor:default}
       <span><span class="nome">Guasti Treni <span>Pro</span></span><span class="data" id="topData" style="display:block">—</span></span>
     </div>
     <button class="back" id="topBack" style="display:none" onclick="tornaHome()" aria-label="Torna alla Home"><span class="btn"><svg class="ic"><use href="#i-back"/></svg></span><span id="topTitle"></span></button>
+    <div class="top-ora" id="topOra" hidden aria-live="off"><b></b><span></span></div>
     <div class="top-right">
       <button class="top-sync" id="topSync" style="display:none" onclick="aggiornaDati()" aria-label="Aggiorna dati" title="Aggiorna dati"><svg class="ic"><use href="#i-refresh"/></svg><i></i></button>
       <button class="top-sync" id="topFull" style="display:none" onclick="tuttoSchermo()" aria-label="Tutto schermo" title="Tutto schermo"><svg class="ic"><use href="#i-maximize"/></svg></button>
       <button class="top-sync top-set" id="topSet" onclick="apri('impostazioni')" aria-label="Impostazioni" title="Impostazioni"><svg class="ic"><use href="#i-settings"/></svg><span>Impostazioni</span></button>
-      <div class="firma" onclick="tapVersione()">v2.5.0</div>
+      <div class="firma" onclick="tapVersione()">v2.5.1</div>
     </div>
   </header>
 
@@ -991,7 +1004,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.5.0</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.5.1</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -1012,7 +1025,7 @@ div.set-row{cursor:default}
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.5.0</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.5.1</div>
     </section>
 
     <!-- ── PAGINA: CONTROLLI TRENI ── -->
@@ -1784,7 +1797,7 @@ div.set-row{cursor:default}
    Archivio usato dal resto dell'app (ref().on / set / push / remove):
    i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '2.5.0';
+const APP_VERSIONE = '2.5.1';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
@@ -3609,7 +3622,21 @@ function aggiornaTastoSchermo(){
   b.querySelector('use').setAttribute('href', on ? '#i-minimize' : '#i-maximize');
   b.title = on ? 'Esci da tutto schermo' : 'Tutto schermo';
   b.setAttribute('aria-label', b.title);
+  aggiornaOraTop();
 }
+/* A tutto schermo la barra del telefono con l'ora sparisce: in alto compaiono data e ora con i secondi, in tutte le pagine */
+function aggiornaOraTop(){
+  const el = document.getElementById('topOra'); if(!el) return;
+  const on = inTuttoSchermo();
+  el.hidden = !on;
+  document.body.classList.toggle('a-schermo', on);
+  if(!on) return;
+  const d = new Date();
+  const g = d.toLocaleDateString('it-IT', {weekday:'short'}).replace('.', '');
+  el.querySelector('b').textContent = d.toTimeString().slice(0,8);
+  el.querySelector('span').textContent = g.charAt(0).toUpperCase() + g.slice(1) + ' ' + d.toLocaleDateString('it-IT', {day:'2-digit', month:'2-digit', year:'numeric'});
+}
+setInterval(()=>{ if(inTuttoSchermo()) aggiornaOraTop(); }, 1000);
 document.addEventListener('fullscreenchange', aggiornaTastoSchermo);
 document.addEventListener('webkitfullscreenchange', aggiornaTastoSchermo);
 let fsPrimoTocco = false;
