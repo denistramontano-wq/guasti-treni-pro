@@ -574,7 +574,42 @@ div.set-row{cursor:default}
 #page-m7 .colb h3{margin:0 0 8px;font-size:var(--fs-s);font-weight:400;color:var(--text2);padding:8px 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px}
 #page-m7 .colb h3 b{color:var(--text);font-weight:700}
 #page-m7 .colbin .bin{display:none}
-#page-m7 .m7-col + .m7-col{margin-top:24px}
+/* sezioni e sottosezioni */
+#page-m7 .m7-sez{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:16px}
+#page-m7 .m7-sez button{min-height:40px;border:none;border-radius:8px;background:none;color:var(--text2);font-size:var(--fs-s);font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+#page-m7 .m7-sez button[aria-selected="true"]{background:var(--purple);color:#fff}
+#page-m7 .m7-testa{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:8px;display:flex;flex-direction:column;gap:8px}
+#page-m7 .m7-testa .linea{min-height:48px;border-radius:12px;font-size:var(--fs-m)}
+#page-m7 .m7-testa .hint{margin:0;padding:0 8px 8px}
+#page-m7 .m7-testa .gest{margin:0;padding:0 8px 8px}
+#page-m7 .m7-pan[hidden]{display:none}
+#page-m7 .m7-pan > .m7-lbl:first-child,#page-m7 .m7-pass-sx > .m7-lbl:first-child,#page-m7 .m7-pass-dx > .m7-lbl:first-child{margin-top:24px}
+#page-m7 .m7-lbl{display:flex;align-items:center;gap:8px}
+#page-m7 .m7-lbl .ic{color:var(--text3)}
+/* pari e dispari: si sceglie quale binario vedere, con la direzione e il prossimo treno */
+#page-m7 .m7-bin{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:16px}
+#page-m7 .m7-bin button{min-height:64px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;text-align:left;padding:8px 16px;min-width:0;font-size:var(--fs-xs)}
+#page-m7 .m7-bin button b{display:flex;align-items:center;gap:8px;font-size:var(--fs-m);color:var(--text)}
+#page-m7 .m7-bin button > span{display:block;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#page-m7 .m7-bin button[aria-pressed="true"]{border-color:var(--acc);background:var(--surface2);box-shadow:inset 0 -4px 0 var(--acc)}
+#page-m7 .m7-bin .tutti{text-align:center;padding:8px}
+#page-m7 .m7-bin .tutti b{justify-content:center}
+#page-m7 .m7-bin .cd{background:none;box-shadow:none;color:var(--text);padding:0;border-radius:0;line-height:1.4;font-size:var(--fs-s)}
+#page-m7 .colbin.uno{grid-template-columns:1fr}
+/* file caricati: chiusi, si aprono solo se servono */
+#page-m7 details.m7-file-det summary{list-style:none;cursor:pointer;min-height:48px;display:flex;align-items:center;gap:8px;font-size:var(--fs-s);font-weight:700}
+#page-m7 details.m7-file-det summary .n{margin-left:auto;font-weight:400;color:var(--text2)}
+#page-m7 details.m7-file-det summary .ic{color:var(--text3);transition:transform .15s}
+#page-m7 .file-orario{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:8px 16px;margin-bottom:8px}
+@media (min-width:900px){
+  #page-m7 .m7-sez,#page-m7 .m7-testa,#page-m7 .m7-pan[data-pan="inc"],#page-m7 .m7-pan[data-pan="file"]{max-width:800px}
+  #page-m7 .m7-testa{display:grid;grid-template-columns:1fr 1fr;align-items:center}
+  #page-m7 .m7-testa .hint,#page-m7 .m7-testa .gest{grid-column:1/-1}
+  #page-m7 .m7-bin{max-width:800px}
+}
+@media (min-width:1200px){
+  #page-m7 .m7-pass{display:grid;grid-template-columns:360px minmax(0,1fr);gap:40px;align-items:start}
+}
 #page-m7 .m7-aiuto{margin-top:16px}
 #page-m7 .m7-aiuto summary{list-style:none;cursor:pointer;min-height:40px;display:flex;align-items:center;gap:8px;font-size:var(--fs-s);font-weight:700;color:var(--purple-ink)}
 #page-m7 .m7-aiuto-txt{font-size:var(--fs-s);line-height:1.5;color:var(--text2)}
@@ -800,7 +835,7 @@ div.set-row{cursor:default}
       <button class="top-sync" id="topSync" style="display:none" onclick="aggiornaDati()" aria-label="Aggiorna dati" title="Aggiorna dati"><svg class="ic"><use href="#i-refresh"/></svg><i></i></button>
       <button class="top-sync" id="topFull" style="display:none" onclick="tuttoSchermo()" aria-label="Tutto schermo" title="Tutto schermo"><svg class="ic"><use href="#i-maximize"/></svg></button>
       <button class="top-sync top-set" id="topSet" onclick="apri('impostazioni')" aria-label="Impostazioni" title="Impostazioni"><svg class="ic"><use href="#i-settings"/></svg><span>Impostazioni</span></button>
-      <div class="firma" onclick="tapVersione()">v2.3.0</div>
+      <div class="firma" onclick="tapVersione()">v2.4.0</div>
     </div>
   </header>
 
@@ -818,7 +853,7 @@ div.set-row{cursor:default}
             </button>
             <button class="tile t-light" onclick="apri('segnalazione')">
               <svg class="ic ic-xl"><use href="#i-megaphone"/></svg>
-              <span><span class="t">Segnalazione</span><span class="s">Problema per i depositi</span></span>
+              <span><span class="t">Nuova segnalazione</span><span class="s">Problema per i depositi</span></span>
             </button>
             <button class="tile t-blue" onclick="apri('m7')">
               <svg class="ic ic-xl"><use href="#i-clock"/></svg>
@@ -949,7 +984,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.3.0</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.4.0</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -970,7 +1005,7 @@ div.set-row{cursor:default}
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.3.0</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.4.0</div>
     </section>
 
     <!-- ── PAGINA: CONTROLLI TRENI ── -->
@@ -1333,60 +1368,73 @@ div.set-row{cursor:default}
 
     <!-- ── PAGINA: ORARI M7 ── -->
     <section class="page" id="page-m7">
-      <div class="m7-due">
-        <div class="m7-col">
-          <div class="m7-lbl">Linea</div>
-          <div class="linee" id="m7-linee" role="group" aria-label="Linea"></div>
+      <!-- sezioni: Passaggi, Incrocio, File M7 -->
+      <div class="m7-sez" id="m7-sez" role="tablist" aria-label="Sezioni orari M7">
+        <button role="tab" data-sez="pass" aria-selected="true"><svg class="ic ic-sm"><use href="#i-clock"/></svg>Passaggi</button>
+        <button role="tab" data-sez="inc" aria-selected="false"><svg class="ic ic-sm"><use href="#i-repeat"/></svg>Incrocio</button>
+        <button role="tab" data-sez="file" aria-selected="false"><svg class="ic ic-sm"><use href="#i-file"/></svg>File M7</button>
+      </div>
 
-          <div class="m7-lbl">Tipo di orario</div>
-          <div class="file-orario" id="m7-fileOrario" hidden></div>
-          <div class="seg" id="m7-tipi" role="group" aria-label="Tipo di orario"></div>
-          <div class="hint" id="m7-tipoHint" hidden></div>
-          <div class="gest" id="m7-gest"></div>
-          <input type="file" id="m7-fileM7" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple hidden>
-          <input type="file" id="m7-fileEv" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
-          <input type="file" id="m7-fileUno" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+      <!-- linea e giorno: valgono per tutte le sezioni -->
+      <div class="m7-testa">
+        <div class="linee" id="m7-linee" role="group" aria-label="Linea"></div>
+        <div class="seg" id="m7-tipi" role="group" aria-label="Tipo di orario"></div>
+        <div class="hint" id="m7-tipoHint" hidden></div>
+        <div class="gest" id="m7-gest"></div>
+      </div>
+      <input type="file" id="m7-fileM7" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple hidden>
+      <input type="file" id="m7-fileEv" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+      <input type="file" id="m7-fileUno" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
 
-          <div class="m7-lbl">Stazione</div>
+      <!-- PASSAGGI -->
+      <div class="m7-pan m7-pass" data-pan="pass">
+        <div class="m7-pass-sx">
+          <div class="m7-lbl"><svg class="ic ic-sm"><use href="#i-pin"/></svg>Stazione</div>
           <div class="staz-row">
             <select class="staz" id="m7-staz" aria-label="Stazione"></select>
             <button class="star" id="m7-star" aria-pressed="false" aria-label="Aggiungi ai preferiti"><svg class="ic"><use href="#i-star"/></svg></button>
           </div>
           <div class="fav-row" id="m7-favRow" hidden></div>
-
-          <div class="m7-lbl">Incrocio treni</div>
-          <div class="inc-box">
-            <div class="inc-in">
-              <label>Treno da raggiungere<input id="m7-incA" class="cerca" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="Es. 23"></label>
-              <label>Il mio treno<input id="m7-incB" class="cerca" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="Es. 41"></label>
-            </div>
-            <button class="inc-btn" id="m7-incGo"><svg class="ic"><use href="#i-repeat"/></svg>Calcola incrocio</button>
-            <div id="m7-incOut" aria-live="polite"></div>
-          </div>
-
-          <div class="m7-lbl" id="m7-fileLab">File M7</div>
-          <div class="imp" id="m7-imp"></div>
-
-          <details class="m7-aiuto">
-            <summary><svg class="ic ic-sm"><use href="#i-chevron"/></svg>Come caricare i file M7</summary>
-            <div class="m7-aiuto-txt">
-              <p>Scegli la linea in alto, poi premi "Aggiorna i file M7" e seleziona insieme i tre file .xlsx della linea: feriale, sabato e festivo. I PDF vengono ignorati.</p>
-              <p><b>Sul PC</b>: apri la cartella di rete degli M7 della linea (anche dai collegamenti "M7 rete" sul desktop) ed entra in quella con gli M7 più recenti.</p>
-              <p><b>Sul telefono</b>: scegli i file da OneDrive o dalla memoria del telefono.</p>
-              <p>Gli orari restano salvati su questo dispositivo. Quando escono i nuovi M7 ripeti il caricamento: sostituiscono quelli vecchi. Gli orari speciali (manifestazioni, fiere) si caricano con "Evento" e valgono solo per la giornata.</p>
-              <p>Le fermate senza foglio nell'M7 hanno l'orario stimato, segnato con ~. Orari e conto alla rovescia usano l'ora del dispositivo.</p>
-            </div>
-          </details>
         </div>
-
-        <div class="m7-col">
+        <div class="m7-pass-dx">
+          <div class="m7-lbl"><svg class="ic ic-sm"><use href="#i-train"/></svg>Treni</div>
           <div class="barra">
-            <input class="cerca" id="m7-q" type="text" inputmode="decimal" enterkeyhint="search" placeholder="Numeri treno, es. 23 41 52" autocomplete="off" aria-label="Cerca numeri treno">
+            <input class="cerca" id="m7-q" type="text" inputmode="decimal" enterkeyhint="search" placeholder="Cerca treni, es. 23 41" autocomplete="off" aria-label="Cerca numeri treno">
             <span class="orologio" id="m7-orologio" aria-label="Ora attuale"></span>
           </div>
           <div id="m7-avvisi"></div>
           <div id="m7-out"></div>
         </div>
+      </div>
+
+      <!-- INCROCIO -->
+      <div class="m7-pan" data-pan="inc" hidden>
+        <div class="m7-lbl"><svg class="ic ic-sm"><use href="#i-repeat"/></svg>Dove si incrociano due treni</div>
+        <div class="inc-box">
+          <div class="inc-in">
+            <label>Treno da raggiungere<input id="m7-incA" class="cerca" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="Es. 23"></label>
+            <label>Il mio treno<input id="m7-incB" class="cerca" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="Es. 41"></label>
+          </div>
+          <button class="inc-btn" id="m7-incGo"><svg class="ic"><use href="#i-repeat"/></svg>Calcola incrocio</button>
+          <div id="m7-incOut" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <!-- FILE M7 -->
+      <div class="m7-pan" data-pan="file" hidden>
+        <div class="m7-lbl" id="m7-fileLab">File M7</div>
+        <div class="file-orario" id="m7-fileOrario" hidden></div>
+        <div class="imp" id="m7-imp"></div>
+        <details class="m7-aiuto">
+          <summary><svg class="ic ic-sm"><use href="#i-chevron"/></svg>Come caricare i file M7</summary>
+          <div class="m7-aiuto-txt">
+            <p>Scegli la linea in alto, poi premi "Aggiorna i file M7" e seleziona insieme i tre file .xlsx della linea: feriale, sabato e festivo. I PDF vengono ignorati.</p>
+            <p><b>Sul PC</b>: apri la cartella di rete degli M7 della linea (anche dai collegamenti "M7 rete" sul desktop) ed entra in quella con gli M7 più recenti.</p>
+            <p><b>Sul telefono</b>: scegli i file da OneDrive o dalla memoria del telefono.</p>
+            <p>Gli orari restano salvati su questo dispositivo. Quando escono i nuovi M7 ripeti il caricamento: sostituiscono quelli vecchi. Gli orari speciali (manifestazioni, fiere) si caricano con "Evento" e valgono solo per la giornata.</p>
+            <p>Le fermate senza foglio nell'M7 hanno l'orario stimato, segnato con ~. Orari e conto alla rovescia usano l'ora del dispositivo.</p>
+          </div>
+        </details>
       </div>
 
       <div class="m7-piede">
@@ -1729,7 +1777,7 @@ div.set-row{cursor:default}
    Archivio usato dal resto dell'app (ref().on / set / push / remove):
    i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '2.3.0';
+const APP_VERSIONE = '2.4.0';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
@@ -3428,7 +3476,7 @@ function renderDescrizioniList(){
 /* ════════ NAVIGAZIONE ════════ */
 /* Si parte sempre dalla Home; le altre pagine hanno la freccia per tornare.
    Il tasto "indietro" del telefono riporta alla Home invece di chiudere l'app. */
-const TITOLI = {guasto:'Guasto', segnalazione:'Segnalazione', elenco:'Elenchi', stat:'Statistiche', impostazioni:'Impostazioni', m7:'Orari M7', turni:'Turni', controlli:'Controlli'};
+const TITOLI = {guasto:'Guasto', segnalazione:'Nuova segnalazione', elenco:'Elenchi', stat:'Statistiche', impostazioni:'Impostazioni', m7:'Orari M7', turni:'Turni', controlli:'Controlli'};
 let paginaCorrente = 'home';
 
 function mostraPagina(name, opts){
@@ -3438,7 +3486,7 @@ function mostraPagina(name, opts){
   const home = name==='home';
   document.getElementById('topLogo').style.display = home ? 'flex' : 'none';
   document.getElementById('topBack').style.display = home ? 'none' : 'flex';
-  document.getElementById('topTitle').textContent = TITOLI[name] || '';
+  document.getElementById('topTitle').textContent = (name==='segnalazione' && editSegId) ? 'Modifica segnalazione' : (TITOLI[name] || '');
   if(name==='home') renderHome();
   if(name==='stat') renderStat();
   if(name==='impostazioni') renderImpostazioni();
@@ -5819,7 +5867,7 @@ function disegnaStazioni(){
 function disegnaFile(){
   const el = $('#m7-fileOrario'), v = cur && cur.sel && cur.sel.v;
   const n = v && v.origine ? String(v.origine).replace(/\.xlsx$/i, '').replace(/^[0-9a-f]{8}-/, '') : '';
-  el.textContent = n; el.hidden = !n;
+  el.innerHTML = n ? `Orario in uso: <b>${esc(n)}</b>` : ''; el.hidden = !n;
 }
 function disegnaAvvisi(){
   const a = [];
@@ -5936,6 +5984,24 @@ function renderLista(){
   const stima = !!(sCur && sCur.stima);
   const h = stima ? '<div class="avviso ambra" style="margin:0 0 10px">Fermata senza foglio nell\'M7: gli orari (con ~) sono stimati tra le due stazioni vicine.</div>' : '';
   if (!rows.length){ out.innerHTML = h + '<div class="nessuno">Nessun passaggio con questi filtri.</div>'; return; }
+  /* scelta del binario: pari, dispari o tutti e due, con la direzione e il prossimo treno */
+  const vb = st.vbin;
+  const destDi = (p) => { const r = cur.doc.rami[p[4]] || {}; return p[7] || r[p[1]] || ''; };
+  const verso = (b) => {
+    const c = new Map();
+    (m === 'live' ? rows.slice(split) : rows).filter((p) => p[1] === b).forEach((p) => {
+      const d = destDi(p); if (!d) return;
+      const k = normN(d), x = c.get(k);              /* "Rho" e "RHO" sono la stessa destinazione */
+      if (x) x.n++; else c.set(k, { nome:d, n:1 });
+    });
+    return [...c.values()].sort((x, y) => y.n - x.n).slice(0, 2).map((x) => x.nome).join(', ');
+  };
+  const bottone = (b, nome) => {
+    const pr = m === 'live' ? rows.slice(split).find((p) => p[1] === b) : null, v = verso(b);
+    return `<button data-vbin="${b}" aria-pressed="${vb === b}"><b>${nome}</b>${pr ? `<span class="cd" data-sec="${pr[0]}"></span>` : ''}<span>${v ? 'verso ' + esc(v) : 'nessun passaggio'}</span></button>`;
+  };
+  const scelta = `<div class="m7-bin" role="group" aria-label="Binario">${bottone('P','Pari')}${bottone('D','Dispari')}` +
+    `<button class="tutti" data-vbin="T" aria-pressed="${vb === 'T'}"><b>Tutti</b><span>e due</span></button></div>`;
   const col = (b) => {
     const nome = b === 'P' ? 'Binario pari' : 'Binario dispari';
     if (m !== 'live'){
@@ -5951,7 +6017,7 @@ function renderLista(){
       (prossimi.length ? `<ol class="lista">${prossimi.map((p, i) => rigaHtml(p,{primo:i === 0, cd:i < 3 ? i : null, stima})).join('')}</ol>`
                        : '<div class="nessuno">Nessun altro passaggio in questa giornata di servizio.</div>') + '</div>';
   };
-  out.innerHTML = h + `<div class="colbin">${col('P')}${col('D')}</div>`;
+  out.innerHTML = h + scelta + `<div class="colbin${vb !== 'T' ? ' uno' : ''}">${vb !== 'D' ? col('P') : ''}${vb !== 'P' ? col('D') : ''}</div>`;
   out.querySelectorAll('details.prec').forEach((d) => {
     const b = d.dataset.b, box = d.querySelector('.prec-box');
     d.addEventListener('toggle', () => { precAp[b] = d.open; if (d.open) ancoraPrec(b); });
@@ -6245,13 +6311,36 @@ function disegnaGest(){
       <button class="gest-btn" data-ev="cambia">Cambia</button><button class="gest-btn" data-ev="togli">Togli</button></div>` : '';
   $('#m7-gest').hidden = !e;
   $('#m7-fileLab').textContent = `File M7 della ${l}`;
-  $('#m7-imp').innerHTML = (vs.length
-      ? vs.map((v) => `<div class="f"><div><b>${esc(labTipo(v.tipo))}</b> dal ${esc(fData(v.dal))}${v.al ? ' al ' + esc(fData(v.al)) : ''}
+  /* dopo il caricamento l'elenco dei file resta chiuso: si apre solo se serve modificarli */
+  const righe = vs.map((v) => `<div class="f"><div><b>${esc(labTipo(v.tipo))}</b> dal ${esc(fData(v.dal))}${v.al ? ' al ' + esc(fData(v.al)) : ''}
           <small title="${esc(String(v.origine || ''))}">${esc(String(v.origine || '').replace(/\.xlsx$/i, ''))}</small></div>
-          <button data-modifica="${esc(v.file)}">Modifica</button><button data-rimuovi="${esc(v.file)}">Rimuovi</button></div>`).join('')
+          <button data-modifica="${esc(v.file)}">Modifica</button><button data-rimuovi="${esc(v.file)}">Rimuovi</button></div>`).join('');
+  $('#m7-imp').innerHTML = (vs.length
+      ? `<details class="m7-file-det"${fileAperti ? ' open' : ''}><summary>${ic('chevron','ic-sm')}File caricati<span class="n">${vs.length}</span></summary>${righe}</details>`
       : '<div class="m">Nessun file caricato per questa linea.</div>') +
     `<button class="big pri" data-carica="1">${ic('upload','')}Aggiorna i file M7</button>` +
     (msgGest[l] ? `<div class="gest-msg">${msgGest[l]}</div>` : '');
+  const d = $('#m7-imp details');
+  if (d) d.addEventListener('toggle', () => { fileAperti = d.open; });
+}
+let fileAperti = false;
+/* sezioni della pagina: Passaggi, Incrocio, File M7 */
+function mostraSez(s){
+  st.sez = s;
+  document.querySelectorAll('#m7-sez [data-sez]').forEach((b) => b.setAttribute('aria-selected', b.dataset.sez === s));
+  document.querySelectorAll('#page-m7 [data-pan]').forEach((p) => { p.hidden = p.dataset.pan !== s; });
+}
+$('#m7-sez').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-sez]'); if (!b) return;
+  mostraSez(b.dataset.sez);
+  document.querySelector('.scroll-area').scrollTop = 0;
+});
+/* caricamento riuscito: si torna ai passaggi, l'esito resta solo in un avviso */
+function caricamentoRiuscito(l, testo){
+  fileAperti = false;
+  msgGest[l] = '';
+  mostraSez('pass');
+  try { showToast(testo); } catch(e){}
 }
 async function caricaM7(files){
   const l = st.linea, righe = [], nuovi = [];
@@ -6279,6 +6368,8 @@ async function caricaM7(files){
     }
   } catch(er){ righe.push(`<div class="er">${ic('x-circle')}Non riesco a salvare gli orari nel browser (${esc(er.message || String(er))}).</div>`); }
   msgGest[l] = righe.join('');
+  const ok = nuovi.length && !righe.some((r) => r.includes('class="er"'));
+  if (ok) caricamentoRiuscito(l, `Orari M7 della ${l} aggiornati: ${nuovi.length} file`);
   await ricarica();
 }
 /* "Modifica": sostituisce solo quel file con un altro M7 della stessa linea e dello stesso tipo */
@@ -6296,7 +6387,7 @@ async function sostituisciUno(f, vecchio){
     await locPut({ file:voce.file, voce, testo:JSON.stringify(doc) });
     if (voce.file !== vecchio) await locDel(vecchio);
     registraM7('app', voce, v);
-    msgGest[l] = `<div class="ok">${ic('check-circle')}${esc(f.name.replace(/\.xlsx$/i, ''))}: ${esc(labTipo(doc.tipo))} dal ${esc(fData(doc.dal))}</div>`;
+    caricamentoRiuscito(l, `Orario ${labTipo(doc.tipo)} della ${l} aggiornato`);
   } catch(er){ msgGest[l] = `<div class="er">${ic('x-circle')}${esc(f.name)}: ${esc(er.message || String(er))}</div>`; }
   await ricarica();
 }
@@ -6314,7 +6405,7 @@ async function caricaEvento(f){
     registraM7('importazione', voce);
     cache.delete(file);
     try { await locPut({ file, ev:true, linea:l, sess:SESS, giorno, nome:testoNome, testo }); } catch(er){}   /* se non si salva, vale finche' la pagina resta aperta */
-    msgGest[l] = `<div class="ok">${ic('check-circle')}Orario evento caricato per oggi: ${esc(testoNome.replace(/\.xlsx$/i, ''))}</div>`;
+    caricamentoRiuscito(l, 'Orario evento caricato per oggi');
     st.tipo = 'evento'; st.tipoManuale = false; resetPrec();
   } catch(er){ msgGest[l] = `<div class="er">${ic('x-circle')}${esc(f.name)}: ${esc(er.message || String(er))}</div>`; }
   await aggiorna();
@@ -6334,6 +6425,8 @@ async function ricarica(){
   await aggiorna();
 }
 document.getElementById('page-m7').addEventListener('click', (e) => {
+  const vb = e.target.closest('[data-vbin]');
+  if (vb){ st.vbin = vb.dataset.vbin; mem.set('vbin', st.vbin); resetPrec(); renderLista(); return; }
   const c = e.target.closest('[data-carica]'); if (c){ $('#m7-fileM7').click(); return; }
   const r = e.target.closest('[data-rimuovi]');
   if (r){
@@ -6384,6 +6477,9 @@ async function parti(){
   const salvata = mem.get('linea');
   const conDati = LINEE.filter((l) => (cat.versioni||[]).some((v) => v.linea === l));
   st.linea = LINEE.includes(salvata) ? salvata : (conDati[0] || 'M1');
+  /* telefono: un binario alla volta (si ricorda l'ultimo scelto); PC: tutti e due */
+  st.vbin = ['P','D','T'].includes(mem.get('vbin')) ? mem.get('vbin') : (innerWidth >= 900 ? 'T' : 'P');
+  mostraSez(conDati.length ? 'pass' : 'file');
   $('#m7-incA').value = mem.get('inc.a') || ''; $('#m7-incB').value = mem.get('inc.b') || '';
   $('#m7-out').innerHTML = '<div class="carica">Caricamento…</div>';
   await aggiorna();
