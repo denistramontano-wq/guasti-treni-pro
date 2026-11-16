@@ -669,7 +669,7 @@ div.set-row{cursor:default}
       <button class="top-sync" id="topSync" style="display:none" onclick="aggiornaDati()" aria-label="Aggiorna dati" title="Aggiorna dati"><svg class="ic"><use href="#i-refresh"/></svg><i></i></button>
       <button class="top-sync" id="topFull" style="display:none" onclick="tuttoSchermo()" aria-label="Tutto schermo" title="Tutto schermo"><svg class="ic"><use href="#i-maximize"/></svg></button>
       <button class="top-sync top-set" id="topSet" onclick="apri('impostazioni')" aria-label="Impostazioni" title="Impostazioni"><svg class="ic"><use href="#i-settings"/></svg><span>Impostazioni</span></button>
-      <div class="firma" onclick="tapVersione()">v2.2.0</div>
+      <div class="firma" onclick="tapVersione()">v2.2.1</div>
     </div>
   </header>
 
@@ -804,7 +804,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.2.0</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.2.1</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -825,7 +825,7 @@ div.set-row{cursor:default}
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.2.0</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.2.1</div>
     </section>
 
     <!-- ── PAGINA: NUOVO GUASTO ── -->
@@ -1511,7 +1511,7 @@ div.set-row{cursor:default}
    Archivio usato dal resto dell'app (ref().on / set / push / remove):
    i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '2.2.0';
+const APP_VERSIONE = '2.2.1';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
@@ -3933,37 +3933,75 @@ function tuInterpretaFoglio(f, anno){
     if(rT) break;
   }
   if(!rT) return null;
-  const giorni = new Map();
-  for(const [c,v] of f.righe.get(rT)) if(c>cN && /^\d{1,2}$/.test(v) && +v>=1 && +v<=31) giorni.set(c, +v);
-  if(!giorni.size) return null;
+  /* colonne dei giorni: solo la prima sequenza 1, 2, 3 … fino all'ultimo giorno del mese.
+     Dopo il 31 dicembre il file riporta anche i primi giorni di gennaio dell'anno dopo: si ignorano. */
   const nG = new Date(anno, mi+1, 0).getDate();
-  const persone = [];
-  let ultima = null, rUltima = -1;
-  for(const r of [...f.righe.keys()].filter(x=> x>rT).sort((a,b)=> a-b)){
-    const cols = f.righe.get(r), nome = cols.get(cN);
+  const giorni = new Map();
+  let atteso = 1;
+  for(const [c,v] of [...f.righe.get(rT)].filter(([c])=> c>cN).sort((a,b)=> a[0]-b[0])){
+    if(!/^\d{1,2}$/.test(v)) continue;
+    if(+v < atteso || +v > nG) break;   // la numerazione riparte: è il mese dopo
+    giorni.set(c, +v);
+    atteso = +v + 1;
+    if(atteso > nG) break;
+  }
+  if(!giorni.size) return null;
+  /* colonne dei nomi: la prima e quelle ripetute in mezzo al mese (es. tra l'11 e il 12).
+     In una colonna ripetuta il nome può cambiare: da quel giorno la riga è di un'altra persona. */
+  const righeSotto = [...f.righe.keys()].filter(x=> x>rT).sort((a,b)=> a-b);
+  const cGiorni = [...giorni.keys()].sort((a,b)=> a-b), c1 = cGiorni[0], cZ = cGiorni[cGiorni.length-1];
+  const colNomi = new Set([cN]);
+  righeSotto.forEach(r=> f.righe.get(r).forEach((v,c)=>{ if(c>c1 && c<cZ && !giorni.has(c)) colNomi.add(c); }));
+  const nomiOrd = [...colNomi].sort((a,b)=> a-b);
+  const colNomeDi = (c)=> { let x = nomiOrd[0]; for(const n of nomiOrd) if(n<c) x = n; return x; };   // colonna del nome che vale per il giorno in colonna c
+  const GS = '(LUN(EDI|EDÌ)?|MAR(TEDI|TEDÌ)?|MER(COLEDI|COLEDÌ)?|GIO(VEDI|VEDÌ)?|VEN(ERDI|ERDÌ)?|SAB(ATO)?|DOM(ENICA)?)';
+  const etichettaGiorni = new RegExp('^' + GS + '(\\s*[-–]\\s*' + GS + ')?$', 'i');   // "LUN - SAB", "DOMENICA"...
+  const nomeValido = (v)=> v && !/^\d+$/.test(v) && !etichettaGiorni.test(v.trim());
+  const chiave = (n)=> n.toUpperCase().replace(/\s+/g, ' ').trim();
+  const base = (n)=> chiave(n).replace(/(\s+[A-Z]\.?)+$/, '');   // "UZHO B." e "UZHO" sono la stessa persona
+  const persone = [], perNome = new Map();
+  const persona = (nome)=>{
+    const k = chiave(nome);
+    if(!perNome.has(k)){ const p = { nome, turni:Array(nG).fill(''), cambi:{}, note:{} }; perNome.set(k, p); persone.push(p); }
+    return perNome.get(k);
+  };
+  const chiDiRiga = new Map();   // riga → { giorno → persona, colonna nome → persona }
+  let rUltima = -1, chiUltima = null;
+  for(const r of righeSotto){
+    const cols = f.righe.get(r);
     const vals = [];
-    giorni.forEach((g,c)=>{ const k = tuCodice(cols.get(c) || ''); if(k && g<=nG) vals.push([g,k]); });
-    if(nome && !/^\d+$/.test(nome) && vals.length>=3){
-      const turni = Array(nG).fill('');
-      vals.forEach(([g,k])=> turni[g-1] = k);
-      ultima = { nome, turni, cambi:{}, note:{}, riga:r };
-      persone.push(ultima); rUltima = r;
-    } else if(!nome && ultima && r===rUltima+1 && vals.length){
-      vals.forEach(([g,k])=>{ if(k!==ultima.turni[g-1]) ultima.cambi[g] = k; });   // riga dei cambi sotto la persona
+    giorni.forEach((g,c)=>{ const k = tuCodice(cols.get(c) || ''); if(k) vals.push([c,g,k]); });
+    const nomiRiga = nomiOrd.map(c=> nomeValido(cols.get(c)) ? cols.get(c) : '');
+    if(nomiRiga.some(Boolean) && vals.length>=3){
+      /* riga di una persona (o di più persone, se il nome cambia a metà mese) */
+      const chi = { giorni:{}, nomi:{} };
+      let corrente = null;
+      nomiOrd.forEach((c,i)=>{
+        if(nomiRiga[i] && !(corrente && base(corrente.nome)===base(nomiRiga[i]))) corrente = persona(nomiRiga[i]);
+        if(corrente) chi.nomi[c] = corrente;
+      });
+      giorni.forEach((g,c)=>{ const p = chi.nomi[colNomeDi(c)]; if(p) chi.giorni[g] = p; });
+      vals.forEach(([c,g,k])=>{ const p = chi.giorni[g]; if(p) p.turni[g-1] = k; });
+      chiDiRiga.set(r, chi); rUltima = r; chiUltima = chi;
+    } else if(!nomiRiga.some(Boolean) && chiUltima && r===rUltima+1 && vals.length){
+      /* riga dei cambi sotto la persona */
+      vals.forEach(([c,g,k])=>{ const p = chiUltima.giorni[g]; if(p && k!==p.turni[g-1]) p.cambi[g] = k; });
+      chiDiRiga.set(r, chiUltima);
     }
   }
   if(!persone.length) return null;
   /* note: sulla riga della persona o su quella dei cambi; sul nome valgono per tutto il mese (giorno 0) */
   if(f.note) f.note.forEach((cols, r)=>{
-    const p = persone.find(x=> x.riga===r || x.riga+1===r);
-    if(!p) return;
+    const chi = chiDiRiga.get(r);
+    if(!chi) return;
     cols.forEach((n, c)=>{
-      const g = c===cN ? 0 : giorni.get(c);
-      if(g===undefined || g>nG) return;
+      const p = colNomi.has(c) ? chi.nomi[c] : chi.giorni[giorni.get(c)];
+      const g = colNomi.has(c) ? 0 : giorni.get(c);
+      if(!p || g===undefined) return;
       (p.note[g] = p.note[g] || []).push(n);
     });
   });
-  persone.forEach(p=>{ delete p.riga; if(!Object.keys(p.note).length) delete p.note; });
+  persone.forEach(p=>{ if(!Object.keys(p.note).length) delete p.note; });
   return { chiave: anno + '-' + String(mi+1).padStart(2,'0'), persone, legenda: tuLegenda(f, rUltima) };
 }
 function tuLineaDaNome(n){
