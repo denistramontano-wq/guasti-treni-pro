@@ -411,6 +411,12 @@ div.set-row{cursor:default}
 .tu-tabella th:first-child,.tu-tabella td:first-child{position:sticky;left:0;z-index:2;background:var(--surface);text-align:left;padding-left:16px;padding-right:8px;font-size:var(--fs-s);font-weight:700}
 .tu-tabella tr.io td:first-child{color:var(--orange)}
 .tu-chi{display:flex;gap:8px;margin-bottom:16px}
+/* gruppi dello stesso file (MLA: linea 4 e linea 5) */
+.tu-gr-tit{display:flex;align-items:center;gap:8px;margin:24px 0 16px;font-size:var(--fs-m);font-weight:700}
+.tu-gr-tit:first-of-type{margin-top:8px}
+.tu-gr-tit span,.tu-sep span{display:inline-block;padding:0 16px;border-radius:8px;color:#fff;line-height:32px;font-size:var(--fs-s);font-weight:700}
+.tu-gr-tit small{font-size:var(--fs-xs);font-weight:400;color:var(--text2)}
+.tu-tabella tr.tu-sep td{text-align:left;padding:8px 16px;background:var(--surface2)}
 .tu-chi select{flex:1;min-width:0;min-height:48px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);padding:0 16px;font-size:var(--fs-m)}
 .tu-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .tu-cal .gs{font-size:var(--fs-xs);font-weight:700;color:var(--text2);text-align:center;padding-bottom:4px}
@@ -840,7 +846,7 @@ div.set-row{cursor:default}
       <button class="top-sync" id="topSync" style="display:none" onclick="aggiornaDati()" aria-label="Aggiorna dati" title="Aggiorna dati"><svg class="ic"><use href="#i-refresh"/></svg><i></i></button>
       <button class="top-sync" id="topFull" style="display:none" onclick="tuttoSchermo()" aria-label="Tutto schermo" title="Tutto schermo"><svg class="ic"><use href="#i-maximize"/></svg></button>
       <button class="top-sync top-set" id="topSet" onclick="apri('impostazioni')" aria-label="Impostazioni" title="Impostazioni"><svg class="ic"><use href="#i-settings"/></svg><span>Impostazioni</span></button>
-      <div class="firma" onclick="tapVersione()">v2.4.4</div>
+      <div class="firma" onclick="tapVersione()">v2.5.0</div>
     </div>
   </header>
 
@@ -985,7 +991,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.4.4</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.5.0</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -1006,7 +1012,7 @@ div.set-row{cursor:default}
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.4.4</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.5.0</div>
     </section>
 
     <!-- ── PAGINA: CONTROLLI TRENI ── -->
@@ -1778,7 +1784,7 @@ div.set-row{cursor:default}
    Archivio usato dal resto dell'app (ref().on / set / push / remove):
    i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '2.4.4';
+const APP_VERSIONE = '2.5.0';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
@@ -4235,9 +4241,11 @@ function tuInterpretaFoglio(f, anno){
   /* posto senza una persona: "Vacante", "AAAAA", "?", "XXX", "N.N."... da quel giorno la riga è vuota */
   const postoVuoto = (n)=> { const k = chiave(n).replace(/[\s.]/g, ''); return !k || /^(VACANTE|VACANTI|VACANT|LIBERO|LIBERA|DAASSEGNARE|DADEFINIRE|NN|NONASSEGNATO)$/.test(k) || /^(.)\1*$/.test(k) || /^[?X-]+$/.test(k); };
   const persone = [], perNome = new Map();
+  /* blocchi di persone: nel file MLA la riga dei numeri di settimana separa la linea 4 (sopra) dalla linea 5 (sotto) */
+  let blocco = 0, separato = false;
   const persona = (nome)=>{
     const k = chiave(nome);
-    if(!perNome.has(k)){ const p = { nome, turni:Array(nG).fill(''), cambi:{}, note:{} }; perNome.set(k, p); persone.push(p); }
+    if(!perNome.has(k)){ const p = { nome, turni:Array(nG).fill(''), cambi:{}, note:{}, conta:{} }; perNome.set(k, p); persone.push(p); }
     return perNome.get(k);
   };
   const chiDiRiga = new Map();   // riga → { giorno → persona, colonna nome → persona }
@@ -4247,7 +4255,10 @@ function tuInterpretaFoglio(f, anno){
     const vals = [];
     giorni.forEach((g,c)=>{ const k = tuCodice(cols.get(c) || ''); if(k) vals.push([c,g,k]); });
     const nomiRiga = nomiOrd.map(c=> nomeValido(cols.get(c)) ? cols.get(c) : '');
+    const tutti = [...cols.values()];
+    if(persone.length && tutti.length>=2 && tutti.every(v=> /^\d{1,5}$/.test(v))){ separato = true; continue; }   // riga dei numeri di settimana
     if(nomiRiga.some(Boolean) && vals.length>=3){
+      if(separato){ blocco++; separato = false; }
       /* riga di una persona (o di più persone, se il nome cambia a metà mese) */
       const chi = { giorni:{}, nomi:{} };
       let corrente = null;
@@ -4259,7 +4270,7 @@ function tuInterpretaFoglio(f, anno){
         if(corrente) chi.nomi[c] = corrente;
       });
       giorni.forEach((g,c)=>{ const p = chi.nomi[colNomeDi(c)]; if(p) chi.giorni[g] = p; });
-      vals.forEach(([c,g,k])=>{ const p = chi.giorni[g]; if(p) p.turni[g-1] = k; });
+      vals.forEach(([c,g,k])=>{ const p = chi.giorni[g]; if(p){ p.turni[g-1] = k; p.conta[blocco] = (p.conta[blocco] || 0) + 1; } });
       chiDiRiga.set(r, chi); rUltima = r; chiUltima = chi;
     } else if(!nomiRiga.some(Boolean) && chiUltima && r===rUltima+1 && vals.length){
       /* riga dei cambi sotto la persona */
@@ -4279,8 +4290,11 @@ function tuInterpretaFoglio(f, anno){
       (p.note[g] = p.note[g] || []).push(n);
     });
   });
-  persone.forEach(p=>{ if(!Object.keys(p.note).length) delete p.note; });
-  return { chiave: anno + '-' + String(mi+1).padStart(2,'0'), persone, legenda: tuLegenda(f, rUltima) };
+  /* chi cambia blocco a metà mese va nel blocco in cui lavora più giorni */
+  persone.forEach(p=>{ const e = Object.entries(p.conta).sort((a,b)=> b[1]-a[1] || a[0]-b[0]); p.g = e.length ? +e[0][0] : 0; delete p.conta; });
+  const nBlocchi = blocco + 1;
+  persone.forEach(p=>{ if(!Object.keys(p.note).length) delete p.note; if(nBlocchi<2) delete p.g; });
+  return { chiave: anno + '-' + String(mi+1).padStart(2,'0'), persone, legenda: tuLegenda(f, rUltima), blocchi: nBlocchi };
 }
 function tuLineaDaNome(n){
   const u = n.toUpperCase();
@@ -4299,7 +4313,18 @@ async function importaTurni(files){
       const anno = +((/20\d\d/.exec(f.name) || [new Date().getFullYear()])[0]);
       const fogli = await leggiXlsxTurni(await f.arrayBuffer());
       const mesi = {};
-      fogli.forEach(fg=>{ const m = tuInterpretaFoglio(fg, anno); if(m) mesi[m.chiave] = { persone:m.persone, legenda:m.legenda }; });
+      fogli.forEach(fg=>{
+        const m = tuInterpretaFoglio(fg, anno); if(!m) return;
+        mesi[m.chiave] = { persone:m.persone, legenda:m.legenda };
+        /* più blocchi di persone nello stesso foglio: per MLA sono la linea 4 e la linea 5 */
+        if(m.blocchi>1){
+          if(linea==='MLA'){
+            /* sopra la prima riga delle settimane la linea 4, sotto tutto il resto è la linea 5 */
+            mesi[m.chiave].gruppi = ['Linea 4','Linea 5'];
+            m.persone.forEach(p=>{ p.g = Math.min(p.g, 1); });
+          } else mesi[m.chiave].gruppi = [...Array(m.blocchi)].map((_,i)=> 'Gruppo ' + (i+1));
+        }
+      });
       const nM = Object.keys(mesi).length;
       if(!nM) throw new Error('nessun mese con turni trovato nel file');
       const persone = new Set(); Object.values(mesi).forEach(m=> m.persone.forEach(p=> persone.add(p.nome)));
@@ -4481,6 +4506,16 @@ function tuSenzaMese(iso, nomeL){
   const d = tuData(iso);
   return `<div class="tu-vuoto"><p>Nel file della ${nomeL} non ci sono i turni di <b>${TU_MESI_L[d.getMonth()]} ${d.getFullYear()}</b>.</p></div>`;
 }
+/* persone del mese divise per gruppo (MLA: linea 4 e linea 5); senza gruppi, un solo blocco senza titolo */
+function tuGruppi(m, nomi){
+  const lista = nomi || m.persone.map(p=> p.nome);
+  if(!m.gruppi) return [{ nome:'', nomi:lista }];
+  const gDi = (n)=> { const p = m.persone.find(x=> x.nome===n); return p && p.g!==undefined ? p.g : m.gruppi.length - 1; };
+  return m.gruppi.map((nome, i)=> ({ nome, i, nomi:lista.filter(n=> gDi(n)===i) })).filter(g=> g.nomi.length);
+}
+const tuColGruppo = (nome)=> nome==='Linea 4' ? 'var(--m4)' : nome==='Linea 5' ? 'var(--m5)' : 'var(--purple)';
+function tuTitGruppo(g, n){ return g.nome ? `<h2 class="tu-gr-tit"><span style="background:${tuColGruppo(g.nome)}">${escapeHtml(g.nome)}</span><small>${n === 1 ? '1 persona' : n + ' persone'}</small></h2>` : ''; }
+function tuRigaGruppo(g, colonne){ return g.nome ? `<tr class="tu-sep"><td colspan="${colonne}"><span style="background:${tuColGruppo(g.nome)}">${escapeHtml(g.nome)}</span></td></tr>` : ''; }
 function tuVistaGiorno(L, nomeL){
   const d = tuData(tu.data), w = d.getDay(), m = tuMese(tu.linea, tu.data);
   const ieri = new Date(); ieri.setDate(ieri.getDate()-1);
@@ -4490,9 +4525,10 @@ function tuVistaGiorno(L, nomeL){
   titolo = titolo.charAt(0).toUpperCase() + titolo.slice(1);
   let h = tuNav(titolo, sotto, tu.data===oggiISO());
   if(!m) return h + tuSenzaMese(tu.data, nomeL);
+  tuGruppi(m).forEach(gr=>{
   const gruppi = {};
-  m.persone.forEach(p=>{ const t = tuTurno(tu.linea, p.nome, tu.data); const f = tuFam(t.c, t.leg); (gruppi[f] = gruppi[f] || []).push([p.nome, t]); });
-  h += '<div class="tu-gruppi">';
+  gr.nomi.forEach(nome=>{ const t = tuTurno(tu.linea, nome, tu.data); const f = tuFam(t.c, t.leg); (gruppi[f] = gruppi[f] || []).push([nome, t]); });
+  h += tuTitGruppo(gr, gr.nomi.length) + '<div class="tu-gruppi">';
   ['mat','gio','pom','altro','sco','rip'].forEach(f=>{
     const chi = gruppi[f]; if(!chi) return;
     h += `<div class="tu-gruppo"><h3>${ic(TU_FAM[f][1],'ic-sm')}${TU_FAM[f][0]}<span class="n">${chi.length}</span></h3>` + chi.map(([nome,t])=>{
@@ -4501,7 +4537,9 @@ function tuVistaGiorno(L, nomeL){
       return `<div class="tu-persona${io ? ' io' : ''}${t.note ? ' con-nota' : ''}">${tuCod(Object.assign({}, t, {note:null}), true)}<div class="nome"><b>${escapeHtml(nome)}${io ? ' · tu' : ''}</b>${descr || t.cambio ? `<span>${escapeHtml(descr)}${t.cambio ? (descr ? ' · ' : '') + 'cambio, previsto ' + escapeHtml(t.previsto) : ''}</span>` : ''}${note}</div><div class="ora">${tuOrario(t.c, t.leg, w)}</div></div>`;
     }).join('') + '</div>';
   });
-  return h + '</div>' + tuLegendaHtml(m, tu.linea);
+  h += '</div>';
+  });
+  return h + tuLegendaHtml(m, tu.linea);
 }
 function tuVistaSettimana(L, nomeL){
   const d = tuData(tu.data); d.setDate(d.getDate() - (d.getDay()+6)%7);
@@ -4514,9 +4552,11 @@ function tuVistaSettimana(L, nomeL){
   const oggi = oggiISO();
   const cls = (g)=> { const w = tuData(g).getDay(); return (w===0 || w===6 ? 'fine' : '') + (g===oggi ? ' oggi' : ''); };
   h += `<div class="tu-tab"><table class="tu-tabella"><tr><th>Nome</th>${giorni.map(g=> `<th class="${cls(g)}">${TU_GS[tuData(g).getDay()]}<small>${+g.slice(8)}</small></th>`).join('')}</tr>`;
-  h += nomi.map(n=> `<tr class="${tuSonoIo(n) ? 'io' : ''}"><td>${escapeHtml(n)}</td>${giorni.map(g=> `<td class="${cls(g)}">${tuCod(tuTurno(tu.linea, n, g))}</td>`).join('')}</tr>`).join('');
-  h += '</table></div>' + tuElencoNote(giorni);
   const m = tuMese(tu.linea, tu.data) || tuMese(tu.linea, giorni[0]);
+  tuGruppi(m || { persone:[] }, nomi).forEach(gr=>{
+    h += tuRigaGruppo(gr, 8) + gr.nomi.map(n=> `<tr class="${tuSonoIo(n) ? 'io' : ''}"><td>${escapeHtml(n)}</td>${giorni.map(g=> `<td class="${cls(g)}">${tuCod(tuTurno(tu.linea, n, g))}</td>`).join('')}</tr>`).join('');
+  });
+  h += '</table></div>' + tuElencoNote(giorni);
   return h + (m ? tuLegendaHtml(m, tu.linea) : '');
 }
 function tuVistaMese(L, nomeL){
@@ -4526,7 +4566,12 @@ function tuVistaMese(L, nomeL){
   const nomi = m.persone.map(p=> p.nome);
   if(!tu.persona || !nomi.includes(tu.persona)) tu.persona = nomi.find(tuSonoIo) || nomi[0];
   const io = tuSonoIo(tu.persona);
-  h = `<div class="tu-chi"><select onchange="tu.persona=this.value;renderTurni()" aria-label="Persona">${nomi.map(n=> `<option value="${escapeHtml(n)}"${n===tu.persona ? ' selected' : ''}>${escapeHtml(n)}${tuSonoIo(n) ? ' (tu)' : ''}</option>`).join('')}</select>
+  const opz = (n)=> `<option value="${escapeHtml(n)}"${n===tu.persona ? ' selected' : ''}>${escapeHtml(n)}${tuSonoIo(n) ? ' (tu)' : ''}</option>`;
+  const elenco = tuGruppi(m).map(gr=> gr.nome ? `<optgroup label="${escapeHtml(gr.nome)}">${gr.nomi.map(opz).join('')}</optgroup>` : gr.nomi.map(opz).join('')).join('');
+  const grPersona = m.gruppi ? tuGruppi(m).find(gr=> gr.nomi.includes(tu.persona)) : null;
+  if(grPersona) nomeL += ' · ' + grPersona.nome;
+  h = tuNav(TU_MESI_L[d.getMonth()].charAt(0).toUpperCase() + TU_MESI_L[d.getMonth()].slice(1) + ' ' + d.getFullYear(), nomeL);
+  h = `<div class="tu-chi"><select onchange="tu.persona=this.value;renderTurni()" aria-label="Persona">${elenco}</select>
     <button class="btn-filtri${io ? ' aperto' : ''}" onclick="tuSonoIoImposta()">${ic(io ? 'check-circle' : 'user','')}<span class="l">${io ? 'Sei tu' : 'Sono io'}</span></button></div>` + h;
   h += '<div class="tu-cal">' + ['lu','ma','me','gi','ve','sa','do'].map(x=> `<div class="gs">${x}</div>`).join('');
   const primo = new Date(d.getFullYear(), d.getMonth(), 1), nG = new Date(d.getFullYear(), d.getMonth()+1, 0).getDate();
@@ -4557,7 +4602,9 @@ function tuVistaFoglio(L, nomeL){
   const giorni = [...Array(nG)].map((_,i)=> tuIso(new Date(d.getFullYear(), d.getMonth(), i+1)));
   const cls = (g)=> { const w = tuData(g).getDay(); return (w===0 || w===6 ? 'fine' : '') + (g===oggi ? ' oggi' : ''); };
   h += `<div class="tu-tab"><table class="tu-tabella foglio"><tr><th>${TU_MESI_L[d.getMonth()]}</th>${giorni.map(g=> `<th class="${cls(g)}">${+g.slice(8)}<small>${TU_GS[tuData(g).getDay()]}</small></th>`).join('')}</tr>`;
-  h += m.persone.map(p=> `<tr class="${tuSonoIo(p.nome) ? 'io' : ''}"><td>${escapeHtml(p.nome)}</td>${giorni.map(g=> `<td class="${cls(g)}">${tuCod(tuTurno(tu.linea, p.nome, g))}</td>`).join('')}</tr>`).join('');
+  tuGruppi(m).forEach(gr=>{
+    h += tuRigaGruppo(gr, nG + 1) + gr.nomi.map(n=> `<tr class="${tuSonoIo(n) ? 'io' : ''}"><td>${escapeHtml(n)}</td>${giorni.map(g=> `<td class="${cls(g)}">${tuCod(tuTurno(tu.linea, n, g))}</td>`).join('')}</tr>`).join('');
+  });
   return h + '</table></div>' + tuElencoNote(giorni) + tuLegendaHtml(m, tu.linea);
 }
 
