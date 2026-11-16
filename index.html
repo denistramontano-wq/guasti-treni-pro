@@ -331,12 +331,10 @@ div.set-row{cursor:default}
 .dash-stato{background:var(--surface2);border-radius:12px;padding:16px;font-size:var(--fs-s);line-height:1.5;color:var(--text2);margin-bottom:8px}
 .dash-stato b{color:var(--text);font-weight:700}
 @media (min-width:900px){
-  .ct-linee{max-width:640px}
   .ct-colonne{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));column-gap:24px;align-items:start}
   .ct-colonne .ct-sez{margin-top:16px}
   .ct-lista-voci{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:8px;align-items:start}
   .ct-lista-voci .ct-voce{margin-bottom:0}
-  .ct-tipi,.ct-nuovo,.ct-casse{max-width:640px}
   .ct-barra{margin:16px -40px -32px;padding:16px 40px}
   .ct-riep{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:8px;align-items:start}
   .ct-riep .ct-card{margin-bottom:0}
@@ -445,16 +443,13 @@ div.set-row{cursor:default}
 .tu-esiti b{font-weight:700}
 @media (min-width:900px){
   .tu-gruppi{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));column-gap:16px}
-  .tu-viste{max-width:800px}
   .tu-carica .l{display:inline}
   .tu-viste .tu-carica{padding:0 16px}
-  .tu-linee{max-width:800px}
   .tu-cal .gg{min-height:88px;padding:8px}
   .tu-cal .gg .tu-cod{height:32px;font-size:var(--fs-s)}
   .tu-cal .gg .h{display:block}
   .tu-leg-griglia{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));column-gap:24px}
   .tu-tabella{font-size:var(--fs-s)}
-  .tu-riep{max-width:640px}
 }
 
 /* ── ORARI M7 ── */
@@ -592,7 +587,7 @@ div.set-row{cursor:default}
 #page-m7 .m7-bin button b{display:flex;align-items:center;gap:8px;font-size:var(--fs-m);color:var(--text)}
 #page-m7 .m7-bin button > span{display:block;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #page-m7 .m7-bin button[aria-pressed="true"]{border-color:var(--acc);background:var(--surface2);box-shadow:inset 0 -4px 0 var(--acc)}
-#page-m7 .m7-bin .tutti{text-align:center;padding:8px}
+#page-m7 .m7-bin .tutti{text-align:center;padding:8px;min-width:80px}
 #page-m7 .m7-bin .tutti b{justify-content:center}
 #page-m7 .m7-bin .cd{background:none;box-shadow:none;color:var(--text);padding:0;border-radius:0;line-height:1.4;font-size:var(--fs-s)}
 #page-m7 .colbin.uno{grid-template-columns:1fr}
@@ -601,11 +596,18 @@ div.set-row{cursor:default}
 #page-m7 details.m7-file-det summary .n{margin-left:auto;font-weight:400;color:var(--text2)}
 #page-m7 details.m7-file-det summary .ic{color:var(--text3);transition:transform .15s}
 #page-m7 .file-orario{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:8px 16px;margin-bottom:8px}
+/* PC: tutto a piena larghezza */
 @media (min-width:900px){
-  #page-m7 .m7-sez,#page-m7 .m7-testa,#page-m7 .m7-pan[data-pan="inc"],#page-m7 .m7-pan[data-pan="file"]{max-width:800px}
   #page-m7 .m7-testa{display:grid;grid-template-columns:1fr 1fr;align-items:center}
   #page-m7 .m7-testa .hint,#page-m7 .m7-testa .gest{grid-column:1/-1}
-  #page-m7 .m7-bin{max-width:800px}
+  /* incrocio: i due treni e il tasto su una riga, il risultato sotto a tutta larghezza */
+  #page-m7 .m7-pan[data-pan="inc"] .inc-box{display:grid;grid-template-columns:minmax(0,1fr) 320px;column-gap:24px;align-items:end;padding:24px}
+  #page-m7 .m7-pan[data-pan="inc"] .inc-btn{margin-top:0}
+  #page-m7 .m7-pan[data-pan="inc"] #m7-incOut{grid-column:1/-1}
+  /* file M7: a sinistra file e caricamento, a destra la guida */
+  #page-m7 .m7-pan[data-pan="file"]:not([hidden]){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:40px;align-items:start}
+  #page-m7 .m7-pan[data-pan="file"] > *{grid-column:1}
+  #page-m7 .m7-pan[data-pan="file"] > .m7-aiuto{grid-column:2;grid-row:1 / span 3;margin-top:24px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:8px 16px 16px}
 }
 @media (min-width:1200px){
   #page-m7 .m7-pass{display:grid;grid-template-columns:360px minmax(0,1fr);gap:40px;align-items:start}
@@ -835,7 +837,7 @@ div.set-row{cursor:default}
       <button class="top-sync" id="topSync" style="display:none" onclick="aggiornaDati()" aria-label="Aggiorna dati" title="Aggiorna dati"><svg class="ic"><use href="#i-refresh"/></svg><i></i></button>
       <button class="top-sync" id="topFull" style="display:none" onclick="tuttoSchermo()" aria-label="Tutto schermo" title="Tutto schermo"><svg class="ic"><use href="#i-maximize"/></svg></button>
       <button class="top-sync top-set" id="topSet" onclick="apri('impostazioni')" aria-label="Impostazioni" title="Impostazioni"><svg class="ic"><use href="#i-settings"/></svg><span>Impostazioni</span></button>
-      <div class="firma" onclick="tapVersione()">v2.4.0</div>
+      <div class="firma" onclick="tapVersione()">v2.4.1</div>
     </div>
   </header>
 
@@ -984,7 +986,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.4.0</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.4.1</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -1005,7 +1007,7 @@ div.set-row{cursor:default}
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.4.0</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.4.1</div>
     </section>
 
     <!-- ── PAGINA: CONTROLLI TRENI ── -->
@@ -1777,7 +1779,7 @@ div.set-row{cursor:default}
    Archivio usato dal resto dell'app (ref().on / set / push / remove):
    i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '2.4.0';
+const APP_VERSIONE = '2.4.1';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
