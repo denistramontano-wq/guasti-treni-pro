@@ -219,6 +219,129 @@ div.set-row{cursor:default}
 .cloud-note{font-size:var(--fs-s);color:var(--text2);line-height:1.5;margin-bottom:16px}
 .set-info{text-align:center;font-size:var(--fs-s);color:var(--text3);line-height:1.6}
 
+/* ── CONTROLLI TRENI ── */
+.t-orange{background:var(--orange);color:var(--ink)}
+.ct-linee{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px}
+.ct-lin{min-height:48px;border-radius:12px;border:3px solid transparent;color:#fff;font-size:var(--fs-s);font-weight:700;cursor:pointer;opacity:.6}
+.ct-lin.on{opacity:1;border-color:#fff}
+.ct-M1{background:var(--m1)} .ct-M2{background:var(--m2)} .ct-M3{background:var(--m3);color:#1A1735} .ct-M4{background:var(--m4)} .ct-M5{background:var(--m5)}
+.ct-fonte{display:flex;align-items:center;gap:8px;padding:8px 16px;min-height:56px;border-radius:12px;background:var(--purple-lt);color:var(--purple-ink);font-size:var(--fs-xs);line-height:1.4;margin-bottom:8px}
+.ct-fonte b{color:#fff;font-weight:700}
+.ct-fonte > span{flex:1;min-width:0}
+.ct-fonte button{min-height:40px;padding:0 16px;border-radius:12px;border:none;background:var(--purple);color:#fff;font-size:var(--fs-xs);font-weight:700;display:flex;align-items:center;gap:8px;cursor:pointer;flex-shrink:0}
+.ct-sez{display:flex;align-items:center;gap:8px;font-size:var(--fs-s);font-weight:700;color:var(--text2);margin:24px 0 8px}
+.ct-sez .n{margin-left:auto;font-weight:400;font-size:var(--fs-xs)}
+.ct-vuoto{font-size:var(--fs-s);color:var(--text3);padding:8px 0;line-height:1.5}
+.ct-treno{display:flex;align-items:center;gap:16px;width:100%;min-height:64px;padding:8px 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:pointer;position:relative;overflow:hidden;color:var(--text);text-align:left}
+.ct-treno::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--border2)}
+.ct-treno.s-rosso::before{background:var(--red)} .ct-treno.s-arancione::before{background:var(--orange)} .ct-treno.s-giallo::before{background:var(--m3)} .ct-treno.s-verde::before{background:var(--green)}
+.ct-treno.mio{border-color:var(--orange)}
+.ct-treno .mat{width:56px;text-align:center;flex-shrink:0}
+.ct-treno .mat b{display:block;font-size:var(--fs-l);font-weight:700}
+.ct-treno .mat span{font-size:var(--fs-xs);color:var(--text3)}
+.ct-treno .info{flex:1;min-width:0}
+.ct-treno .info > span{display:block;font-size:var(--fs-xs);color:var(--text2);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ct-tab{display:inline-flex;align-items:center;gap:4px;padding:0 8px;height:24px;border-radius:8px;background:var(--surface2);font-size:var(--fs-xs);font-weight:700}
+.ct-tab.no{color:var(--text3);font-weight:400}
+.ct-fatto{display:inline-flex;align-items:center;gap:4px;margin-left:8px;font-size:var(--fs-xs);font-weight:700;color:var(--green-fg)}
+.ct-scad{text-align:right;font-size:var(--fs-xs);color:var(--text2);white-space:nowrap;flex-shrink:0}
+.ct-scad b{display:block;font-size:var(--fs-s);font-weight:700;color:#fff}
+.s-rosso .ct-scad b{color:var(--red-fg)} .s-arancione .ct-scad b{color:var(--orange)} .s-giallo .ct-scad b{color:var(--amber-fg)}
+.ct-nuovo{display:flex;gap:8px;margin-top:8px}
+.ct-nuovo select{flex:1;min-width:0;min-height:48px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);padding:0 16px;font-size:var(--fs-m)}
+.ct-nuovo button{min-height:48px;padding:0 16px;border-radius:12px;border:none;background:var(--purple);color:#fff;font-size:var(--fs-s);font-weight:700;display:flex;align-items:center;gap:8px;cursor:pointer;flex-shrink:0}
+.ct-testa{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.ct-ind{width:40px;height:40px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.ct-testa b{display:block;font-size:var(--fs-l);font-weight:700}
+.ct-testa span{display:block;font-size:var(--fs-xs);color:var(--text2);margin-top:4px}
+.ct-tipi{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:16px}
+.ct-tipo{min-height:40px;border:none;border-radius:8px;background:none;color:var(--text2);font-size:var(--fs-s);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.ct-tipo.on{background:var(--purple);color:#fff}
+.ct-casse{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:16px}
+.ct-casse.n3{grid-template-columns:repeat(3,1fr)}
+.ct-casse.n1{grid-template-columns:1fr}
+.ct-cassa{min-height:56px;border-radius:12px;border:2px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:var(--fs-xs)}
+.ct-cassa b{font-size:var(--fs-m);font-weight:700}
+.ct-cassa .st{width:8px;height:8px;border-radius:50%;background:var(--text3)}
+.ct-cassa.fatta .st{background:var(--green)} .ct-cassa.nc .st{background:var(--red)} .ct-cassa.parz .st{background:var(--amber-fg)}
+.ct-cassa.on{border-color:#fff;background:var(--surface2)}
+.ct-cassa-tit{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ct-cassa-tit b{font-size:var(--fs-m);font-weight:700}
+.ct-cassa-tit span{font-size:var(--fs-xs);color:var(--text2)}
+.ct-cassa-tit button{margin-left:auto;min-height:40px;padding:0 8px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--green-fg);font-size:var(--fs-xs);font-weight:700;display:flex;align-items:center;gap:4px;cursor:pointer}
+.ct-spieg{font-size:var(--fs-s);color:var(--text2);margin-bottom:8px;line-height:1.5}
+.ct-voce{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:8px}
+.ct-voce.r-nc{border-color:var(--red)}
+.ct-voce .t{font-size:var(--fs-m);font-weight:700;margin-bottom:8px;display:flex;align-items:baseline;gap:8px}
+.ct-voce .t small{font-size:var(--fs-xs);font-weight:400;color:var(--text2)}
+.ct-esiti{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.ct-esito{min-height:48px;border-radius:8px;border:1.5px solid var(--border);background:none;color:var(--text2);font-size:var(--fs-xs);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;padding:0 4px;line-height:1.2}
+.ct-esito.on.e-ok{background:var(--green-bg);border-color:var(--green);color:var(--green-fg)}
+.ct-esito.on.e-nc{background:var(--red-bg);border-color:var(--red);color:var(--red-fg)}
+.ct-esito.on.e-nv{background:var(--gray-bg);border-color:var(--border2);color:var(--text)}
+.ct-segn{display:flex;gap:8px;align-items:flex-start;margin-top:8px;padding:8px;border-radius:8px;background:var(--red-bg);font-size:var(--fs-s);line-height:1.4;color:var(--text)}
+.ct-segn .ic{color:var(--red-fg);margin-top:2px}
+.ct-segn small{display:block;font-size:var(--fs-xs);color:var(--red-fg)}
+.ct-barra{position:sticky;bottom:0;margin:16px -16px -16px;padding:16px 16px calc(16px + var(--safe-b));background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;gap:16px;z-index:5}
+.ct-prog{flex:1;min-width:0}
+.ct-prog > span{display:block;font-size:var(--fs-xs);color:var(--text2);margin-bottom:4px}
+.ct-prog .b{height:8px;border-radius:8px;background:var(--bg);overflow:hidden;display:flex}
+.ct-prog .b i{display:block;height:100%}
+.ct-salva{min-height:48px;padding:0 16px;border-radius:12px;border:none;background:var(--green);color:#fff;font-size:var(--fs-s);font-weight:700;display:flex;align-items:center;gap:8px;cursor:pointer;flex-shrink:0}
+.ct-salvato{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:12px;font-size:var(--fs-s);margin-bottom:16px;line-height:1.4}
+.ct-salvato.ok{background:var(--green-bg);color:var(--green-fg)}
+.ct-salvato.no{background:var(--amber-bg);color:var(--amber-fg)}
+.ct-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:8px}
+.ct-card .h{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ct-card .h b{font-size:var(--fs-m);font-weight:700}
+.ct-card .h span{margin-left:auto;font-size:var(--fs-xs);color:var(--text2)}
+.ct-cont{display:flex;gap:8px;flex-wrap:wrap}
+.ct-cnt{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:8px;font-size:var(--fs-xs);font-weight:700}
+.ct-cnt.ok{background:var(--green-bg);color:var(--green-fg)} .ct-cnt.nc{background:var(--red-bg);color:var(--red-fg)} .ct-cnt.nv,.ct-cnt.mx{background:var(--gray-bg);color:var(--text2)}
+.ct-nc-r{display:flex;gap:8px;font-size:var(--fs-s);padding:8px 0;border-top:1px solid var(--border);margin-top:8px;line-height:1.4}
+.ct-nc-r .ic{color:var(--red-fg);margin-top:2px}
+.ct-nc-r span{display:block;color:var(--text2);font-size:var(--fs-xs)}
+.ct-nc-r em{font-style:normal;color:var(--purple-ink);font-size:var(--fs-xs)}
+.ct-nc-r.grigio .ic{color:var(--text3)}
+.ct-azioni{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.ct-azioni button{min-height:48px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:#fff;font-size:var(--fs-s);font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+.ct-azioni button.danger{color:var(--red-fg)}
+.ct-riga{display:flex;align-items:center;gap:16px;width:100%;min-height:56px;padding:8px 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;color:var(--text);text-align:left;cursor:pointer}
+.ct-riga .tx{flex:1;min-width:0}
+.ct-riga .tx b{display:block;font-size:var(--fs-m);font-weight:700}
+.ct-riga .tx span{display:block;font-size:var(--fs-xs);color:var(--text2);margin-top:4px}
+.ct-riga > .ic{color:var(--text3)}
+.ct-campi{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.ct-campo{background:var(--bg);border-radius:8px;padding:8px}
+.ct-campo span{display:block;font-size:var(--fs-xs);color:var(--text3)}
+.ct-campo b{font-size:var(--fs-s);font-weight:700}
+#ctNcTesto{border-color:var(--red)}
+.cl-box{background:var(--surface2);border-radius:12px;padding:0 16px;margin-bottom:16px}
+.cl-vr{display:flex;align-items:center;gap:8px;min-height:56px;border-bottom:1px solid var(--border)}
+.cl-vr:last-child{border-bottom:none}
+.cl-vr .num{width:24px;font-size:var(--fs-xs);color:var(--text3);text-align:center;flex-shrink:0}
+.cl-vr input,.cl-vr textarea{flex:1;min-width:0;border:none;border-bottom:1.5px solid transparent;background:none;color:var(--text);font-size:var(--fs-m);font-family:inherit;line-height:1.4;padding:8px 0;resize:none;field-sizing:content;min-height:40px}
+.cl-vr input:focus,.cl-vr textarea:focus{outline:none;border-bottom-color:var(--purple)}
+.cl-mini{width:32px;height:40px;border-radius:8px;border:none;background:none;color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.cl-mini.del{color:var(--red-fg)}
+.cl-mini:disabled{opacity:.3;cursor:default}
+.cl-agg{display:flex;gap:8px;margin-bottom:8px}
+.cl-agg input{flex:1;min-width:0;min-height:48px;border-radius:12px;border:1.5px dashed var(--border2);background:none;color:var(--text);padding:0 16px;font-size:var(--fs-m)}
+.cl-agg button{min-height:48px;padding:0 16px;border-radius:12px;border:none;background:var(--purple);color:#fff;font-size:var(--fs-s);font-weight:700;display:flex;align-items:center;gap:8px;cursor:pointer}
+.dash-stato{background:var(--surface2);border-radius:12px;padding:16px;font-size:var(--fs-s);line-height:1.5;color:var(--text2);margin-bottom:8px}
+.dash-stato b{color:var(--text);font-weight:700}
+@media (min-width:900px){
+  .ct-linee{max-width:640px}
+  .ct-colonne{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));column-gap:24px;align-items:start}
+  .ct-colonne .ct-sez{margin-top:16px}
+  .ct-lista-voci{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:8px;align-items:start}
+  .ct-lista-voci .ct-voce{margin-bottom:0}
+  .ct-tipi,.ct-nuovo,.ct-casse{max-width:640px}
+  .ct-barra{margin:16px -40px -32px;padding:16px 40px}
+  .ct-riep{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:8px;align-items:start}
+  .ct-riep .ct-card{margin-bottom:0}
+}
+
 /* ── TURNI ── */
 .tu-linee{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px}
 .tu-lin{min-height:48px;padding:0 4px;border-radius:12px;border:3px solid transparent;color:#fff;font-size:var(--fs-s);font-weight:700;cursor:pointer;opacity:.6;line-height:1.2}
@@ -654,6 +777,14 @@ div.set-row{cursor:default}
   <symbol id="i-filter" viewBox="0 0 24 24"><path d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"/></symbol>
   <symbol id="i-maximize" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></symbol>
   <symbol id="i-minimize" viewBox="0 0 24 24"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></symbol>
+  <symbol id="i-snow" viewBox="0 0 24 24"><path d="M2 12h20"/><path d="M12 2v20"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/></symbol>
+  <symbol id="i-clipboard" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98"/><path d="m15.41 6.51-6.82 3.98"/></symbol>
 </svg>
 
 <!-- ══════════ APP ══════════ -->
@@ -669,7 +800,7 @@ div.set-row{cursor:default}
       <button class="top-sync" id="topSync" style="display:none" onclick="aggiornaDati()" aria-label="Aggiorna dati" title="Aggiorna dati"><svg class="ic"><use href="#i-refresh"/></svg><i></i></button>
       <button class="top-sync" id="topFull" style="display:none" onclick="tuttoSchermo()" aria-label="Tutto schermo" title="Tutto schermo"><svg class="ic"><use href="#i-maximize"/></svg></button>
       <button class="top-sync top-set" id="topSet" onclick="apri('impostazioni')" aria-label="Impostazioni" title="Impostazioni"><svg class="ic"><use href="#i-settings"/></svg><span>Impostazioni</span></button>
-      <div class="firma" onclick="tapVersione()">v2.2.2</div>
+      <div class="firma" onclick="tapVersione()">v2.3.0</div>
     </div>
   </header>
 
@@ -700,6 +831,10 @@ div.set-row{cursor:default}
             <button class="tile t-purple" onclick="apri('turni')">
               <svg class="ic ic-xl"><use href="#i-calendar"/></svg>
               <span><span class="t">Turni</span><span class="s">Giorno, settimana e mese</span></span>
+            </button>
+            <button class="tile t-orange" onclick="apri('controlli')">
+              <svg class="ic ic-xl"><use href="#i-clipboard"/></svg>
+              <span><span class="t">Controlli</span><span class="s">Clima e periodici con check list</span></span>
             </button>
           </div>
 
@@ -744,6 +879,16 @@ div.set-row{cursor:default}
         <button class="set-row" onclick="apriWhatsApp()">
           <span class="bubble b-green"><svg class="ic"><use href="#i-message"/></svg></span>
           <span class="set-main"><span class="t" style="display:block">Destinatario WhatsApp</span><span class="s" id="setWaSub">—</span></span>
+          <svg class="ic"><use href="#i-chevron"/></svg>
+        </button>
+        <button class="set-row" onclick="apriChecklist()">
+          <span class="bubble b-amber"><svg class="ic"><use href="#i-clipboard"/></svg></span>
+          <span class="set-main"><span class="t" style="display:block">Check list controlli</span><span class="s" id="setChecklistSub">—</span></span>
+          <svg class="ic"><use href="#i-chevron"/></svg>
+        </button>
+        <button class="set-row" onclick="apriDash()">
+          <span class="bubble b-purple"><svg class="ic"><use href="#i-link"/></svg></span>
+          <span class="set-main"><span class="t" style="display:block">Dashboard rotabili</span><span class="s" id="setDashSub">—</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
       </div>
@@ -804,7 +949,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.2.2</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.3.0</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -825,7 +970,12 @@ div.set-row{cursor:default}
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.2.2</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.3.0</div>
+    </section>
+
+    <!-- ── PAGINA: CONTROLLI TRENI ── -->
+    <section class="page" id="page-controlli">
+      <div id="ctCorpo"></div>
     </section>
 
     <!-- ── PAGINA: NUOVO GUASTO ── -->
@@ -1436,6 +1586,74 @@ div.set-row{cursor:default}
   </div>
 </div>
 
+<!-- ── SHEET SEGNALAZIONE DA CONTROLLO (si apre da sola con "Non conforme") ── -->
+<div class="overlay" id="ctNcOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Nuova segnalazione</h2>
+    <div class="sec-sub" style="margin-bottom:16px">Hai segnato "Non conforme": la segnalazione è già compilata con i dati del treno. Scrivi cosa hai trovato.</div>
+    <div class="ct-campi">
+      <div class="ct-campo"><span>Linea</span><b id="ctNcLinea">—</b></div>
+      <div class="ct-campo"><span>Materiale</span><b id="ctNcMat">—</b></div>
+      <div class="ct-campo"><span>Cassa</span><b id="ctNcCassa">—</b></div>
+      <div class="ct-campo"><span>Vettura</span><b id="ctNcVett">—</b></div>
+    </div>
+    <div class="field">
+      <label for="ctNcBreve">Descrizione breve <span class="req">*</span></label>
+      <input type="text" id="ctNcBreve" maxlength="120">
+    </div>
+    <div class="field">
+      <label for="ctNcTesto">Cosa hai trovato <span class="req">*</span></label>
+      <textarea id="ctNcTesto" placeholder="Es. la porta 2 lato B non chiude, rimbalza a fine corsa"></textarea>
+    </div>
+    <div class="error-msg" id="ctNcErr"></div>
+    <div class="sheet-btns">
+      <button class="btn-cancel" onclick="ctAnnullaNc()"><svg class="ic"><use href="#i-x"/></svg>Annulla</button>
+      <button class="btn-primary" style="margin-top:0;min-height:48px;border-radius:12px;background:var(--red)" onclick="ctRegistraNc()"><svg class="ic"><use href="#i-megaphone"/></svg>Registra segnalazione</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SHEET CHECK LIST CONTROLLI (Impostazioni) ── -->
+<div class="overlay" id="checklistOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Check list controlli</h2>
+    <div class="sec-sub" style="margin-bottom:16px">Tocca il testo di una voce per modificarlo. Le modifiche valgono per i controlli nuovi: quelli già iniziati restano con le voci di allora.</div>
+    <div class="lbl"><svg class="ic ic-sm"><use href="#i-snow"/></svg>Clima · una voce per ogni cassa</div>
+    <div class="cl-box"><div class="cl-vr"><span class="num">1</span><input id="clClima" maxlength="80" aria-label="Voce del clima" onchange="clSalvaClima(this.value)"></div></div>
+    <div class="lbl"><svg class="ic ic-sm"><use href="#i-clipboard"/></svg>Controlli periodici · per ogni cassa</div>
+    <div class="cl-box" id="clLista"></div>
+    <div class="cl-agg"><input id="clNuova" placeholder="Nuova voce" maxlength="80" onkeydown="if(event.key==='Enter')clAggiungi()"><button onclick="clAggiungi()"><svg class="ic ic-sm"><use href="#i-plus"/></svg>Aggiungi</button></div>
+    <button class="btn-secondary" onclick="clRipristina()"><svg class="ic"><use href="#i-refresh"/></svg>Ripristina le voci iniziali</button>
+    <div class="sheet-btns">
+      <button class="btn-cancel" onclick="document.getElementById('checklistOverlay').classList.remove('open')"><svg class="ic"><use href="#i-x"/></svg>Chiudi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SHEET DASHBOARD ROTABILI (Impostazioni) ── -->
+<div class="overlay" id="dashOverlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h2>Dashboard rotabili</h2>
+    <div class="sec-sub" style="margin-bottom:16px">L'app legge i dati della dashboard (tabelle, scadenze dei controlli, assegnazioni) per mostrarti i treni da controllare. Non li modifica mai.</div>
+    <div class="dash-stato" id="dashStato"></div>
+    <button class="btn-primary" id="dashBtnCollega" onclick="dashCollega()"><svg class="ic"><use href="#i-link"/></svg>Collega il file dashboard-dati.json</button>
+    <button class="btn-secondary" onclick="document.getElementById('dashFileIn').click()"><svg class="ic"><use href="#i-upload"/></svg>Carica un file della dashboard</button>
+    <input type="file" id="dashFileIn" accept=".json,application/json" hidden onchange="dashCaricaFile(this)">
+    <div class="cloud-note" id="dashNota" style="margin-top:16px"></div>
+    <div class="field">
+      <label for="dashIo">Chi sei nella dashboard</label>
+      <select id="dashIo" onchange="setPref('ctIo', this.value); renderDashSet(); if(paginaCorrente==='controlli') renderControlli()"></select>
+    </div>
+    <button class="link-btn danger" id="dashBtnScollega" onclick="dashScollega()"><svg class="ic"><use href="#i-trash"/></svg>Togli i dati della dashboard</button>
+    <div class="sheet-btns">
+      <button class="btn-cancel" onclick="document.getElementById('dashOverlay').classList.remove('open')"><svg class="ic"><use href="#i-x"/></svg>Chiudi</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── SHEET NOTA DEL TURNO ── -->
 <div class="overlay" id="tuNoteOverlay" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="sheet">
@@ -1511,7 +1729,7 @@ div.set-row{cursor:default}
    Archivio usato dal resto dell'app (ref().on / set / push / remove):
    i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '2.2.2';
+const APP_VERSIONE = '2.3.0';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
@@ -3210,7 +3428,7 @@ function renderDescrizioniList(){
 /* ════════ NAVIGAZIONE ════════ */
 /* Si parte sempre dalla Home; le altre pagine hanno la freccia per tornare.
    Il tasto "indietro" del telefono riporta alla Home invece di chiudere l'app. */
-const TITOLI = {guasto:'Guasto', segnalazione:'Segnalazione', elenco:'Elenchi', stat:'Statistiche', impostazioni:'Impostazioni', m7:'Orari M7', turni:'Turni'};
+const TITOLI = {guasto:'Guasto', segnalazione:'Segnalazione', elenco:'Elenchi', stat:'Statistiche', impostazioni:'Impostazioni', m7:'Orari M7', turni:'Turni', controlli:'Controlli'};
 let paginaCorrente = 'home';
 
 function mostraPagina(name, opts){
@@ -3226,6 +3444,11 @@ function mostraPagina(name, opts){
   if(name==='impostazioni') renderImpostazioni();
   if(name==='m7' && window.m7Mostra) window.m7Mostra();
   if(name==='turni') renderTurni();
+  if(name==='controlli'){
+    if(paginaCorrente!=='controlli' && ct.vista==='lista') ct.linea = null;
+    renderControlli();
+    if(dashFile) dashLeggi(false);   // dati della dashboard aggiornati all'ultimo salvataggio
+  }
   if(!home && !opts.noHistory){
     if(paginaCorrente==='home') history.pushState({p:name}, '');
     else history.replaceState({p:name}, '');
@@ -3385,6 +3608,7 @@ function fmtTelefono(n){ return '+' + n.replace(/^(\d{2})(\d{3})(\d{3})(\d+)$/, 
 
 function renderImpostazioni(){
   renderCloud();
+  ctSubImpostazioni();
   const nd = Object.keys(DESCRIZIONI_PRESET).length;
   document.getElementById('setDescrSub').textContent = nd===1 ? '1 descrizione' : nd+' descrizioni';
   document.getElementById('setWaSub').textContent = (waNumero() ? fmtTelefono(waNumero()) : 'Scegli il contatto ogni volta');
@@ -4288,6 +4512,454 @@ function tuVistaFoglio(L, nomeL){
   return h + '</table></div>' + tuElencoNote(giorni) + tuLegendaHtml(m, tu.linea);
 }
 
+/* ════════ CONTROLLI TRENI ════════
+   Check list del clima (una voce per ogni cassa) e dei controlli periodici (le voci per ogni cassa).
+   Le casse sono le vetture del materiale, dalla lista materiali.
+   Controlli e check list stanno nel database dell'app: si salvano nel file OneDrive come guasti e segnalazioni.
+   "Non conforme" apre da sola una segnalazione già compilata.
+   La dashboard rotabili si legge soltanto: il file dashboard-dati.json della sua cartella
+   oppure il file che esporta per il telefono. */
+const CT_CLIMA_DEF = 'Funzionamento clima';
+const CT_PER_DEF = ['Impianto porte','Comparto passeggeri','Cabina di guida','Parti esterne vettura','Piani alle ruote','Rumore barre accoppiamento'];
+const CT_LINEE = ['M1','M2','M3','M4','M5'];
+const CT_ESITI = { ok:['Conforme','check'], nc:['Non conforme','x'], nv:['Non controllato','minus'] };
+const DASH_KEY = 'guastiMetro.dashRotabili';
+let CHECKLIST = { clima:CT_CLIMA_DEF, periodici:CT_PER_DEF.slice() };
+let allControlli = {};
+let DASH = (()=>{ try { return JSON.parse(localStorage.getItem(DASH_KEY) || 'null'); } catch(e){ return null; } })();
+let dashFile = null;
+const ct = { linea:null, vista:'lista', id:null, bozza:null, tipo:'clima', cassa:0, ncKey:null };
+
+function listenControlli(){
+  db.ref('controlli').on('value', snap=>{
+    allControlli = snap.val() || {};
+    if(ct.id && !allControlli[ct.id]){ ct.id = null; ct.vista = 'lista'; }   // eliminato da un altro dispositivo
+    if(paginaCorrente==='controlli') renderControlli();
+  });
+  db.ref('checklist_controlli').on('value', snap=>{
+    const v = snap.val() || {};
+    CHECKLIST = {
+      clima: (typeof v.clima==='string' && v.clima.trim()) ? v.clima.trim() : CT_CLIMA_DEF,
+      periodici: Array.isArray(v.periodici) ? v.periodici.filter(x=> typeof x==='string' && x.trim()) : CT_PER_DEF.slice()
+    };
+    if(document.getElementById('checklistOverlay').classList.contains('open')) renderChecklistSet();
+    if(paginaCorrente==='impostazioni') renderImpostazioni();
+  });
+  dashAvvio();
+}
+
+/* ── dati ── */
+const ctVetture = (linea, mat)=> ((MATERIALI[linea] || {})[mat] || []).slice();
+const ctRecord = ()=> ct.id ? allControlli[ct.id] : ct.bozza;
+const ctClona = ()=> JSON.parse(JSON.stringify(ctRecord()));
+const ctDataBreve = (iso)=> iso ? iso.slice(8,10) + '/' + iso.slice(5,7) : '';
+function ctConta(rec, tipo){
+  const n = rec.vetture.length, voci = tipo==='clima' ? 1 : rec.voci.periodici.length;
+  const c = { ok:0, nc:0, nv:0, tot:n*voci };
+  Object.entries(rec.esiti || {}).forEach(([k,v])=>{ if(k.split('|')[0]===tipo && c[v]!==undefined) c[v]++; });
+  c.mancano = c.tot - c.ok - c.nc - c.nv;
+  return c;
+}
+function ctSalva(rec){
+  rec.aggiornato = Date.now();
+  if(!ct.id){ const r = db.ref('controlli').push(); ct.id = r.key; ct.bozza = null; return r.set(rec); }
+  return db.ref('controlli/' + ct.id).set(rec);
+}
+function ctNuovo(linea, mat, tab){
+  const vett = ctVetture(linea, mat);
+  if(!vett.length){ showToast('Il materiale ' + mat + ' non ha vetture nella lista materiali'); return; }
+  const now = new Date();
+  ct.id = null;
+  ct.bozza = { linea, materiale:mat, vetture:vett, data:oggiISO(now), ora:now.toTimeString().slice(0,5), tabella:tab || '',
+    voci:{ clima:CHECKLIST.clima, periodici:CHECKLIST.periodici.slice() }, esiti:{}, note:{}, segn:{}, chiuso:false, creato:Date.now() };
+  ct.tipo = 'clima'; ct.cassa = 0; ct.vista = 'scheda';
+  renderControlli(); ctInCima();
+}
+function ctApri(id, vista){
+  if(!allControlli[id]) return;
+  ct.id = id; ct.bozza = null; ct.tipo = 'clima'; ct.cassa = 0;
+  ct.vista = vista || (allControlli[id].chiuso ? 'riepilogo' : 'scheda');
+  renderControlli(); ctInCima();
+}
+function ctInCima(){ document.querySelector('.scroll-area').scrollTop = 0; }
+function ctLista(){ ct.vista = 'lista'; ct.id = null; ct.bozza = null; renderControlli(); ctInCima(); }
+/* dal promemoria: riprende il controllo di oggi ancora aperto su quel treno, altrimenti ne inizia uno */
+function ctApriTreno(linea, mat, tab){
+  if(!mat){ showToast('Questo treno non è nella lista materiali: aggiungilo in Impostazioni › Materiali'); return; }
+  const aperto = Object.entries(allControlli).find(([,c])=> c.linea===linea && c.materiale===mat && !c.chiuso && c.data===oggiISO());
+  if(aperto) ctApri(aperto[0], 'scheda'); else ctNuovo(linea, mat, tab);
+}
+function ctNuovoDaSel(){
+  const mat = document.getElementById('ctMatSel').value;
+  if(!mat){ showToast('Scegli il materiale'); return; }
+  const r = dashTreni(ct.linea).find(x=> x.mat===mat);
+  ctApriTreno(ct.linea, mat, r ? r.t : '');
+}
+
+/* ── esiti ── */
+function ctSegna(key, v){
+  const rec = ctClona();
+  if(v==='nc' && rec.esiti[key]!=='nc'){ ctApriNc(key); return; }
+  if(rec.esiti[key]===v) delete rec.esiti[key]; else rec.esiti[key] = v;
+  if(rec.esiti[key]!=='nc'){
+    delete rec.note[key];
+    if(rec.segn[key]){ delete rec.segn[key]; showToast('La segnalazione già registrata resta nell\'elenco segnalazioni'); }
+  }
+  ctSalva(rec);
+}
+function ctRestantiOk(){
+  const rec = ctClona();
+  rec.voci.periodici.forEach((_,i)=>{ const k = 'per|' + ct.cassa + '|' + i; if(!rec.esiti[k]) rec.esiti[k] = 'ok'; });
+  ctSalva(rec);
+}
+function ctApriNc(key){
+  const rec = ctRecord(), p = key.split('|'), c = +p[1];
+  const voce = p[0]==='clima' ? rec.voci.clima : rec.voci.periodici[+p[2]];
+  ct.ncKey = key;
+  document.getElementById('ctNcLinea').textContent = rec.linea;
+  document.getElementById('ctNcMat').textContent = rec.materiale;
+  document.getElementById('ctNcCassa').textContent = c + 1;
+  document.getElementById('ctNcVett').textContent = rec.vetture[c] || '—';
+  document.getElementById('ctNcBreve').value = (voce + ' non conforme').slice(0,120);
+  document.getElementById('ctNcTesto').value = '';
+  document.getElementById('ctNcErr').textContent = '';
+  document.getElementById('ctNcOverlay').classList.add('open');
+  setTimeout(()=> document.getElementById('ctNcTesto').focus(), 100);
+}
+function ctAnnullaNc(){ ct.ncKey = null; document.getElementById('ctNcOverlay').classList.remove('open'); }
+function ctRegistraNc(){
+  const err = document.getElementById('ctNcErr');
+  const breve = document.getElementById('ctNcBreve').value.trim();
+  const testo = document.getElementById('ctNcTesto').value.trim();
+  if(!breve){ err.textContent = 'Inserisci la descrizione breve.'; return; }
+  if(!testo){ err.textContent = 'Scrivi cosa hai trovato.'; return; }
+  const key = ct.ncKey; if(!key || !ctRecord()) return;
+  const rec = ctClona(), p = key.split('|'), c = +p[1], now = new Date();
+  const seg = { linea:rec.linea, data:oggiISO(now), ora:now.toTimeString().slice(0,5), materiale:rec.materiale, vettura:rec.vetture[c] || '',
+    breve, estesa: testo + '\n(Controllo ' + (p[0]==='clima' ? 'clima' : 'periodico') + ', cassa ' + (c+1) + ')', creato:Date.now() };
+  const r = db.ref('segnalazioni').push();
+  r.set(seg).then(()=>{
+    rec.esiti[key] = 'nc'; rec.note[key] = testo; rec.segn[key] = r.key;
+    return ctSalva(rec);
+  }).then(()=>{
+    ctAnnullaNc();
+    showToast('Segnalazione registrata');
+  }).catch(e=>{ err.textContent = 'Errore salvataggio: ' + e.message; });
+}
+function ctChiudi(){
+  const rec = ctRecord(); if(!rec) return;
+  if(!ct.id){ ctLista(); return; }   // nessun esito segnato: non c'è niente da salvare
+  const manca = ctConta(rec,'clima').mancano + ctConta(rec,'per').mancano;
+  if(manca && !confirm(manca + (manca===1 ? ' voce è' : ' voci sono') + ' ancora senza esito. Chiudere lo stesso il controllo?')) return;
+  const r = ctClona(); r.chiuso = true;
+  ctSalva(r).then(()=>{ ct.vista = 'riepilogo'; renderControlli(); ctInCima(); showToast('Controllo salvato'); });
+}
+function ctRiapri(){
+  const r = ctClona(); r.chiuso = false;
+  ctSalva(r).then(()=>{ ct.vista = 'scheda'; renderControlli(); ctInCima(); });
+}
+function ctElimina(){
+  if(!ct.id || !confirm('Eliminare questo controllo? Le segnalazioni già registrate restano nell\'elenco segnalazioni.')) return;
+  const id = ct.id;
+  ctLista();
+  db.ref('controlli/' + id).remove().then(()=> showToast('Controllo eliminato'));
+}
+function ctTesto(rec){
+  const righe = [`Controllo ${rec.materiale} (${rec.linea}) del ${rec.data.split('-').reverse().join('/')}${rec.tabella ? ' · Tab. ' + rec.tabella : ''}`];
+  [['clima','Clima'],['per','Controlli periodici']].forEach(([t,nome])=>{
+    const c = ctConta(rec, t);
+    const pl = (n, uno, piu)=> n + ' ' + (n===1 ? uno : piu);
+    righe.push('', `${nome}: ${pl(c.ok,'conforme','conformi')}, ${pl(c.nc,'non conforme','non conformi')}, ${pl(c.nv,'non controllato','non controllati')}${c.mancano ? ', ' + c.mancano + ' senza esito' : ''}`);
+    Object.entries(rec.esiti).filter(([k,v])=> v==='nc' && k.split('|')[0]===t).forEach(([k])=>{
+      const p = k.split('|'), cs = +p[1];
+      righe.push(`- Cassa ${cs+1} (${rec.vetture[cs]})${t==='per' ? ' ' + rec.voci.periodici[+p[2]] : ''}: ${rec.note[k] || 'non conforme'}`);
+    });
+  });
+  return righe.join('\n');
+}
+function ctCondividi(){
+  const testo = ctTesto(ctRecord());
+  if(navigator.share) navigator.share({ text:testo }).catch(()=>{});
+  else if(navigator.clipboard) navigator.clipboard.writeText(testo).then(()=> showToast('Riepilogo copiato'), ()=> showToast('Copia non riuscita'));
+}
+
+/* ── disegno ── */
+function renderControlli(){
+  const el = document.getElementById('ctCorpo'); if(!el) return;
+  if(!ct.linea) ct.linea = CT_LINEE.includes(prefs.lineaDef) ? prefs.lineaDef : 'M1';
+  if(ct.vista!=='lista' && !ctRecord()) ct.vista = 'lista';
+  el.innerHTML = ct.vista==='scheda' ? ctHtmlScheda() : ct.vista==='riepilogo' ? ctHtmlRiepilogo() : ctHtmlLista();
+}
+function ctLinea(l){ ct.linea = l; renderControlli(); }
+function ctTipo(t){ ct.tipo = t; renderControlli(); }
+function ctCassa(c){ ct.cassa = c; renderControlli(); }
+function ctHtmlTreno(r, mio){
+  const fatto = r.mat && Object.values(allControlli).some(c=> c.linea===r.linea && c.materiale===r.mat && c.chiuso && c.data===oggiISO());
+  const g = r.giorni;
+  const quando = g===null ? '—' : g<0 ? 'scaduto' : g===0 ? 'oggi' : g===1 ? 'domani' : 'tra ' + g + ' giorni';
+  const n = r.mat ? ctVetture(r.linea, r.mat).length : 0;
+  return `<button class="ct-treno s-${r.stato}${mio ? ' mio' : ''}" onclick="ctApriTreno('${r.linea}', ${r.mat ? `'${r.mat}'` : 'null'}, '${escapeHtml(r.t)}')">
+    <span class="mat"><b>${escapeHtml(r.mat || r.num)}</b><span>${n ? n + (n===1 ? ' cassa' : ' casse') : 'non in lista'}</span></span>
+    <span class="info"><span class="ct-tab${r.t ? '' : ' no'}">${r.t ? ic('train','ic-sm') + 'Tab. ' + escapeHtml(r.t) : 'nessuna tabella'}</span>${fatto ? `<span class="ct-fatto">${ic('check','ic-sm')}controllato oggi</span>` : ''}
+      <span>${r.o ? 'in linea ' + escapeHtml(r.o) : r.t ? '' : 'in deposito'}${r.a && !mio ? (r.o ? ' · ' : '') + escapeHtml(r.a) : ''}</span></span>
+    <span class="ct-scad"><b>${quando}</b>${r.s ? (g<0 ? 'il ' : 'scade ') + ctDataBreve(r.s) : ''}</span>
+  </button>`;
+}
+function ctHtmlLista(){
+  const L = ct.linea;
+  let h = '<div class="ct-linee" role="group" aria-label="Linea">' + CT_LINEE.map(l=> `<button class="ct-lin ct-${l}${l===L ? ' on' : ''}" onclick="ctLinea('${l}')">${l}</button>`).join('') + '</div>';
+  /* dashboard */
+  if(DASH){
+    const del = DASH.datiDel ? new Date(DASH.datiDel) : null;
+    const quando = del && !isNaN(del) ? del.toLocaleDateString('it-IT', {day:'2-digit', month:'2-digit'}) + ' alle ' + del.toTimeString().slice(0,5) : '—';
+    h += `<div class="ct-fonte">${ic('link','')}<span>Dashboard rotabili<br><b>dati del ${quando}</b></span>${dashFile ? `<button onclick="dashLeggi(true)">${ic('refresh','ic-sm')}Rileggi</button>` : `<button onclick="apriDash()">${ic('upload','ic-sm')}Aggiorna</button>`}</div>`;
+  } else {
+    h += `<div class="ct-fonte">${ic('link','')}<span>Collega la <b>dashboard rotabili</b> per vedere qui i treni da controllare e la tabella su cui girano.</span><button onclick="apriDash()">Collega</button></div>`;
+  }
+  h += '<div class="ct-colonne"><div>';
+  if(DASH){
+    const treni = dashTreni(L);
+    const io = (prefs.ctIo || '').trim().toUpperCase();
+    const miei = io ? treni.filter(r=> (r.a || '').trim().toUpperCase()===io) : [];
+    const scad = treni.filter(r=> !miei.includes(r) && ['rosso','arancione','giallo'].includes(r.stato));
+    if(io) h += `<div class="ct-sez">${ic('user','ic-sm')}Assegnati a te<span class="n">${miei.length}</span></div>` + (miei.length ? miei.map(r=> ctHtmlTreno(r, true)).join('') : '<div class="ct-vuoto">Nessun treno assegnato a te su questa linea.</div>');
+    else h += `<div class="ct-vuoto" style="margin-top:16px">Per vedere i treni assegnati a te, scegli il tuo nome in <button class="link-btn" style="padding:0" onclick="apriDash()">Impostazioni › Dashboard rotabili</button>.</div>`;
+    h += `<div class="ct-sez">${ic('clock','ic-sm')}In scadenza sulla ${L}<span class="n">${scad.length}</span></div>` + (scad.length ? scad.map(r=> ctHtmlTreno(r, false)).join('') : `<div class="ct-vuoto">${treni.length ? 'Nessun controllo in scadenza.' : 'La dashboard non ha treni di questa linea.'}</div>`);
+  }
+  h += `<div class="ct-sez">${ic('plus','ic-sm')}Nuovo controllo</div>
+    <div class="ct-nuovo"><select id="ctMatSel" aria-label="Materiale"><option value="">Materiale…</option>${Object.keys(MATERIALI[L] || {}).map(m=> `<option value="${escapeHtml(m)}">${escapeHtml(m)} · ${escapeHtml((MATERIALI[L][m] || []).join(' '))}</option>`).join('')}</select>
+    <button onclick="ctNuovoDaSel()">${ic('clipboard','ic-sm')}Inizia</button></div>`;
+  h += '</div><div>';
+  const miei = Object.entries(allControlli).filter(([,c])=> c.linea===L).sort((a,b)=> (b[1].aggiornato || 0) - (a[1].aggiornato || 0));
+  const aperti = miei.filter(([,c])=> !c.chiuso), chiusi = miei.filter(([,c])=> c.chiuso).slice(0, 15);
+  const riga = ([id,c])=>{
+    const nc = ctConta(c,'clima').nc + ctConta(c,'per').nc;
+    const manca = ctConta(c,'clima').mancano + ctConta(c,'per').mancano;
+    return `<button class="ct-riga" onclick="ctApri('${id}')"><span class="tx"><b>${escapeHtml(c.materiale)}${c.tabella ? ' · Tab. ' + escapeHtml(c.tabella) : ''}</b><span>${ctDataBreve(c.data)} alle ${c.ora}${c.chiuso ? '' : ' · ' + manca + ' voci da fare'}${nc ? ' · ' + nc + ' non conform' + (nc===1 ? 'e' : 'i') : ''}</span></span>${ic('chevron','')}</button>`;
+  };
+  if(aperti.length) h += `<div class="ct-sez">${ic('clipboard','ic-sm')}In corso<span class="n">${aperti.length}</span></div>` + aperti.map(riga).join('');
+  h += `<div class="ct-sez">${ic('check','ic-sm')}Controlli fatti sulla ${L}<span class="n">${miei.filter(([,c])=> c.chiuso).length}</span></div>` + (chiusi.length ? chiusi.map(riga).join('') : '<div class="ct-vuoto">Nessun controllo ancora.</div>');
+  return h + '</div></div>';
+}
+function ctHtmlEsiti(rec, key){
+  const v = rec.esiti[key] || '';
+  let h = '<div class="ct-esiti">' + Object.entries(CT_ESITI).map(([e,[nome,icona]])=>
+    `<button class="ct-esito e-${e}${v===e ? ' on' : ''}" onclick="ctSegna('${key}','${e}')">${ic(icona,'ic-sm')}${nome}</button>`).join('') + '</div>';
+  if(v==='nc' && (rec.note[key] || rec.segn[key]))
+    h += `<div class="ct-segn">${ic('megaphone','ic-sm')}<div>${escapeHtml(rec.note[key] || '')}${rec.segn[key] ? '<small>segnalazione registrata</small>' : ''}</div></div>`;
+  return h;
+}
+function ctHtmlScheda(){
+  const rec = ctRecord(), n = rec.vetture.length;
+  let h = `<div class="ct-testa"><button class="ct-ind" onclick="ctLista()" aria-label="Torna all'elenco">${ic('back','')}</button>
+    <div><b>Controllo ${escapeHtml(rec.materiale)}</b><span>${rec.linea}${rec.tabella ? ' · Tab. ' + escapeHtml(rec.tabella) : ''} · ${ctDataBreve(rec.data)} · ${escapeHtml(rec.vetture.join(' '))}</span></div></div>
+    <div class="ct-tipi" role="group" aria-label="Tipo di controllo">
+      <button class="ct-tipo${ct.tipo==='clima' ? ' on' : ''}" onclick="ctTipo('clima')">${ic('snow','ic-sm')}Clima</button>
+      <button class="ct-tipo${ct.tipo==='per' ? ' on' : ''}" onclick="ctTipo('per')">${ic('clipboard','ic-sm')}Controlli periodici</button></div>`;
+  let barra = '';
+  if(ct.tipo==='clima'){
+    h += `<div class="ct-spieg">Una voce per ogni cassa: ${escapeHtml(rec.voci.clima)}.</div><div class="ct-lista-voci">`
+      + rec.vetture.map((v,c)=>{ const k = 'clima|' + c; return `<div class="ct-voce${rec.esiti[k]==='nc' ? ' r-nc' : ''}"><div class="t">Cassa ${c+1}<small>vettura ${escapeHtml(v)}</small></div>${ctHtmlEsiti(rec, k)}</div>`; }).join('') + '</div>';
+  } else {
+    if(ct.cassa >= n) ct.cassa = 0;
+    const statoCassa = (c)=>{
+      const r = rec.voci.periodici.map((_,i)=> rec.esiti['per|' + c + '|' + i]);
+      return !r.length ? '' : r.includes('nc') ? 'nc' : r.every(Boolean) ? 'fatta' : r.some(Boolean) ? 'parz' : '';
+    };
+    h += `<div class="ct-casse${n===3 ? ' n3' : n===1 ? ' n1' : ''}" role="group" aria-label="Cassa">` + rec.vetture.map((v,c)=>
+      `<button class="ct-cassa ${statoCassa(c)}${c===ct.cassa ? ' on' : ''}" onclick="ctCassa(${c})"><b>${c+1}</b>${escapeHtml(v)}<span class="st"></span></button>`).join('') + '</div>';
+    h += `<div class="ct-cassa-tit"><b>Cassa ${ct.cassa+1}</b><span>vettura ${escapeHtml(rec.vetture[ct.cassa])}</span><button onclick="ctRestantiOk()">${ic('check','ic-sm')}Restanti conformi</button></div>`;
+    h += rec.voci.periodici.length
+      ? '<div class="ct-lista-voci">' + rec.voci.periodici.map((t,i)=>{ const k = 'per|' + ct.cassa + '|' + i; return `<div class="ct-voce${rec.esiti[k]==='nc' ? ' r-nc' : ''}"><div class="t">${escapeHtml(t)}</div>${ctHtmlEsiti(rec, k)}</div>`; }).join('') + '</div>'
+      : '<div class="ct-vuoto">La check list dei controlli periodici è vuota: aggiungi le voci in Impostazioni › Check list controlli.</div>';
+    const c = ctConta(rec, 'per');
+    if(c.tot) barra = `<div class="ct-prog"><span>${c.tot - c.mancano} di ${c.tot} voci${c.nc ? ' · ' + c.nc + ' non conform' + (c.nc===1 ? 'e' : 'i') : ''}</span><div class="b"><i style="width:${c.ok/c.tot*100}%;background:var(--green)"></i><i style="width:${c.nc/c.tot*100}%;background:var(--red)"></i><i style="width:${c.nv/c.tot*100}%;background:var(--text3)"></i></div></div>`;
+  }
+  if(!barra) barra = `<div class="ct-prog"><span>${ct.id ? 'Ogni esito si salva da solo' : 'Il controllo si salva al primo esito'}</span></div>`;
+  return h + `<div class="ct-barra">${barra}<button class="ct-salva" onclick="ctChiudi()">${ic('save','ic-sm')}Chiudi il controllo</button></div>`;
+}
+function ctHtmlRiepilogo(){
+  const rec = ctRecord();
+  const salvato = cloudFile && cloudStato==='ok';
+  let h = `<div class="ct-testa"><button class="ct-ind" onclick="ctLista()" aria-label="Torna all'elenco">${ic('back','')}</button>
+    <div><b>Riepilogo ${escapeHtml(rec.materiale)}</b><span>${rec.linea}${rec.tabella ? ' · Tab. ' + escapeHtml(rec.tabella) : ''} · ${rec.data.split('-').reverse().join('/')} alle ${rec.ora}</span></div></div>
+    <div class="ct-salvato ${salvato ? 'ok' : 'no'}">${ic('cloud','ic-sm')}${salvato ? 'Salvato nel tuo file OneDrive' : 'Salvato su questo dispositivo: collega il file OneDrive in Impostazioni › Copia nel cloud'}</div><div class="ct-riep">`;
+  [['clima','Clima','snow'],['per','Controlli periodici','clipboard']].forEach(([t,nome,icona])=>{
+    const c = ctConta(rec, t);
+    h += `<div class="ct-card"><div class="h">${ic(icona,'')}<b>${nome}</b><span>${rec.vetture.length} ${rec.vetture.length===1 ? 'cassa' : 'casse'}</span></div><div class="ct-cont">`
+      + (c.ok ? `<span class="ct-cnt ok">${ic('check','ic-sm')}${c.ok} conform${c.ok===1 ? 'e' : 'i'}</span>` : '')
+      + (c.nc ? `<span class="ct-cnt nc">${ic('x','ic-sm')}${c.nc} non conform${c.nc===1 ? 'e' : 'i'}</span>` : '')
+      + (c.nv ? `<span class="ct-cnt nv">${ic('minus','ic-sm')}${c.nv} non controllat${c.nv===1 ? 'o' : 'i'}</span>` : '')
+      + (c.mancano ? `<span class="ct-cnt mx">${c.mancano} senza esito</span>` : '') + '</div>';
+    Object.entries(rec.esiti).filter(([k,v])=> k.split('|')[0]===t && v==='nc').sort().forEach(([k])=>{
+      const p = k.split('|'), cs = +p[1];
+      h += `<div class="ct-nc-r">${ic('megaphone','ic-sm')}<div>Cassa ${cs+1} · ${t==='clima' ? 'vettura ' + escapeHtml(rec.vetture[cs]) : escapeHtml(rec.voci.periodici[+p[2]] || '')}<span>${escapeHtml(rec.note[k] || '')}</span>${rec.segn[k] ? '<em>Segnalazione registrata</em>' : ''}</div></div>`;
+    });
+    const nv = Object.entries(rec.esiti).filter(([k,v])=> k.split('|')[0]===t && v==='nv').map(([k])=>{ const p = k.split('|'); return 'cassa ' + (+p[1]+1) + (t==='per' ? ' ' + (rec.voci.periodici[+p[2]] || '') : ''); });
+    if(nv.length) h += `<div class="ct-nc-r grigio">${ic('minus','ic-sm')}<div>Non controllati<span>${escapeHtml(nv.join(', '))}</span></div></div>`;
+    h += '</div>';
+  });
+  h += `</div><div class="ct-azioni">
+    <button onclick="ctRiapri()">${ic('pencil','ic-sm')}Modifica</button>
+    <button onclick="ctCondividi()">${ic('share','ic-sm')}Condividi</button>
+    <button class="danger" onclick="ctElimina()">${ic('trash','ic-sm')}Elimina</button></div>`;
+  const prec = Object.entries(allControlli).filter(([id,c])=> id!==ct.id && c.linea===rec.linea && c.materiale===rec.materiale && c.chiuso).sort((a,b)=> b[1].data.localeCompare(a[1].data)).slice(0,10);
+  if(prec.length) h += `<div class="ct-sez">${ic('clock','ic-sm')}Controlli precedenti del ${escapeHtml(rec.materiale)}</div>` + prec.map(([id,c])=>{
+    const nc = ctConta(c,'clima').nc + ctConta(c,'per').nc;
+    return `<button class="ct-riga" onclick="ctApri('${id}')"><span class="tx"><b>${c.data.split('-').reverse().join('/')}</b><span>${nc ? nc + ' non conform' + (nc===1 ? 'e' : 'i') : 'tutto conforme'}</span></span>${ic('chevron','')}</button>`;
+  }).join('');
+  return h;
+}
+
+/* ── check list (Impostazioni) ── */
+function apriChecklist(){ renderChecklistSet(); document.getElementById('checklistOverlay').classList.add('open'); }
+function renderChecklistSet(){
+  const cl = document.getElementById('clClima');
+  if(document.activeElement!==cl) cl.value = CHECKLIST.clima;
+  const el = document.getElementById('clLista'), p = CHECKLIST.periodici;
+  el.innerHTML = p.length ? p.map((t,i)=> `<div class="cl-vr"><span class="num">${i+1}</span><textarea rows="1" maxlength="80" aria-label="Voce ${i+1}" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}" onchange="clModifica(${i}, this.value)">${escapeHtml(t)}</textarea>
+    <button class="cl-mini" ${i===0 ? 'disabled' : ''} onclick="clSposta(${i},-1)" aria-label="Sposta su">${ic('up','ic-sm')}</button>
+    <button class="cl-mini" ${i===p.length-1 ? 'disabled' : ''} onclick="clSposta(${i},1)" aria-label="Sposta giù">${ic('down','ic-sm')}</button>
+    <button class="cl-mini del" onclick="clTogli(${i})" aria-label="Elimina">${ic('trash','ic-sm')}</button></div>`).join('')
+    : '<div class="cl-vr"><span class="ct-vuoto">Nessuna voce: aggiungine una qui sotto.</span></div>';
+}
+function clSalvaPer(arr){ return db.ref('checklist_controlli/periodici').set(arr); }
+function clSalvaClima(v){ v = v.trim(); if(!v){ renderChecklistSet(); return; } db.ref('checklist_controlli/clima').set(v).then(()=> showToast('Voce del clima aggiornata')); }
+function clModifica(i, v){ v = v.trim(); if(!v){ renderChecklistSet(); return; } const a = CHECKLIST.periodici.slice(); a[i] = v; clSalvaPer(a); }
+function clSposta(i, d){ const a = CHECKLIST.periodici.slice(), j = i + d; [a[i], a[j]] = [a[j], a[i]]; clSalvaPer(a); }
+function clTogli(i){ if(!confirm('Togliere la voce "' + CHECKLIST.periodici[i] + '"?')) return; const a = CHECKLIST.periodici.slice(); a.splice(i,1); clSalvaPer(a).then(()=> showToast('Voce tolta')); }
+function clAggiungi(){
+  const inp = document.getElementById('clNuova'), v = inp.value.trim(); if(!v) return;
+  if(CHECKLIST.periodici.some(x=> x.toLowerCase()===v.toLowerCase())){ showToast('Questa voce c\'è già'); return; }
+  inp.value = '';
+  clSalvaPer(CHECKLIST.periodici.concat(v)).then(()=> showToast('Voce aggiunta'));
+}
+function clRipristina(){
+  if(!confirm('Rimettere le voci iniziali del clima e dei controlli periodici?')) return;
+  db.ref('checklist_controlli/clima').set(CT_CLIMA_DEF).then(()=> clSalvaPer(CT_PER_DEF.slice())).then(()=> showToast('Voci iniziali ripristinate'));
+}
+
+/* ── dashboard rotabili (solo lettura) ── */
+/* accetta sia dashboard-dati.json (cartella della dashboard) sia il file esportato per il telefono */
+function dashNormalizza(o){
+  if(!o || typeof o!=='object' || !Array.isArray(o.rotabili)) throw new Error('Il file non contiene i dati della dashboard rotabili');
+  const out = { rotabili:[], persone:[], datiDel:'', soglie:{ giallo:6, arancione:1 } };
+  const persone = new Set();
+  if(o.tipo==='dashboard-rotabili-smartphone'){
+    out.datiDel = o.datiDel || o.esportatoIl || '';
+    if(o.soglie) out.soglie = { giallo:+o.soglie.giallo || 6, arancione:+o.soglie.arancione || 1 };
+    o.rotabili.forEach(r=> out.rotabili.push({ m:String(r.m || ''), l:String(r.l || ''), s:r.s || '', t:r.t ? String(r.t) : '', o:r.o || '', a:r.a || '' }));
+  } else if('assegnazioni' in o || 'importatoIl' in o){
+    out.datiDel = o.importatoIl || o.salvatoIl || '';
+    out.soglie = { giallo:+o.sogliaGiallo || 6, arancione:+o.sogliaArancione || 1 };
+    const ass = o.assegnazioni || {};
+    o.rotabili.forEach(r=>{
+      let s = '';
+      const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(r.dataControllo || '');
+      if(m) s = m[3] + '-' + m[2] + '-' + m[1];
+      else if(r.dataScadenzaObj){ const d = new Date(r.dataScadenzaObj); if(!isNaN(d)) s = oggiISO(d); }
+      const v = ass[r.matricola];
+      out.rotabili.push({ m:String(r.matricola || ''), l:String(r.linea || ''), s, t:r.tabella && r.tabella!=='—' ? String(r.tabella) : '', o:r.orario || '', a:(v && v.persona && v.scadenza===s) ? v.persona : '' });
+    });
+    (o.personale || []).forEach(p=>{ const n = typeof p==='string' ? p : p && (p.nome || p.persona); if(n) persone.add(String(n)); });
+  } else throw new Error('Il file non è della dashboard rotabili');
+  out.rotabili.forEach(r=>{ if(r.a) persone.add(r.a); });
+  out.persone = [...persone].sort((a,b)=> a.localeCompare(b, 'it'));
+  return out;
+}
+/* treni della dashboard di una linea, con materiale della lista, giorni alla scadenza e stato di oggi */
+function dashTreni(linea){
+  if(!DASH) return [];
+  const oggi = new Date(oggiISO() + 'T12:00:00');
+  return DASH.rotabili.filter(r=> 'M' + (r.l || r.m.charAt(1))===linea).map(r=>{
+    const num = String(parseInt(r.m.slice(2), 10));
+    const mats = MATERIALI[linea] || {};
+    const mat = mats[num] ? num : (Object.keys(mats).find(k=> (mats[k] || []).includes(num)) || null);
+    const giorni = r.s ? Math.round((new Date(r.s + 'T12:00:00') - oggi) / 86400000) : null;
+    const stato = giorni===null ? '' : giorni<0 ? 'rosso' : giorni<=DASH.soglie.arancione ? 'arancione' : giorni<=DASH.soglie.giallo ? 'giallo' : 'verde';
+    return Object.assign({}, r, { linea, num, mat, giorni, stato });
+  }).sort((a,b)=> (a.s || '9').localeCompare(b.s || '9'));
+}
+function dashImposta(d, nome){
+  d.nomeFile = nome || ''; d.letto = Date.now();
+  DASH = d;
+  try { localStorage.setItem(DASH_KEY, JSON.stringify(d)); } catch(e){}
+  renderDashSet();
+  if(paginaCorrente==='controlli') renderControlli();
+  if(paginaCorrente==='impostazioni') renderImpostazioni();
+}
+async function dashAvvio(){
+  if(!FILE_API) return;
+  try { dashFile = (await idbGet('dashFile')) || null; } catch(e){ dashFile = null; }
+  if(dashFile) dashLeggi(false);
+}
+/* rilegge il file collegato; con "avvisa" (da un tocco) chiede anche il permesso se il telefono l'ha tolto */
+async function dashLeggi(avvisa){
+  if(!dashFile) return false;
+  try {
+    if(await dashFile.queryPermission({mode:'read'}) !== 'granted'){
+      if(!avvisa) return false;
+      if(await dashFile.requestPermission({mode:'read'}) !== 'granted'){ showToast('Senza il permesso il file non si può leggere'); return false; }
+    }
+    const {testo} = await conRiprova(()=> leggiTestoFile(dashFile));
+    dashImposta(dashNormalizza(estraiJSON(testo)), dashFile.name);
+    if(avvisa) showToast('Dati della dashboard aggiornati');
+    return true;
+  } catch(e){ if(avvisa) showToast(testoErrore(e)); return false; }
+}
+async function dashCollega(){
+  try {
+    const [h] = await window.showOpenFilePicker({ types:[{ description:'Dati dashboard rotabili', accept:{'application/json':['.json']} }], multiple:false });
+    const {testo} = await conRiprova(()=> leggiTestoFile(h));
+    const d = dashNormalizza(estraiJSON(testo));
+    dashFile = h;
+    await idbSet('dashFile', h);
+    dashImposta(d, h.name);
+    showToast('Dashboard collegata · ' + d.rotabili.length + ' rotabili');
+  } catch(e){ if(e.name!=='AbortError') showToast(testoErrore(e)); }
+}
+function dashCaricaFile(inp){
+  const f = inp.files[0]; inp.value = '';
+  if(!f) return;
+  f.text().then(t=>{
+    const d = dashNormalizza(estraiJSON(t));
+    dashImposta(d, f.name);
+    showToast('Dati caricati · ' + d.rotabili.length + ' rotabili');
+  }).catch(e=> showToast(e.message || 'File non leggibile'));
+}
+function dashScollega(){
+  if(!confirm('Togliere i dati della dashboard da questo dispositivo? Il file della dashboard non viene toccato.')) return;
+  dashFile = null; DASH = null;
+  idbSet('dashFile', null).catch(()=>{});
+  try { localStorage.removeItem(DASH_KEY); } catch(e){}
+  renderDashSet();
+  if(paginaCorrente==='impostazioni') renderImpostazioni();
+  showToast('Dati della dashboard tolti');
+}
+function apriDash(){ renderDashSet(); document.getElementById('dashOverlay').classList.add('open'); }
+function renderDashSet(){
+  const st = document.getElementById('dashStato'); if(!st) return;
+  if(DASH){
+    const del = DASH.datiDel ? new Date(DASH.datiDel) : null;
+    st.innerHTML = `<b>${DASH.rotabili.length} rotabili</b> · dati della dashboard del ${del && !isNaN(del) ? del.toLocaleString('it-IT', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'}) : '—'}<br>${dashFile ? 'File collegato: ' : 'Caricato dal file: '}${escapeHtml(DASH.nomeFile || '—')}`;
+  } else st.innerHTML = 'Nessun dato della dashboard su questo dispositivo.';
+  document.getElementById('dashBtnCollega').style.display = FILE_API ? '' : 'none';
+  document.getElementById('dashNota').innerHTML = FILE_API
+    ? 'Collega una volta il file <b>dashboard-dati.json</b> dalla cartella OneDrive della dashboard: l\'app lo rilegge da sola ogni volta che apri Controlli. In alternativa carica il file che la dashboard esporta per il telefono.'
+    : 'Su questo dispositivo il file non si può collegare: carica il file che la dashboard esporta per il telefono (Impostazioni › Esporta dati per telefono) o il file dashboard-dati.json. Per aggiornare i dati caricalo di nuovo.';
+  const sel = document.getElementById('dashIo');
+  const nomi = (DASH && DASH.persone) || [];
+  const io = prefs.ctIo || '';
+  sel.innerHTML = '<option value="">Non indicato</option>' + nomi.concat(io && !nomi.includes(io) ? [io] : []).map(n=> `<option value="${escapeHtml(n)}"${n===io ? ' selected' : ''}>${escapeHtml(n)}</option>`).join('');
+  sel.disabled = !nomi.length && !io;
+  document.getElementById('dashBtnScollega').style.display = DASH || dashFile ? '' : 'none';
+}
+function ctSubImpostazioni(){
+  const n = CHECKLIST.periodici.length;
+  document.getElementById('setChecklistSub').textContent = 'Clima e ' + n + (n===1 ? ' voce' : ' voci') + ' dei periodici';
+  document.getElementById('setDashSub').textContent = DASH ? (dashFile ? 'Collegata · ' : 'Caricata · ') + DASH.rotabili.length + ' rotabili' : 'Non collegata';
+}
+
 /* ════════ STATISTICHE ════════ */
 let statModo = 'guasti', statPeriodo = 'anno', statLinea = 'ALL', statTuttiTreni = false;
 let STAT_GRUPPI = {};
@@ -4544,6 +5216,7 @@ listenMaterialiExtra();
 listenDescrizioniPreset();
 listenModelli();
 listenImpostazioni();
+listenControlli();
 history.replaceState(null, '');
 mostraPagina('home', {noHistory:true});
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
