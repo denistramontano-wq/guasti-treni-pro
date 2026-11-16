@@ -669,7 +669,7 @@ div.set-row{cursor:default}
       <button class="top-sync" id="topSync" style="display:none" onclick="aggiornaDati()" aria-label="Aggiorna dati" title="Aggiorna dati"><svg class="ic"><use href="#i-refresh"/></svg><i></i></button>
       <button class="top-sync" id="topFull" style="display:none" onclick="tuttoSchermo()" aria-label="Tutto schermo" title="Tutto schermo"><svg class="ic"><use href="#i-maximize"/></svg></button>
       <button class="top-sync top-set" id="topSet" onclick="apri('impostazioni')" aria-label="Impostazioni" title="Impostazioni"><svg class="ic"><use href="#i-settings"/></svg><span>Impostazioni</span></button>
-      <div class="firma" onclick="tapVersione()">v2.2.1</div>
+      <div class="firma" onclick="tapVersione()">v2.2.2</div>
     </div>
   </header>
 
@@ -804,7 +804,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.2.1</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.2.2</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -825,7 +825,7 @@ div.set-row{cursor:default}
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.2.1</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.2.2</div>
     </section>
 
     <!-- ── PAGINA: NUOVO GUASTO ── -->
@@ -1511,7 +1511,7 @@ div.set-row{cursor:default}
    Archivio usato dal resto dell'app (ref().on / set / push / remove):
    i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '2.2.1';
+const APP_VERSIONE = '2.2.2';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
@@ -3959,6 +3959,8 @@ function tuInterpretaFoglio(f, anno){
   const nomeValido = (v)=> v && !/^\d+$/.test(v) && !etichettaGiorni.test(v.trim());
   const chiave = (n)=> n.toUpperCase().replace(/\s+/g, ' ').trim();
   const base = (n)=> chiave(n).replace(/(\s+[A-Z]\.?)+$/, '');   // "UZHO B." e "UZHO" sono la stessa persona
+  /* posto senza una persona: "Vacante", "AAAAA", "?", "XXX", "N.N."... da quel giorno la riga è vuota */
+  const postoVuoto = (n)=> { const k = chiave(n).replace(/[\s.]/g, ''); return !k || /^(VACANTE|VACANTI|VACANT|LIBERO|LIBERA|DAASSEGNARE|DADEFINIRE|NN|NONASSEGNATO)$/.test(k) || /^(.)\1*$/.test(k) || /^[?X-]+$/.test(k); };
   const persone = [], perNome = new Map();
   const persona = (nome)=>{
     const k = chiave(nome);
@@ -3977,7 +3979,10 @@ function tuInterpretaFoglio(f, anno){
       const chi = { giorni:{}, nomi:{} };
       let corrente = null;
       nomiOrd.forEach((c,i)=>{
-        if(nomiRiga[i] && !(corrente && base(corrente.nome)===base(nomiRiga[i]))) corrente = persona(nomiRiga[i]);
+        if(nomiRiga[i]){
+          if(postoVuoto(nomiRiga[i])) corrente = null;
+          else if(!(corrente && base(corrente.nome)===base(nomiRiga[i]))) corrente = persona(nomiRiga[i]);
+        }
         if(corrente) chi.nomi[c] = corrente;
       });
       giorni.forEach((g,c)=>{ const p = chi.nomi[colNomeDi(c)]; if(p) chi.giorni[g] = p; });
