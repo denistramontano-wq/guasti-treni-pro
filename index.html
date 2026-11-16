@@ -106,6 +106,8 @@ button,input,select,textarea{font-family:inherit}
 .tile .t{display:block;font-size:var(--fs-l);font-weight:700;line-height:1.2}
 .tile .s{display:block;font-size:var(--fs-s);line-height:1.4;opacity:.85;margin-top:8px}
 .tile:active{filter:brightness(.92)}
+/* telefono: con un numero dispari di attività l'ultima occupa tutta la riga */
+@media (max-width:899px){ .att > .tile:last-child:nth-child(odd){grid-column:1/-1;min-height:112px} }
 .t-red{background:var(--red)}
 .t-light{background:var(--tile-light);color:var(--ink)}
 .t-light .ic{color:var(--orange)}
@@ -336,7 +338,8 @@ div.set-row{cursor:default}
   .ct-lista-voci{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:8px;align-items:start}
   .ct-lista-voci .ct-voce{margin-bottom:0}
   .ct-barra{margin:16px -40px -32px;padding:16px 40px}
-  .ct-riep{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:8px;align-items:start}
+  .ct-riep{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:8px;align-items:start}
+  .ct-azioni{grid-template-columns:repeat(3,1fr)}
   .ct-riep .ct-card{margin-bottom:0}
 }
 
@@ -837,7 +840,7 @@ div.set-row{cursor:default}
       <button class="top-sync" id="topSync" style="display:none" onclick="aggiornaDati()" aria-label="Aggiorna dati" title="Aggiorna dati"><svg class="ic"><use href="#i-refresh"/></svg><i></i></button>
       <button class="top-sync" id="topFull" style="display:none" onclick="tuttoSchermo()" aria-label="Tutto schermo" title="Tutto schermo"><svg class="ic"><use href="#i-maximize"/></svg></button>
       <button class="top-sync top-set" id="topSet" onclick="apri('impostazioni')" aria-label="Impostazioni" title="Impostazioni"><svg class="ic"><use href="#i-settings"/></svg><span>Impostazioni</span></button>
-      <div class="firma" onclick="tapVersione()">v2.4.1</div>
+      <div class="firma" onclick="tapVersione()">v2.4.4</div>
     </div>
   </header>
 
@@ -861,10 +864,6 @@ div.set-row{cursor:default}
               <svg class="ic ic-xl"><use href="#i-clock"/></svg>
               <span><span class="t">Orari M7</span><span class="s">Passaggi in stazione</span></span>
             </button>
-            <button class="tile t-green" onclick="apri('stat')">
-              <svg class="ic ic-xl"><use href="#i-chart"/></svg>
-              <span><span class="t">Statistiche</span><span class="s">Guasti, treni e recidivi</span></span>
-            </button>
             <button class="tile t-purple" onclick="apri('turni')">
               <svg class="ic ic-xl"><use href="#i-calendar"/></svg>
               <span><span class="t">Turni</span><span class="s">Giorno, settimana e mese</span></span>
@@ -882,12 +881,12 @@ div.set-row{cursor:default}
           <h2 class="hm-sez">Funzioni</h2>
           <div class="funz">
             <button class="fz" onclick="homeElenco('guasti')">
-              <span class="str"></span><span class="tx"><b>Elenco guasti</b><span id="homeGuastiSub">—</span></span>
+              <span class="str"></span><span class="tx"><b>Elenco guasti e segnalazioni</b><span id="homeElenchiSub">—</span></span>
               <span class="ico"><svg class="ic"><use href="#i-list"/></svg></span>
             </button>
-            <button class="fz" onclick="homeElenco('segnalazioni')">
-              <span class="str"></span><span class="tx"><b>Elenco segnalazioni</b><span id="homeSegSub">—</span></span>
-              <span class="ico"><svg class="ic"><use href="#i-list"/></svg></span>
+            <button class="fz" onclick="apri('stat')">
+              <span class="str"></span><span class="tx"><b>Statistiche</b><span>Guasti, treni e recidivi</span></span>
+              <span class="ico"><svg class="ic"><use href="#i-chart"/></svg></span>
             </button>
           </div>
         </div>
@@ -986,7 +985,7 @@ div.set-row{cursor:default}
       <div class="set-box">
         <button class="set-row" onclick="cercaAggiornamenti()">
           <span class="bubble b-purple"><svg class="ic"><use href="#i-refresh"/></svg></span>
-          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.4.1</span></span>
+          <span class="set-main"><span class="t" style="display:block">Cerca aggiornamenti</span><span class="s">Versione installata 2.4.4</span></span>
           <svg class="ic"><use href="#i-chevron"/></svg>
         </button>
         <button class="set-row danger" onclick="svuotaDatiLocali()">
@@ -1007,7 +1006,7 @@ div.set-row{cursor:default}
         </div>
       </div>
 
-      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.4.1</div>
+      <div class="set-info" onclick="tapVersione()">Guasti Treni Pro v2.4.4</div>
     </section>
 
     <!-- ── PAGINA: CONTROLLI TRENI ── -->
@@ -1779,7 +1778,7 @@ div.set-row{cursor:default}
    Archivio usato dal resto dell'app (ref().on / set / push / remove):
    i dati restano sul dispositivo
    e si sincronizzano con un file .json in una cartella del cloud. */
-const APP_VERSIONE = '2.4.1';
+const APP_VERSIONE = '2.4.4';
 const VERSIONE_PC = false;
 const QUI = VERSIONE_PC ? 'questo PC' : 'questo telefono';
 const LOCALE_KEY = 'guastiMetro.locale.dati';
@@ -3545,8 +3544,8 @@ function renderHome(){
   const ng = guasti.length, ns = Object.keys(allSegnalazioni).length;
   const nOggi = guasti.filter(g=>g.data===oggi).length;
   const nOggiSeg = Object.values(allSegnalazioni).filter(g=>g.data===oggi).length;
-  document.getElementById('homeGuastiSub').textContent = (ng===1 ? '1 registrato' : ng + ' registrati') + (nOggi ? ' · ' + nOggi + ' oggi' : '');
-  document.getElementById('homeSegSub').textContent = (ns===1 ? '1 registrata' : ns + ' registrate') + (nOggiSeg ? ' · ' + nOggiSeg + ' oggi' : '');
+  const oggiTot = nOggi + nOggiSeg;
+  document.getElementById('homeElenchiSub').textContent = (ng===1 ? '1 guasto' : ng + ' guasti') + ' · ' + (ns===1 ? '1 segnalazione' : ns + ' segnalazioni') + (oggiTot ? ' · ' + oggiTot + ' oggi' : '');
 }
 /* data e ora sotto il nome dell'app, come nell'app aziendale */
 function aggiornaDataTop(){
